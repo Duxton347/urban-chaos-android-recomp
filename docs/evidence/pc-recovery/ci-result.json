@@ -1,0 +1,36 @@
+{
+  "tested_commit": "76d5d50199e302a14ec8c9cd230fa4914a2aac4f",
+  "pc_original": {
+    "run": 43740071363,
+    "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43740071363",
+    "conclusion": "failure",
+    "configure_exit": 0,
+    "build_exit": 1,
+    "classification": "MISSING_QUALIFIED_TITLE_INPUTS",
+    "first_missing_input": "build/xbe-full-integration-20261014/integration-status.json",
+    "unmodified_upstream_builder": true,
+    "qualified_status_fabricated": false
+  },
+  "native_sdk_core": {
+    "run": 43740071250,
+    "conclusion": "success",
+    "memory_services_test": "passed",
+    "game_executed": false
+  },
+  "automated_tests": {
+    "run": 43740071223,
+    "conclusion": "success",
+    "python_tests": 32,
+    "java_checks": 11
+  },
+  "audit": {
+    "run": 43740071240,
+    "conclusion": "success"
+  },
+  "arm64_contract": {
+    "run": 43740071287,
+    "conclusion": "success"
+  },
+  "game_compiled": false,
+  "game_booted": false
+}

@@ -6,7 +6,7 @@ Atualizado em 2026-11-15. **GO para ferramentas e auditoria. BLOCKED para jogo o
 
 Ver [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md): inventariadas 21 revisões, três ZIPs de source e o pacote PC publicado, todos os downloads conferidos contra hashes oficiais. Recuperados Title ID/identidade histórica, 247 seeds e a receita anterior baseada em `sp00nznet/xboxrecomp`. Nenhum código gerado ou XBE foi encontrado nas entradas inspecionadas.
 
-O núcleo real do SDK compilou no Linux e o teste de memória virtual/aliases passou. O parser legado foi executado e falhou por `Default.xbe` ausente. Há um workflow Windows para executar CMake/builder originais da versão 0.18 e registrar a falha/sucesso efetivos, sem stubs. Esses resultados não equivalem a boot do jogo.
+O núcleo real do SDK compilou no Linux e o teste de memória virtual/aliases passou. O parser legado foi executado e falhou por `Default.xbe` ausente. O workflow Windows executou CMake/builder originais da versão 0.18: configuração passou (exit 0), build falhou (exit 1) por `integration-status.json` ausente, antes de compilar C++ do título. Run [43740071363](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43740071363), com log preservado em [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md). Nenhum stub ou qualificação fictícia foi criado. Esses resultados não equivalem a boot do jogo.
 
 ## Primeira entrega
 

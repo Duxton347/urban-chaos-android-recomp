@@ -1,0 +1,49 @@
+##[group]Run python scripts/attempt_pc_build.py
+python scripts/attempt_pc_build.py
+shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+env:
+  pythonLocation: C:\hostedtoolcache\windows\Python\3.12.8\x64
+  PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.8\x64/lib/pkgconfig
+  Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.8\x64
+  Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.8\x64
+  Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.8\x64
+##[endgroup]
+Junction created for D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\.tools\python <<===>> C:\hostedtoolcache\windows\Python\3.12.8\x64
+Executing original source: configure
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.20348.
+-- Configuring done (5.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/a/urban-chaos-android-recomp/urban-chaos-android-recomp/build/pc-recovery/original-build/out
+
+Executing original source: build
+MSBuild version 17.14.60+43b635718 for .NET Framework
+
+  1>Checking Build System
+  Traceback (most recent call last):
+    File "D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\scripts\build_xbe_game_trial.py", line 11, in <module>
+      report=json.loads((AREA/'integration-status.json').read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\.tools\python\Lib\pathlib.py", line 1027, in read_text
+      with self.open(mode='r', encoding=encoding, errors=errors) as f:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\.tools\python\Lib\pathlib.py", line 1013, in open
+      return io.open(self, mode, buffering, encoding, errors, newline)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  FileNotFoundError: [Errno 2] No such file or directory: 'D:\\a\\urban-chaos-android-recomp\\urban-chaos-android-recomp\\build\\pc-recovery\\original-build\\source\\build\\xbe-full-integration-20261014\\integration-status.json'
+  Exception: D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\scripts\run_animation_resume.ps1:17
+  Line |
+    17 |  . STEXITCODE) { throw "Animation qualification failed: $LASTEXITCODE" }
+       |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       | Animation qualification failed: 1
+C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\out\CMakeFiles\5cc8cc9f2ae2c8c07fdf56b20245c18d\UrbanChaosXbeTrial.rule;D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\source\CMakeLists.txt' exited with code 1. [D:\a\urban-chaos-android-recomp\urban-chaos-android-recomp\build\pc-recovery\original-build\out\UrbanChaosXbeTrial.vcxproj]
+
+{
+  "source_sha256": "d705d414c9f7096cdbc45815da4e01f3336a71a99187c880a11928e8e6e33d70",
+  "g1_qualified": false,
+  "game_compiled": false,
+  "game_executed": false,
+  "status": "MISSING_QUALIFIED_TITLE_INPUTS",
+  "configure_exit": 0,
+  "build_exit": 1
+}
+##[error]Process completed with exit code 1.
