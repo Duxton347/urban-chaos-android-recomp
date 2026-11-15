@@ -1,0 +1,20 @@
+{
+  "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "license": "MIT; licenses/XboxXBERecomp-MIT.txt",
+  "source_modified": false,
+  "scope": "kernel static archive; actual memory service test; not linked title runtime",
+  "compiled_files": {
+    "vendor/runtime/runtime/kernel/boot.cpp": "a64577a64764bfc9c9d30fdb4d6b29d2bc8874a1462a1dee110ca06c280aae51",
+    "vendor/runtime/runtime/kernel/crypto.cpp": "9f9f8e93dc2032b5dfb18e5a54836504206885b94d899b25e0b8e4fc3606cebf",
+    "vendor/runtime/runtime/kernel/disc.cpp": "db4882b55a02eda3fc73bd7d73e0f39aa254bedec2589c751d5c8d0199427ed6",
+    "vendor/runtime/runtime/kernel/files.cpp": "028221e5ab6b5874d18d6b29ba18ffb365451b4d2ee89f3fca45b1bebb95232d",
+    "vendor/runtime/runtime/kernel/memory.cpp": "4af438477e33856ee9fd16afcc2f03dbfee0a002540ed1ac1c7cfb0ade6c3d7b",
+    "vendor/runtime/runtime/kernel/objects.cpp": "18f7f5303052e0fd83345f74782eb346494e99c67b18fe028b270d9c739b4ff0",
+    "vendor/runtime/runtime/kernel/ordinals.cpp": "a7ddbef0e89259b55522a8b6b2f7736bbc198dbc35acf699868a499773b38896",
+    "vendor/runtime/runtime/kernel/rtl.cpp": "c70ce0dbbe28a0fdf9bf09f9e1b4ba19d7e00edd552be080ffcef02a7e69bf9c",
+    "vendor/runtime/runtime/kernel/threads.cpp": "f458f6bc2af4a1827e628134c83feef00e48eaf64b93fe4d4e1305ff6f03224a",
+    "vendor/runtime/runtime/kernel/xboxkrnl.cpp": "b3fe35c438890a9455d4883f8d1dc2665377af9d0a71219e126b16db2a4d4803",
+    "vendor/runtime/runtime/core/log.cpp": "f15b3b1e55d3cd8cde4cccafc5afbf876567b6406eef3821c316922dedad52e3",
+    "vendor/runtime/runtime/cpu/dispatch.cpp": "dc8aa16ed4317c4907c2a0a2e8923cdd85e38132f95c3d95855c54e1022c3f7e"
+  }
+}

@@ -29,6 +29,7 @@ jobs:
       - run: python3 scripts/ci_bootstrap.py --component host
       - run: scripts/build_host.sh
       - run: python3 scripts/native_smoke.py
+      - run: scripts/build_pc_runtime_core.sh
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"
       - name: Require original game build when explicitly requested
         if: ${{ inputs.attempt_game_build == true }}
