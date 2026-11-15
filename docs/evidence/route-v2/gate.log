@@ -1,0 +1,12 @@
+{
+  "game_status": "BLOCKED",
+  "g1": "not validated",
+  "missing": [
+    "legitimate candidate Xbox Default.xbe",
+    "reviewed reproducible Urban Chaos configuration/ABI/hooks",
+    "documented license for Burner adaptations",
+    "native title integration and real PC execution evidence"
+  ],
+  "historical_diagnostic": "not a port",
+  "synthetic_smoke": "does not qualify any game gate"
+}

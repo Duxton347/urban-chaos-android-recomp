@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "target": "Urban Chaos: Riot Response Xbox -> Android ARM64",
+  "target_device": "Xiaomi Pad 6 / HyperOS 2.0.16.0",
+  "g1_reproducible_generation": false,
+  "pc_game_runtime_validated": false,
+  "arm64_game_boot_validated": false,
+  "original_menu_validated": false,
+  "mission_validated": false,
+  "campaign_validated": false,
+  "release_enabled": false,
+  "diagnostic_is_game": false
+}

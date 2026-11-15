@@ -1,0 +1,27 @@
+name: Audit and static checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: vendor
+          key: references-${{ runner.os }}-${{ hashFiles('dependencies.lock.json') }}
+      - run: python3 scripts/ci_bootstrap.py --component audit
+      - run: python3 scripts/audit_references.py
+      - run: python3 -m compileall -q tools scripts tests
+      - run: bash -n scripts/*.sh
+      - run: python3 scripts/lint_workflows.py
+      - run: python3 scripts/publication_check.py
+      - name: Record game gate status separately from infrastructure success
+        run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"
