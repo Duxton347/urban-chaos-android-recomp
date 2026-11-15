@@ -1,0 +1,16 @@
+/vendor/
+/.toolchain/
+/build/
+/private/
+/artifacts/*.apk
+/android/.gradle/
+/android/**/build/
+/android/local.properties
+__pycache__/
+*.xbe
+*.iso
+*.xiso
+*.jks
+*.keystore
+
+/android/**/.cxx/

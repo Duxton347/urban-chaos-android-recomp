@@ -1,0 +1,4 @@
+# Preserve third-party notices and raw build evidence exactly as obtained.
+licenses/** -whitespace
+android/app/src/main/assets/licenses/** -whitespace
+docs/evidence/*.log -whitespace

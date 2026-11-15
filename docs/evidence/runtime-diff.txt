@@ -1,0 +1,19 @@
+README.md                   |  5 +++--
+ runtime/audio/xaudio2.cpp   | 14 ++++++++++++--
+ runtime/gpu/d3d12.cpp       | 26 +++++++++++++++++---------
+ runtime/gpu/shaders.cpp     | 43 ++++++++++++++++++++++++++++++++++---------
+ runtime/gpu/shaders.h       | 10 +++++++---
+ runtime/kernel/xboxkrnl.cpp |  4 ++--
+ runtime/xdk/dsound.cpp      | 20 +++++++++++++++++---
+ templates/game/README.md    |  2 +-
+ templates/game/release.bat  | 12 +++++++++++-
+ 9 files changed, 104 insertions(+), 32 deletions(-)
+README.md
+runtime/audio/xaudio2.cpp
+runtime/gpu/d3d12.cpp
+runtime/gpu/shaders.cpp
+runtime/gpu/shaders.h
+runtime/kernel/xboxkrnl.cpp
+runtime/xdk/dsound.cpp
+templates/game/README.md
+templates/game/release.bat

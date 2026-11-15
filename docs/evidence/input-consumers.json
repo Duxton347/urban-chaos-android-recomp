@@ -1,0 +1,1612 @@
+[
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 11,
+    "value": "integration-status.json"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 19,
+    "value": "integration-status.json"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 280,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 957,
+    "value": "out-msvc/_deps/sdl3-build/include-config-relwithdebinfo/build_config/SDL_build_config.h"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 968,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 1025,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 1063,
+    "value": "src/compat/road_barrier_fixture.bin"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 1064,
+    "value": "src/compat/road_barrier_fixture.bin"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 1079,
+    "value": "tv-audio-fixture.bin"
+  },
+  {
+    "consumer": "vendor/burner/scripts/build_xbe_game_trial.py",
+    "line": 1081,
+    "value": "tv-audio-fixture.bin"
+  },
+  {
+    "consumer": "vendor/burner/scripts/coop_progression_assets.py",
+    "line": 358,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_diagnostic.py",
+    "line": 62,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_diagnostic.py",
+    "line": 69,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_diagnostic.py",
+    "line": 82,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_mode.py",
+    "line": 45,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_mode.py",
+    "line": 55,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_mode.py",
+    "line": 64,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_mode.py",
+    "line": 74,
+    "value": "generated/game/x86_recomp.7.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_aim_mode.py",
+    "line": 91,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_cone.py",
+    "line": 65,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_cone.py",
+    "line": 104,
+    "value": "generated/game/x86_recomp.124.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_cone.py",
+    "line": 110,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_config.py",
+    "line": 21,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_config.py",
+    "line": 54,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_factors.py",
+    "line": 130,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_factors.py",
+    "line": 166,
+    "value": "generated/game/x86_recomp.124.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_factors.py",
+    "line": 172,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_filter.py",
+    "line": 34,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_filter.py",
+    "line": 55,
+    "value": "generated/game/image_symbols.h"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_filter.py",
+    "line": 77,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_pitch.py",
+    "line": 20,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_pitch.py",
+    "line": 64,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_pitch.py",
+    "line": 58,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_rolloff.py",
+    "line": 28,
+    "value": "build/xbe-full-integration-20261014/assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_routing.py",
+    "line": 20,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_routing.py",
+    "line": 100,
+    "value": "generated/game/x86_recomp.123.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_routing.py",
+    "line": 101,
+    "value": "generated/game/x86_recomp.124.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_audio_routing.py",
+    "line": 105,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blink.py",
+    "line": 21,
+    "value": "generated/game/x86_recomp.73.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blink.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp.73.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blink.py",
+    "line": 27,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blood_pools.py",
+    "line": 54,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blood_pools.py",
+    "line": 71,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blood_pools.py",
+    "line": 78,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blood_pools.py",
+    "line": 60,
+    "value": "generated/game/x86_recomp.43.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_blood_pools.py",
+    "line": 67,
+    "value": "generated/game/x86_recomp.7.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_brightness.py",
+    "line": 6,
+    "value": "generated/game/x86_recomp.14.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_camera_push.py",
+    "line": 21,
+    "value": "generated/game/x86_recomp.5.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_camera_push.py",
+    "line": 42,
+    "value": "generated/game/x86_recomp.5.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_camera_push.py",
+    "line": 30,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_camera_push.py",
+    "line": 48,
+    "value": "generated/game/x86_recomp.78.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_cheats.py",
+    "line": 18,
+    "value": "generated/game/x86_recomp.66.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_cheats.py",
+    "line": 39,
+    "value": "generated/game/x86_recomp.66.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_cheats.py",
+    "line": 25,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_cheats.py",
+    "line": 63,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_controller_deadzone.py",
+    "line": 29,
+    "value": "generated/game/x86_recomp.57.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_controller_deadzone.py",
+    "line": 44,
+    "value": "generated/game/x86_recomp.57.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_controller_deadzone.py",
+    "line": 36,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_conversation_skip.py",
+    "line": 15,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_conversation_skip.py",
+    "line": 46,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop.py",
+    "line": 121,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop.py",
+    "line": 159,
+    "value": "generated/game/x86_recomp.54.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop.py",
+    "line": 90,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop.py",
+    "line": 166,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop.py",
+    "line": 179,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur.py",
+    "line": 84,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur.py",
+    "line": 95,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur.py",
+    "line": 154,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur.py",
+    "line": 104,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur_render.py",
+    "line": 71,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur_render.py",
+    "line": 116,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur_render.py",
+    "line": 130,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_aim_blur_render.py",
+    "line": 124,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 61,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 93,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 134,
+    "value": "generated/game/x86_recomp.21.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 145,
+    "value": "generated/game/x86_recomp.25.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 152,
+    "value": "generated/game/x86_recomp.52.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_body.py",
+    "line": 175,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 59,
+    "value": "generated/game/x86_recomp.54.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 43,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 51,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 79,
+    "value": "generated/game/x86_recomp.55.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 99,
+    "value": "generated/game/x86_recomp.37.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 94,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 147,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_cinematics.py",
+    "line": 111,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_collectibles.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_collectibles.py",
+    "line": 42,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_collectibles.py",
+    "line": 88,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_collectibles.py",
+    "line": 58,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_controls.py",
+    "line": 39,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_controls.py",
+    "line": 46,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_controls.py",
+    "line": 71,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_controls.py",
+    "line": 53,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 73,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 81,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 92,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 140,
+    "value": "generated/game/x86_recomp.6.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 123,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_death.py",
+    "line": 133,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_blur.py",
+    "line": 19,
+    "value": "generated/game/x86_recomp.54.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_blur.py",
+    "line": 35,
+    "value": "generated/game/x86_recomp.54.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_blur.py",
+    "line": 27,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_blur.py",
+    "line": 42,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_camera.py",
+    "line": 36,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_camera.py",
+    "line": 43,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_camera.py",
+    "line": 61,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_downed_camera.py",
+    "line": 53,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_effects.py",
+    "line": 28,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_effects.py",
+    "line": 40,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_hazards.py",
+    "line": 35,
+    "value": "generated/game/x86_recomp.6.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_hazards.py",
+    "line": 42,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_hazards.py",
+    "line": 99,
+    "value": "generated/game/x86_recomp.6.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_hazards.py",
+    "line": 52,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_input.py",
+    "line": 60,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_input.py",
+    "line": 97,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_input.py",
+    "line": 105,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_interactions.py",
+    "line": 67,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_interactions.py",
+    "line": 74,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_interactions.py",
+    "line": 86,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_interactions.py",
+    "line": 116,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_ko_rewards.py",
+    "line": 44,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_ko_rewards.py",
+    "line": 53,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_ko_rewards.py",
+    "line": 103,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_ko_rewards.py",
+    "line": 59,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_orders.py",
+    "line": 90,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_orders.py",
+    "line": 97,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_orders.py",
+    "line": 165,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_orders.py",
+    "line": 121,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_pickups.py",
+    "line": 59,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_pickups.py",
+    "line": 66,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_pickups.py",
+    "line": 103,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_pickups.py",
+    "line": 76,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_progression.py",
+    "line": 28,
+    "value": "generated/game/x86_recomp.53.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_progression.py",
+    "line": 95,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_progression.py",
+    "line": 128,
+    "value": "generated/game/x86_recomp.53.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_progression.py",
+    "line": 101,
+    "value": "generated/game/x86_recomp.53.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_progression.py",
+    "line": 115,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_resources.py",
+    "line": 31,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_resources.py",
+    "line": 47,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_rewards.py",
+    "line": 89,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_rewards.py",
+    "line": 97,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_rewards.py",
+    "line": 170,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_rewards.py",
+    "line": 103,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_shields.py",
+    "line": 48,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_shields.py",
+    "line": 86,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_shields.py",
+    "line": 117,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_shields.py",
+    "line": 93,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_spin.py",
+    "line": 45,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_spin.py",
+    "line": 52,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_spin.py",
+    "line": 71,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_spin.py",
+    "line": 55,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_assets.py",
+    "line": 36,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_assets.py",
+    "line": 43,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_assets.py",
+    "line": 67,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_assets.py",
+    "line": 51,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_view.py",
+    "line": 17,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_view.py",
+    "line": 24,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_view.py",
+    "line": 37,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_view.py",
+    "line": 43,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turret_view.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turrets.py",
+    "line": 67,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turrets.py",
+    "line": 82,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turrets.py",
+    "line": 140,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_coop_turrets.py",
+    "line": 89,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield.py",
+    "line": 63,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield.py",
+    "line": 90,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield.py",
+    "line": 151,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield.py",
+    "line": 96,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_impact.py",
+    "line": 50,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_impact.py",
+    "line": 57,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_impact.py",
+    "line": 96,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_impact.py",
+    "line": 65,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_native.py",
+    "line": 42,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_native.py",
+    "line": 53,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_native.py",
+    "line": 50,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_physics.py",
+    "line": 48,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_physics.py",
+    "line": 59,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_physics.py",
+    "line": 77,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_corpse_shield_physics.py",
+    "line": 63,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_daniels_spawn.py",
+    "line": 21,
+    "value": "generated/game/x86_recomp.22.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_daniels_spawn.py",
+    "line": 38,
+    "value": "generated/game/x86_recomp.22.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_daniels_spawn.py",
+    "line": 30,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_death_spasm.py",
+    "line": 22,
+    "value": "generated/game/x86_recomp.71.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_death_spasm.py",
+    "line": 28,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_death_spasm.py",
+    "line": 45,
+    "value": "generated/game/x86_recomp.71.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_death_spasm.py",
+    "line": 34,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_effect_settings.py",
+    "line": 37,
+    "value": "generated/game/x86_recomp.15.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_effect_settings.py",
+    "line": 16,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_effect_settings.py",
+    "line": 56,
+    "value": "generated/game/x86_recomp.18.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_event_callback.py",
+    "line": 37,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_event_callback.py",
+    "line": 106,
+    "value": "generated/game/x86_recomp.27.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_event_callback.py",
+    "line": 116,
+    "value": "generated/game/x86_func_mapping.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_event_callback.py",
+    "line": 136,
+    "value": "generated/game/x86_recomp.43.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_firearm_cycle.py",
+    "line": 30,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_firearm_cycle.py",
+    "line": 33,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_fmv_layout.py",
+    "line": 27,
+    "value": "generated/game/x86_recomp.13.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_fmv_layout.py",
+    "line": 15,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 63,
+    "value": "generated/game/x86_recomp.16.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 74,
+    "value": "generated/game/x86_recomp.9.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 100,
+    "value": "generated/game/x86_recomp.62.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 169,
+    "value": "generated/game/x86_recomp.65.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 203,
+    "value": "generated/game/x86_recomp.67.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 11,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 42,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 288,
+    "value": "generated/game/x86_recomp.65.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 337,
+    "value": "generated/game/x86_recomp.9.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 309,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_frontend.py",
+    "line": 321,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_graphics_compat.py",
+    "line": 29,
+    "value": "generated/game/x86_recomp.101.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_graphics_menu.py",
+    "line": 10,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 103,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 114,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 123,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 141,
+    "value": "generated/game/x86_recomp.9.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 190,
+    "value": "generated/game/x86_recomp.11.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 195,
+    "value": "generated/game/x86_recomp.8.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 199,
+    "value": "generated/game/x86_recomp.8.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 203,
+    "value": "generated/game/x86_recomp.9.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 207,
+    "value": "generated/game/x86_recomp.9.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 211,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_packs.py",
+    "line": 186,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_pulse.py",
+    "line": 54,
+    "value": "generated/game/x86_recomp.11.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_pulse.py",
+    "line": 17,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_pulse.py",
+    "line": 77,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_upgrade_fade.py",
+    "line": 23,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_upgrade_fade.py",
+    "line": 46,
+    "value": "generated/game/x86_recomp.11.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_health_upgrade_fade.py",
+    "line": 29,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_inline_draws.py",
+    "line": 66,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_inline_draws.py",
+    "line": 79,
+    "value": "generated/game/x86_recomp.15.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_input.py",
+    "line": 21,
+    "value": "generated-input-original"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_input.py",
+    "line": 35,
+    "value": "generated/game"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_input.py",
+    "line": 81,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_input.py",
+    "line": 91,
+    "value": "generated/game/x86_recomp.20.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_intro_skip.py",
+    "line": 52,
+    "value": "generated/game/x86_recomp.65.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_intro_skip.py",
+    "line": 15,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_intro_skip.py",
+    "line": 96,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_io_apc.py",
+    "line": 26,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_language.py",
+    "line": 59,
+    "value": "generated/game/x86_recomp.0.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_language.py",
+    "line": 27,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_language.py",
+    "line": 83,
+    "value": "generated/game/x86_recomp.12.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_language.py",
+    "line": 92,
+    "value": "generated/game/x86_recomp.13.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_level_details.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp.65.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_level_details.py",
+    "line": 40,
+    "value": "generated/game/x86_recomp.0.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_level_details.py",
+    "line": 15,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_lighting_bounds.py",
+    "line": 45,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_lighting_bounds.py",
+    "line": 62,
+    "value": "generated/game/x86_recomp.18.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_lighting_bounds.py",
+    "line": 71,
+    "value": "generated/game/x86_recomp.18.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_movement_inertia.py",
+    "line": 23,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_movement_inertia.py",
+    "line": 38,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_movement_inertia.py",
+    "line": 30,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_movement_inertia.py",
+    "line": 54,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 255,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 272,
+    "value": "generated/game"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 294,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 339,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 410,
+    "value": "generated/game/x86_recomp.16.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 414,
+    "value": "generated/game/x86_recomp.54.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 433,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 386,
+    "value": "generated/game/x86_recomp.34.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 402,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_pc_prompts.py",
+    "line": 429,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_contacts.py",
+    "line": 30,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_contacts.py",
+    "line": 32,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_drag.py",
+    "line": 66,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_drag.py",
+    "line": 74,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_drag.py",
+    "line": 115,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_drag.py",
+    "line": 80,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_force.py",
+    "line": 19,
+    "value": "generated/game/x86_recomp.71.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_force.py",
+    "line": 25,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_force.py",
+    "line": 41,
+    "value": "generated/game/x86_recomp.71.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_force.py",
+    "line": 30,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_recovery.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_recovery.py",
+    "line": 38,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_recovery.py",
+    "line": 43,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_recovery.py",
+    "line": 57,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 119,
+    "value": "generated/game/x86_recomp.71.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 124,
+    "value": "generated/game/x86_recomp.59.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 136,
+    "value": "generated/game/x86_recomp.4.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 142,
+    "value": "generated/game/x86_recomp.23.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 82,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 106,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 117,
+    "value": "generated/game/x86_recomp.52.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 148,
+    "value": "generated/game/x86_recomp.70.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 154,
+    "value": "generated/game/x86_recomp.113.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 161,
+    "value": "generated/game/x86_recomp.13.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_ragdoll_settings.py",
+    "line": 163,
+    "value": "generated/game/x86_recomp.73.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_resource_refs.py",
+    "line": 32,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_resource_refs.py",
+    "line": 56,
+    "value": "generated/game/x86_recomp.120.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_road_barrier.py",
+    "line": 102,
+    "value": "road_barrier_fixture.bin"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_shader_state.py",
+    "line": 33,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_shader_state.py",
+    "line": 80,
+    "value": "generated/game/x86_recomp.120.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_shader_state.py",
+    "line": 77,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_signed_lighting.py",
+    "line": 22,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_signed_lighting.py",
+    "line": 57,
+    "value": "generated/game/x86_recomp.18.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_smooth_fog.py",
+    "line": 513,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_smooth_fog.py",
+    "line": 570,
+    "value": "generated/game/x86_recomp.14.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_smooth_fog.py",
+    "line": 540,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_stream_status.py",
+    "line": 20,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_stream_status.py",
+    "line": 46,
+    "value": "generated/game/x86_recomp.124.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_stream_status.py",
+    "line": 49,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_target60.py",
+    "line": 100,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_target60.py",
+    "line": 126,
+    "value": "generated/game/x86_recomp.14.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_tv_audio.py",
+    "line": 12,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_tv_audio.py",
+    "line": 32,
+    "value": "generated/game/x86_recomp.61.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_tv_audio.py",
+    "line": 23,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 152,
+    "value": "generated/game/x86_recomp.20.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 10,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 108,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 161,
+    "value": "generated/game/x86_recomp.19.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 167,
+    "value": "generated/game/x86_recomp.6.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 192,
+    "value": "generated/game/x86_recomp.14.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 201,
+    "value": "generated/game/x86_recomp.11.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 206,
+    "value": "generated/game/x86_recomp.65.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 215,
+    "value": "generated/game/x86_recomp.11.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_view_layout.py",
+    "line": 187,
+    "value": "generated/game/x86_recomp."
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_visibility.py",
+    "line": 126,
+    "value": "generated/game/x86_recomp.120.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_world_textures.py",
+    "line": 92,
+    "value": "generated/game/x86_recomp.17.cpp"
+  },
+  {
+    "consumer": "vendor/burner/scripts/prepare_xbe_world_textures.py",
+    "line": 47,
+    "value": "assets/Default.xbe"
+  },
+  {
+    "consumer": "vendor/burner/scripts/verify_daniels_spawn.py",
+    "line": 51,
+    "value": "levels_scanned"
+  },
+  {
+    "consumer": "vendor/burner/scripts/xbe_file_query_efficiency_checks.py",
+    "line": 56,
+    "value": "generated/game"
+  }
+]

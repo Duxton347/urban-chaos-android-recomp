@@ -1,0 +1,58 @@
+{
+  "sha256": "917066c439a3421067a43a614a7926c66a1ff1ff6b4fbe71010b6a027a10ffa4",
+  "bytes": 5022371,
+  "libraries": {
+    "lib/arm64-v8a/libSDL3.so": {
+      "elf": "ELF64 little-endian AArch64",
+      "machine": 183,
+      "sha256": "69b453e83ceaf61ee51c1e11aff45fef33884a21e556df1121a2c804f8468a8c",
+      "size": 3331560
+    },
+    "lib/arm64-v8a/libc++_shared.so": {
+      "elf": "ELF64 little-endian AArch64",
+      "machine": 183,
+      "sha256": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
+      "size": 1253544
+    },
+    "lib/arm64-v8a/libmain.so": {
+      "elf": "ELF64 little-endian AArch64",
+      "machine": 183,
+      "sha256": "97329a73aedefea48f3c6c3abd81be7e9b69918bdddf75796f5f756aefb9dc54",
+      "size": 104688
+    }
+  },
+  "license_assets": [
+    "assets/licenses/Android-NDK-NOTICE.txt",
+    "assets/licenses/HIDAPI-BSD.txt",
+    "assets/licenses/LLVM-NOTICE.txt",
+    "assets/licenses/SDL-source-notices.txt",
+    "assets/licenses/SDL-zlib.txt",
+    "assets/licenses/yuv2rgb.txt"
+  ],
+  "signature": {
+    "exit": 0,
+    "stdout": "Verifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): true\nVerified using v3 scheme (APK Signature Scheme v3): false\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nSigner #1 certificate DN: CN=Android Debug, O=Android, C=US\nSigner #1 certificate SHA-256 digest: ac9d5f8592068c9e3772c2278392c31bfb2dd42140ec33faefb8dc070e142122\nSigner #1 certificate SHA-1 digest: f658f0911ecd409055e8d7cc6a5efd99a0534edc\nSigner #1 certificate MD5 digest: d93b11aae4bc65b781823adefeb9580d\nSigner #1 key algorithm: RSA\nSigner #1 key size (bits): 2048\nSigner #1 public key SHA-256 digest: 99fd68eee4636e7fc000a8403a1f71ec0c50d6c28bb99248a01797951aeef9c5\nSigner #1 public key SHA-1 digest: 41f0fda25b43d1dd1f46898e504725fbe52642ce\nSigner #1 public key MD5 digest: 28d0f47cefd32b3f714cb15ce7c9d7a7\n",
+    "stderr": ""
+  },
+  "zipalign": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "manifest": {
+    "exit": 0,
+    "stdout": "package: name='org.urbanchaos.diagnostic' versionCode='1' versionName='0.1-diagnostic' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'\nsdkVersion:'29'\ntargetSdkVersion:'34'\nuses-permission: name='android.permission.VIBRATE'\napplication-label:'Urban Chaos \u00b7 Diagn\u00f3stico'\napplication-icon-160:'res/drawable/ic_diagnostic.xml'\napplication: label='Urban Chaos \u00b7 Diagn\u00f3stico' icon='res/drawable/ic_diagnostic.xml'\napplication-debuggable\nlaunchable-activity: name='org.urbanchaos.diagnostic.MainActivity'  label='' icon=''\nfeature-group: label=''\n  uses-gl-es: '0x20000'\n  uses-feature-not-required: name='android.hardware.vulkan.level'\n  uses-feature: name='android.hardware.faketouch'\n  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'\nmain\nother-activities\nsupports-screens: 'small' 'normal' 'large' 'xlarge'\nsupports-any-density: 'true'\nlocales: '--_--'\ndensities: '160'\nnative-code: 'arm64-v8a'\n",
+    "stderr": ""
+  },
+  "permissions": {
+    "exit": 0,
+    "stdout": "package: org.urbanchaos.diagnostic\nuses-permission: name='android.permission.VIBRATE'\n",
+    "stderr": ""
+  },
+  "runtime_status": {
+    "installed": false,
+    "launched": false,
+    "vulkan_presented_on_device": false,
+    "game_executed": false
+  }
+}

@@ -1,0 +1,25 @@
+test_bad_hash (test_tools.Tools.test_bad_hash) ... ok
+test_bad_hash_leaves_no_installation (test_tools.Tools.test_bad_hash_leaves_no_installation) ... ok
+test_case_collision (test_tools.Tools.test_case_collision) ... ok
+test_folder_import_and_existing_destination (test_tools.Tools.test_folder_import_and_existing_destination) ... ok
+test_folder_symlink (test_tools.Tools.test_folder_symlink) ... ok
+test_invalid_and_truncated (test_tools.Tools.test_invalid_and_truncated) ... ok
+test_metadata (test_tools.Tools.test_metadata) ... ok
+test_no_space_keeps_installation_inactive (test_tools.Tools.test_no_space_keeps_installation_inactive) ... ok
+test_ps2_specific (test_tools.Tools.test_ps2_specific) ... ok
+test_real_host_recomp_deterministic (test_tools.Tools.test_real_host_recomp_deterministic) ... ok
+test_recompiler_rejects_output_outside_ignored_build (test_tools.Tools.test_recompiler_rejects_output_outside_ignored_build) ... ok
+test_safe_xiso_extraction (test_tools.Tools.test_safe_xiso_extraction) ... ok
+test_source_truncated_during_import_rolls_back (test_tools.Tools.test_source_truncated_during_import_rolls_back) ... ok
+test_unmapped_thunk (test_tools.Tools.test_unmapped_thunk) ... ok
+test_unresolved_abi_symbol_fails (test_tools.Tools.test_unresolved_abi_symbol_fails) ... ok
+test_unterminated_names (test_tools.Tools.test_unterminated_names) ... ok
+test_xiso_bad_descriptor (test_tools.Tools.test_xiso_bad_descriptor) ... ok
+test_xiso_path_escape (test_tools.Tools.test_xiso_path_escape) ... ok
+test_xiso_truncation (test_tools.Tools.test_xiso_truncation) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.022s
+
+OK
+Java XDVDFS/path/cancellation: 11 checks passed

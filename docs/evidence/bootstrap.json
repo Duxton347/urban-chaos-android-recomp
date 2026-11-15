@@ -1,0 +1,32 @@
+{
+  "tomlplusplus": {
+    "url": "https://github.com/marzer/tomlplusplus.git",
+    "ref": "v3.4.0",
+    "commit": "30172438cee64926dc41fdd9c11fb3ba5b2ba9de",
+    "tree": "f566f1b23e28cc6afcb9a124ad5422282c3a8156"
+  },
+  "zydis": {
+    "url": "https://github.com/zyantific/zydis.git",
+    "ref": "v4.1.1",
+    "commit": "a2278f1d254e492f6a6b39f6cb5d1f5d515659dc",
+    "tree": "a0cd31195160339d0e05fd097310db76378664f6"
+  },
+  "SDL": {
+    "url": "https://github.com/libsdl-org/SDL.git",
+    "ref": "release-3.4.16",
+    "commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
+    "tree": "63fb5d2d9284bec19789d10d5820c99405a15e45"
+  },
+  "cmake.tar.gz": {
+    "url": "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.tar.gz",
+    "sha256": "5a1133ff103c71eb5120e2cc3de922733e7d8a26a98ae716397e8676adb367bf"
+  },
+  "cmdline.zip": {
+    "url": "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip",
+    "sha256": "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
+  },
+  "gradle.zip": {
+    "url": "https://services.gradle.org/distributions/gradle-8.7-bin.zip",
+    "sha256": "544c35d6bd849ae8a5ed0bcea39ba677dc40f49df7d1835561582da2009b961d"
+  }
+}

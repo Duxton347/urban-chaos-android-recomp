@@ -1,0 +1,35 @@
+CMake Deprecation Warning at /workspace/UrbanChaos-Android/vendor/zydis/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at /workspace/UrbanChaos-Android/vendor/zydis/dependencies/zycore/CMakeLists.txt:5 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/UrbanChaos-Android/build/host
+[ 33%] Built target Zycore
+[ 78%] Built target Zydis
+[ 80%] Building CXX object CMakeFiles/xbe_symbols.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/symbols/main.cpp.o
+[ 83%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/analysis.cpp.o
+[ 85%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/codegen_emit.cpp.o
+[ 88%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/codegen.cpp.o
+[ 90%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/codegen_fp.cpp.o
+[ 92%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/codegen_int.cpp.o
+[ 95%] Building CXX object CMakeFiles/xbe_recomp.dir/workspace/UrbanChaos-Android/vendor/runtime/tools/recomp/main.cpp.o
+[ 97%] Linking CXX executable xbe_symbols
+[ 97%] Built target xbe_symbols
+[100%] Linking CXX executable xbe_recomp
+[100%] Built target xbe_recomp

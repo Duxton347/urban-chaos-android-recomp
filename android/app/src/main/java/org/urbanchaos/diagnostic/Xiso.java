@@ -1,0 +1,20 @@
+package org.urbanchaos.diagnostic;
+import java.io.*;import java.nio.file.*;import java.util.*;
+/** Bounded XDVDFS metadata traversal, then cancellable extraction. */
+final class Xiso {
+ interface Check {void run()throws IOException;}
+ final File image,stage;final Check check;long base,size;RandomAccessFile f;final Set<Long> dirs=new HashSet<>();final Set<String> names=new HashSet<>();final List<Entry> entries=new ArrayList<>();
+ static class Entry {String name;long offset,size;Entry(String n,long o,long s){name=n;offset=o;size=s;}}
+ Xiso(File i,File s,Check c){image=i;stage=s;check=c;}
+ byte[] read(long off,int n)throws IOException{if(off<0||n<0||off+n>size)throw new IOException("Imagem XDVDFS truncada");byte[] b=new byte[n];f.seek(off);f.readFully(b);return b;}
+ static long u32(byte[] b,int o){return (b[o]&255L)|((b[o+1]&255L)<<8)|((b[o+2]&255L)<<16)|((b[o+3]&255L)<<24);}
+ static int u16(byte[] b,int o){return (b[o]&255)|((b[o+1]&255)<<8);}
+ void directory(long sec,int len,String prefix,int depth)throws IOException{check.run();if(depth>64||len<0||len>64*1024*1024||!dirs.add(sec))throw new IOException("Diretório cíclico/excessivo");byte[] b=read(base+sec*2048,len);Set<Integer> visited=new HashSet<>();ArrayDeque<Integer> stack=new ArrayDeque<>();if(len>0)stack.push(0);
+ while(!stack.isEmpty()){check.run();int o=stack.pop();if(o<0||o+14>len||!visited.add(o))throw new IOException("Árvore XDVDFS inválida");int left=u16(b,o),right=u16(b,o+2),attr=b[o+12]&255,n=b[o+13]&255;if(n==0||o+14+n>len)throw new IOException("Nome XDVDFS truncado");String name=StoragePaths.name(new String(b,o+14,n,java.nio.charset.StandardCharsets.US_ASCII));if(name.endsWith(".part")||name.equals("source.image"))throw new IOException("Nome reservado para staging");String rel=prefix+name;if(!names.add(rel.toLowerCase(Locale.ROOT))||names.size()>250000)throw new IOException("Colisão de caminhos");long sector=u32(b,o+4),length=u32(b,o+8);if(left!=0)stack.push(left*4);if(right!=0)stack.push(right*4);if((attr&16)!=0){if(length>Integer.MAX_VALUE)throw new IOException("Diretório excessivo");directory(sector,(int)length,rel+"/",depth+1);}else{long at=base+sector*2048;if(at+length>size)throw new IOException("Imagem truncada");entries.add(new Entry(rel,at,length));}}}
+ void extract()throws IOException{try(RandomAccessFile source=new RandomAccessFile(image,"r")){f=source;size=f.length();byte[] magic="MICROSOFT*XBOX*MEDIA".getBytes(java.nio.charset.StandardCharsets.US_ASCII);boolean found=false;
+ for(long candidate:new long[]{0,0x30600L*2048,0x4100L*2048}){long off=candidate+32*2048;if(off+2048>size)continue;byte[] desc=read(off,2048);if(Arrays.equals(Arrays.copyOfRange(desc,0,20),magic)){if(!Arrays.equals(Arrays.copyOfRange(desc,2028,2048),magic))throw new IOException("Descritor XDVDFS truncado");base=candidate;long len=u32(desc,24);if(len>Integer.MAX_VALUE)throw new IOException("Diretório excessivo");directory(u32(desc,20),(int)len,"",0);found=true;break;}}
+ if(!found){String probe=new String(read(0,(int)Math.min(size,8*1024*1024)),java.nio.charset.StandardCharsets.ISO_8859_1).toUpperCase(Locale.ROOT);if(probe.contains("PLAYSTATION")||probe.contains("SYSTEM.CNF"))throw new IOException("Imagem PS2 detectada: é necessário o disco Xbox com Default.xbe");throw new IOException("Arquivo não é XBE ou XDVDFS/XISO Xbox suportado");}
+ long total=0;for(Entry e:entries)total+=e.size;if(stage.getUsableSpace()<total+64L*1024*1024)throw new IOException("Espaço insuficiente para extração");
+ for(Entry e:entries){check.run();File dst=new File(stage,e.name);if(!dst.getCanonicalPath().startsWith(stage.getCanonicalPath()+File.separator))throw new IOException("Caminho externo");dst.getParentFile().mkdirs();File part=new File(dst.getPath()+".part");try(RandomAccessFile out=new RandomAccessFile(part,"rw")){out.setLength(0);f.seek(e.offset);byte[] b=new byte[1024*1024];long left=e.size;while(left>0){check.run();int n=(int)Math.min(left,b.length);f.readFully(b,0,n);out.write(b,0,n);left-=n;}out.getFD().sync();}Files.move(part.toPath(),dst.toPath(),StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);}
+ }}
+}

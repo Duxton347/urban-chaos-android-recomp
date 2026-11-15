@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+ <!-- SDL checks Bluetooth permission dynamically in HIDDeviceManager.initializeBluetooth.
+      The app requests no Bluetooth permission, so SDL's BLE path returns before callbacks. -->
+ <issue id="MissingPermission">
+  <ignore path="../vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceManager.java"/>
+  <ignore path="../vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceBLESteamController.java"/>
+ </issue>
+ <!-- SDL registers with RECEIVER_EXPORTED on API 33+; old overload is in the else branch. -->
+ <issue id="UnspecifiedRegisterReceiverFlag">
+  <ignore path="../vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceManager.java"/>
+ </issue>
+</lint>

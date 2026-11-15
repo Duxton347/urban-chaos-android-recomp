@@ -1,0 +1,11 @@
+{
+  "repositories": {
+    "runtime": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+    "zydis": "a2278f1d254e492f6a6b39f6cb5d1f5d515659dc",
+    "tomlplusplus": "30172438cee64926dc41fdd9c11fb3ba5b2ba9de"
+  },
+  "tools": {
+    "xbe_recomp": "a8b071295b7f9f1ac170f4641329d606e4f72661896b1e59e3c4cd8d2d9aeace",
+    "xbe_symbols": "3887f2bd366aabe78990363531c942a75dd6693d682658a39845e43a2cb432f5"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "source": "https://dl.google.com/android/repository/repository2-1.xml",
+  "packages": {
+    "platforms;android-34": {
+      "url": "https://dl.google.com/android/repository/platform-34-ext7_r03.zip",
+      "size": 63180081,
+      "checksum_type": "sha1",
+      "checksum": "1f2e9478d6a7601425ceaa553311dc43191f103d"
+    },
+    "ndk;28.2.13676358": {
+      "url": "https://dl.google.com/android/repository/android-ndk-r28c-linux.zip",
+      "size": 722261334,
+      "checksum_type": "sha1",
+      "checksum": "a7b54a5de87fecd125a17d54f73c446199e72a64"
+    },
+    "build-tools;34.0.0": {
+      "url": "https://dl.google.com/android/repository/build-tools_r34-linux.zip",
+      "size": 61224257,
+      "checksum_type": "sha1",
+      "checksum": "d6d58e0c6925a9e4d9a541e84cd1f405c2f9d2a9"
+    },
+    "cmake;3.31.6": {
+      "url": "https://dl.google.com/android/repository/cmake-3.31.6-linux.zip",
+      "size": 30771638,
+      "checksum_type": "sha1",
+      "checksum": "a54551dabd5daf8cc99f7f51769fd00ca759be0a"
+    }
+  }
+}

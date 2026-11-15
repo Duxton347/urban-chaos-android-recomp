@@ -1,0 +1,218 @@
+/workspace/UrbanChaos-Android/android/app/build.gradle:13: Warning: Missing x86_64 ABI support for ChromeOS [ChromeOsAbiSupport]
+  ndk { abiFilters 'arm64-v8a' }
+                   ~~~~~~~~~~~
+
+   Explanation for issues of type "ChromeOsAbiSupport":
+   To properly support ChromeOS, your Android application should have an x86
+   and/or x86_64 binary as part of the build configuration. To fix the issue,
+   ensure your files are properly optimized for ARM; the binary translator
+   will then ensure compatibility with x86. Alternatively, add an abiSplit for
+   x86 within your build.gradle file and create the required x86
+   dependencies.
+
+   https://developer.android.com/ndk/guides/abis
+
+/workspace/UrbanChaos-Android/android/app/src/main/AndroidManifest.xml:5: Warning: The attribute android:allowBackup is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute android:dataExtractionRules specifying an @xml resource which configures cloud backups and device transfers on Android 12 and higher. [DataExtractionRules]
+ <application android:icon="@drawable/ic_diagnostic" android:label="Urban Chaos · Diagnóstico" android:theme="@android:style/Theme.Material.NoActionBar" android:allowBackup="false" android:hasFragileUserData="true">
+                                                                                                                                                                              ~~~~~
+
+   Explanation for issues of type "DataExtractionRules":
+   Before Android 12, the attributes android:allowBackup and
+   android:fullBackupContent were used to configure all forms of backup,
+   including cloud backups, device-to-device transfers and adb backup.
+
+   In Android 12 and higher, these attributes have been deprecated and will
+   only apply to cloud backups. You should instead use the attribute
+   android:dataExtractionRules, specifying an @xml resource that configures
+   which files to back up, for cloud backups and for device-to-device
+   transfers, separately. If your minSdkVersion supports older versions,
+   you'll still want to specify an android:fullBackupContent resource if the
+   default behavior is not right for your app.
+
+   https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   https://goo.gle/DataExtractionRules
+
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceBLESteamController.java:230: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 23 /* Android 6.0 (M) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:169: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+    public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24  /* Android 7.0 (N) */);
+                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:234: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= 29 /* Android 10 (Q) */) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:236: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            } else if (Build.VERSION.SDK_INT >= 26 /* Android 8.0 (O) */) {
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:238: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            } else if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:469: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT < 24 /* Android 7.0 (N) */) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1236: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 27 /* Android 8.1 (O_MR1) */ && isDeXMode()) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1346: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1825: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1841: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1855: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1934: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:1948: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 23 /* Android 6.0 (M) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:2125: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:2198: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 28 /* Android 9 (P) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:2222: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= 28 /* Android 9 (P) */) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:23: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if(Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:54: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:66: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:78: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:95: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:63: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            } else if (Build.VERSION.SDK_INT >= 26 /* Android 8.0 (O) */) {
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:639: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 26 /* Android 8.0 (O) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:887: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:901: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 24 /* Android 7.0 (N) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:920: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        return (!SDLActivity.isDeXMode() || Build.VERSION.SDK_INT >= 27 /* Android 8.1 (O_MR1) */);
+                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:931: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 26 /* Android 8.0 (O) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:936: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+        if (!SDLActivity.isDeXMode() || Build.VERSION.SDK_INT >= 27 /* Android 8.1 (O_MR1) */) {
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:952: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 26 /* Android 8.0 (O) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java:964: Warning: Unnecessary; SDK_INT is never < 29 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < 26 /* Android 8.0 (O) */) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java:182: Warning: Unnecessary; SDK_INT is always >= 29 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= 24 /* Android 7.0 (N) */) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceManager.java:32: Warning: Do not place Android context classes in static fields (static reference to HIDDeviceManager which has field mContext pointing to Context); this is a memory leak [StaticFieldLeak]
+    private static HIDDeviceManager sManager;
+            ~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDL.java:89: Warning: Do not place Android context classes in static fields; this is a memory leak [StaticFieldLeak]
+    protected static Activity mContext;
+              ~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:218: Warning: Do not place Android context classes in static fields; this is a memory leak [StaticFieldLeak]
+    protected static ViewGroup mLayout;
+              ~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java:223: Warning: Do not place Android context classes in static fields (static reference to HIDDeviceManager which has field mContext pointing to Context); this is a memory leak [StaticFieldLeak]
+    protected static HIDDeviceManager mHIDDeviceManager;
+              ~~~~~~
+/workspace/UrbanChaos-Android/vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java:16: Warning: Do not place Android context classes in static fields; this is a memory leak [StaticFieldLeak]
+    protected static Context mContext;
+              ~~~~~~
+
+   Explanation for issues of type "StaticFieldLeak":
+   A static field will leak contexts.
+
+   Non-static inner classes have an implicit reference to their outer class.
+   If that outer class is for example a Fragment or Activity, then this
+   reference means that the long-running handler/loader/task will hold a
+   reference to the activity which prevents it from getting garbage
+   collected.
+
+   Similarly, direct field references to activities and fragments from these
+   longer running instances can cause leaks.
+
+   ViewModel classes should never point to Views or non-application Contexts.
+
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/Importer.java:28: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
+ if(root.getUsableSpace()<n-done+64L*1024*1024)throw new IOException("Espaço insuficiente");
+         ~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/Xiso.java:17: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
+ long total=0;for(Entry e:entries)total+=e.size;if(stage.getUsableSpace()<total+64L*1024*1024)throw new IOException("Espaço insuficiente para extração");
+                                                         ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UsableSpace":
+   When you need to allocate disk space for large files, consider using the
+   new allocateBytes(FileDescriptor, long) API, which will automatically clear
+   cached files belonging to other apps (as needed) to meet your request.
+
+   When deciding if the device has enough disk space to hold your new data,
+   call getAllocatableBytes(UUID) instead of using getUsableSpace(), since the
+   former will consider any cached data that the system is willing to clear on
+   your behalf.
+
+   Note that these methods require API level 26. If your app is running on
+   older devices, you will probably need to use both APIs, conditionally
+   switching on Build.VERSION.SDK_INT. Lint only looks in the same compilation
+   unit to see if you are already using both APIs, so if it warns even though
+   you are already using the new API, consider moving the calls to the same
+   file or suppressing the warning.
+
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/MainActivity.java:23: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+ status.setText("Importações interrompidas podem ser retomadas. O jogo permanece bloqueado em G1.");}
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/MainActivity.java:25: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+ if(r==3){worker.submit(()->{try(OutputStream o=getContentResolver().openOutputStream(u)){String s="DIAGNOSTIC ONLY\nmodel="+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid="+Build.VERSION.RELEASE+" SDK="+Build.VERSION.SDK_INT+"\n";o.write(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));File dir=new File(getFilesDir(),"logs");for(File f:dir.listFiles()==null?new File[0]:dir.listFiles())if(f.isFile()&&f.length()<1048576)try(InputStream in=new FileInputStream(f)){byte[] buf=new byte[8192];int n;while((n=in.read(buf))!=-1)o.write(buf,0,n);}File sdl=new File(getFilesDir(),"vulkan.log");if(sdl.exists())try(InputStream in=new FileInputStream(sdl)){byte[] buf=new byte[8192];int n;while((n=in.read(buf))!=-1)o.write(buf,0,n);}runOnUiThread(()->status.setText("Relatório exportado. Confirme os resultados manuais no documento."));}catch(Exception e){runOnUiThread(()->status.setText(e.toString()));}});return;}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/MainActivity.java:26: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+ try{getContentResolver().takePersistableUriPermission(u,Intent.FLAG_GRANT_READ_URI_PERMISSION);worker.submit(()->importer.start(u,r==2));}catch(Exception e){status.setText("Permissão SAF persistente necessária: "+e.getMessage());}}
+                                                                                                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/UrbanChaos-Android/android/app/src/main/java/org/urbanchaos/diagnostic/MainActivity.java:26: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+ try{getContentResolver().takePersistableUriPermission(u,Intent.FLAG_GRANT_READ_URI_PERMISSION);worker.submit(()->importer.start(u,r==2));}catch(Exception e){status.setText("Permissão SAF persistente necessária: "+e.getMessage());}}
+                                                                                                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+0 errors, 44 warnings
