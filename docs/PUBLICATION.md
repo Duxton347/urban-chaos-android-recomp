@@ -17,3 +17,16 @@ Os quatro workflows automáticos foram disparados pelo PR no commit `8fb039e3cde
 - [Contrato Android ARM64](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43734487615)
 
 Artefatos de desenvolvimento exigem dispatch explícito no `main` depois de incorporar a infraestrutura; não foram publicados nesta etapa. O workflow release é uma barreira inicial e falha fechado, não uma release de jogo implementada. Nenhum run recebe conteúdo comercial.
+
+## Resultado confirmado e correção de cache
+
+No commit `4700b93ec19f81589d4bad636ad77269a0807bef`, os quatro workflows automáticos **passaram** após corrigir o bootstrap Android:
+
+- [Auditoria — sucesso](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43734725303)
+- [Host/native — sucesso](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43734725289)
+- [Testes — sucesso](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43734725352)
+- [AArch64 — sucesso](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43734725314)
+
+Na revisão final, o cache inicial de auditoria (`references-*`) foi considerado inadequado por conter checkout Black, cujo upstream inclui `ci/default.xbe.enc`. O cache criado nesta sessão (ID 10559603441) foi excluído pela API e a ausência foi confirmada. A auditoria agora cacheia somente actionlint; o checkout Black usa filtro de blobs/sparse checkout para omitir `ci/` e `*.enc`. Não houve decriptação, incorporação em Git ou publicação desse arquivo como artefato do projeto. Caches de host/NDK contêm apenas as dependências necessárias às suas funções.
+
+As alterações finais de isolamento de checkout/cache são verificadas novamente pelo PR. Consultar os checks do HEAD atual no PR para a execução mais recente; os links acima preservam a evidência do commit explicitamente testado. O PR fica aberto para revisão, sem merge automático.

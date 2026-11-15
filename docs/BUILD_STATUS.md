@@ -56,4 +56,7 @@ Audit/static checks, host/native smoke, Android ARM64 contract, testes automatiz
 
 ## Primeira execução remota e correção
 
-No commit `8fb039e...`, auditoria, host/native smoke e testes passaram no GitHub Actions. O job ARM64 falhou antes de compilar, com `sdkmanager: command not found` (exit 127). O workflow foi corrigido para baixar/verificar as command-line tools fixadas e usar SDK local do workspace, sem depender do PATH do runner. O resultado da reexecução será registrado em [PUBLICATION.md](PUBLICATION.md); a falha inicial permanece no histórico do GitHub.
+No commit `8fb039e...`, auditoria, host/native smoke e testes passaram no GitHub Actions. O job ARM64 falhou antes de compilar, com `sdkmanager: command not found` (exit 127). O workflow foi corrigido para baixar/verificar as command-line tools fixadas e usar SDK local do workspace, sem depender do PATH do runner. A reexecução dos quatro jobs passou no commit `4700b93...`, registrada em [PUBLICATION.md](PUBLICATION.md); a falha inicial permanece no histórico do GitHub.
+
+
+O cache de auditoria foi limitado ao linter e o checkout Black passou a excluir entradas cifradas; o cache inicial de referências foi removido. Ver o registro de remediação e links de CI em [PUBLICATION.md](PUBLICATION.md). Esses checks continuam sendo validação de infraestrutura, não de jogo.

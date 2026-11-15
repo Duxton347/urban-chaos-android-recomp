@@ -9,9 +9,17 @@ for name in names:
  if not dest.exists():
   dest.mkdir(parents=True);subprocess.run(['git','init','-q',str(dest)],check=True)
   subprocess.run(['git','-C',str(dest),'remote','add','origin',meta['url']],check=True)
-  subprocess.run(['git','-C',str(dest),'fetch','--depth','1','origin',meta['commit']],check=True)
+  subprocess.run(['git','-C',str(dest),'fetch','--depth','1','--filter=blob:none','origin',meta['commit']],check=True)
+  if name=='black':
+   subprocess.run(['git','-C',str(dest),'sparse-checkout','init','--no-cone'],check=True)
+   subprocess.run(['git','-C',str(dest),'sparse-checkout','set','--no-cone','/*','!/ci/','!*.enc'],check=True)
   subprocess.run(['git','-C',str(dest),'checkout','--detach','FETCH_HEAD'],check=True)
  if subprocess.check_output(['git','-C',str(dest),'rev-parse','HEAD'],text=True).strip()!=meta['commit']:raise SystemExit(name+': wrong pin')
+ if name=='black':
+  if subprocess.check_output(['git','-C',str(dest),'status','--porcelain'],text=True).strip():raise SystemExit('Preserve modified Black checkout before sparse audit')
+  subprocess.run(['git','-C',str(dest),'sparse-checkout','init','--no-cone'],check=True)
+  subprocess.run(['git','-C',str(dest),'sparse-checkout','set','--no-cone','/*','!/ci/','!*.enc'],check=True)
+  if any(dest.rglob('*.enc')):raise SystemExit('Black encrypted inputs must not be checked out')
  if name=='zydis':subprocess.run(['git','-C',str(dest),'submodule','update','--init','--recursive','--depth','1'],check=True)
  if subprocess.check_output(['git','-C',str(dest),'status','--porcelain'],text=True).strip():raise SystemExit(name+': modified source')
 if a.component=='host':

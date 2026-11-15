@@ -16,8 +16,8 @@ jobs:
           persist-credentials: false
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
-          path: vendor
-          key: references-${{ runner.os }}-${{ hashFiles('dependencies.lock.json') }}
+          path: .toolchain/actionlint
+          key: audit-linter-${{ runner.os }}-${{ hashFiles('dependencies.lock.json') }}
       - run: python3 scripts/ci_bootstrap.py --component audit
       - run: python3 scripts/audit_references.py
       - run: python3 -m compileall -q tools scripts tests
