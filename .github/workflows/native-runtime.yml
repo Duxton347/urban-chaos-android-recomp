@@ -1,6 +1,7 @@
 name: Native tools and recompilation smoke
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
     inputs:
