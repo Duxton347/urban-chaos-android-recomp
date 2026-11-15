@@ -1,0 +1,19 @@
+synthetic.xbe: title 12345678 entry 00011000 kernel thunk 000103C0
+direct: 0 functions, 0 instructions
+pointer seeds: 0 accepted, 0 rejected
+c++ eh: 0 catch blocks, 0 continuations
+late pointer seeds: 0
+overlapping decodes: 0
+total: 0 functions, 0 instructions, 0 code bytes of 1, 0 jump tables, 0 callback entries
+functions 0
+instructions 0
+/usr/bin/ld: /tmp/ccSCTGpp.o: in function `main':
+main.cpp:(.text.startup+0x68): undefined reference to `sub_00011000'
+collect2: error: ld returned 1 exit status
+Traceback (most recent call last):
+  File "/workspace/UrbanChaos-Android/scripts/native_smoke.py", line 19, in <module>
+    subprocess.run(cmd,check=True);subprocess.run([str(area/'native-smoke')],check=True)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['c++', '-std=c++20', '-O2', '-fsigned-char', '-fno-strict-aliasing', '-I/workspace/UrbanChaos-Android/vendor/runtime/runtime', '-I/workspace/UrbanChaos-Android/build/native-smoke/generated', '/workspace/UrbanChaos-Android/build/native-smoke/main.cpp', '/workspace/UrbanChaos-Android/build/native-smoke/generated/x86_recomp.0.cpp', '-o', '/workspace/UrbanChaos-Android/build/native-smoke/native-smoke']' returned non-zero exit status 1.

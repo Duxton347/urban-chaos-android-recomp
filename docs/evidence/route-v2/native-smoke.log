@@ -1,0 +1,10 @@
+synthetic.xbe: title 12345678 entry 00011000 kernel thunk 000103C0
+direct: 1 functions, 2 instructions
+pointer seeds: 0 accepted, 0 rejected
+c++ eh: 0 catch blocks, 0 continuations
+late pointer seeds: 0
+overlapping decodes: 0
+total: 1 functions, 2 instructions, 6 code bytes of 16, 0 jump tables, 0 callback entries
+functions 1
+instructions 2
+SYNTHETIC_ONLY: recompiled x86 executed natively; eax=42; stack=+4

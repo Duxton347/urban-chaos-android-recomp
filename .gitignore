@@ -14,3 +14,11 @@ __pycache__/
 *.keystore
 
 /android/**/.cxx/
+
+/artifacts/
+/generated/
+/assets/
+/iso/
+/saves/
+*.enc
+.env

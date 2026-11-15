@@ -36,6 +36,7 @@ def generate(xbe,config,output):
         def inventory(d):return {str(p.relative_to(d)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(d.rglob('*')) if p.is_file()}
         a,b=inventory(output/'pass1'),inventory(output/'pass2');meta['deterministic']=a==b;meta['generated']=a
         if a!=b or not a:raise Invalid('Geração vazia ou não determinística')
+        if not any(re.search(r'^X86_FUNC\(', p.read_text(),re.M) for p in (output/'pass1').glob('x86_recomp.*.cpp')):raise Invalid('Geração sem funções; revisar code_sections/configuração')
         # Unmapped indirect calls, ABI and hook correctness still require title evidence.
         warnings=[]
         for log in (output/'scanner.log',output/'recomp1.log'):

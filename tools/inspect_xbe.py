@@ -46,7 +46,7 @@ def inspect(path, expected_hash=None):
     co=hdr(u(0x118),12);cs=u(co)
     if cs<0x1d0:raise Invalid('Certificado XBE incompleto')
     hdr(u(0x118),cs)
-    cert=dict(size=cs,timestamp=u(co+4),title_id=f'{u(co+8):08x}',region=u(co+0xa0),media=u(co+0x9c))
+    cert=dict(size=cs,timestamp=u(co+4),title_id=f'{u(co+8):08x}',region=u(co+0xa0),media=u(co+0x9c),disc_number=u(co+0xa8),version=u(co+0xac))
     libs=[];nl=u(0x160)
     if nl>4096:raise Invalid('Contagem de bibliotecas inválida')
     if nl:
