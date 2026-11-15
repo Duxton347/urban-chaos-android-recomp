@@ -8,6 +8,8 @@ permissions:
   contents: read
 jobs:
   arm64-contract:
+    env:
+      ANDROID_HOME: ${{ github.workspace }}/.toolchain/android-sdk
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -22,11 +24,14 @@ jobs:
         with:
           path: |
             vendor
-            ${{ env.ANDROID_HOME }}/ndk/28.2.13676358
-            ${{ env.ANDROID_HOME }}/cmake/3.31.6
+            .toolchain/android-sdk
+            .toolchain/downloads/cmdline.zip
           key: android-contract-${{ runner.os }}-${{ hashFiles('dependencies.lock.json') }}
       - run: python3 scripts/ci_bootstrap.py --component android
       - name: Install fixed NDK and CMake
-        run: sdkmanager 'ndk;28.2.13676358' 'cmake;3.31.6'
+        run: |
+          SDK_MANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          "$SDK_MANAGER" --sdk_root="$ANDROID_HOME" --licenses < <(yes)
+          "$SDK_MANAGER" --sdk_root="$ANDROID_HOME" 'ndk;28.2.13676358' 'cmake;3.31.6'
       - run: scripts/build_portability.sh
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"
