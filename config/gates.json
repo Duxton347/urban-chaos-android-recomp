@@ -9,5 +9,10 @@
   "mission_validated": false,
   "campaign_validated": false,
   "release_enabled": false,
-  "diagnostic_is_game": false
+  "diagnostic_is_game": false,
+  "pc_sdk_core_compiled": true,
+  "pc_sdk_memory_services_tested": true,
+  "pc_original_source_configure_exit": 0,
+  "pc_original_source_build_exit": 1,
+  "pc_original_source_failure": "MISSING_QUALIFIED_TITLE_INPUTS"
 }
