@@ -1,0 +1,57 @@
+# Arquitetura — Urban Chaos Android Recomp
+
+**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: infraestrutura compilada; jogo bloqueado em G1.**
+
+## Fluxo de produção pretendido
+
+```mermaid
+flowchart TD
+  Disc[Disco Xbox legítimo no tablet ou volume privado na nuvem] --> Import[SAF / importador Redump-XISO-pasta]
+  Import --> Validate[XBE: estrutura, SHA-256, certificado, versão]
+  Validate --> Scan[Scanner XboxXBERecomp pinado]
+  Scan --> Review[Configuração, funções, ABI e hooks comprovados]
+  Review --> Generate[Geração C++ limpa e determinística]
+  Generate --> PC[Build e execução real no PC em runner privado]
+  PC --> ARM[Build Android arm64-v8a]
+  ARM --> Runtime[Kernel / memória / arquivos / threads / callbacks]
+  Runtime --> GPU[D3D8 para Vulkan]
+  Runtime --> Audio[DirectSound para SDL3]
+  Runtime --> Input[Ações originais / touch / gamepad]
+  Runtime --> Saves[Savegame original em armazenamento privado]
+```
+
+Importação de assets e recompilação são etapas distintas. O APK final deverá ser compilado contra uma versão de executável qualificada; importar outro XBE não o torna automaticamente compatível. O código gerado deriva do executável comercial: precisa de revisão de direitos antes de qualquer distribuição, mesmo que não contenha a ISO. Não publicar esse código ou incluí-lo indiscriminadamente em artefatos CI.
+
+## Camadas e proveniência
+
+| Camada | Base e decisão | Estado |
+|---|---|---|
+| Conteúdo/lógica do título | Executável Xbox e seus assets do usuário; nenhum substituto simplificado | Ausentes nesta sessão |
+| Geração estática | XboxXBERecomp `c1f7d60...` com Zydis e toml++ | Host tools compilam; fixture sintético executa |
+| Integração Urban Chaos | Consumidores, hooks e patches públicos da Burner; não transplantar Black | Auditados por leitura; licença das adaptações precisa ser esclarecida |
+| Runtime portátil | Contratos CPU/kernel/HLE do SDK; pin Burner | Contrato CPU AArch64 compila; runtime completo do título não demonstrado |
+| Host Android | Infraestrutura MIT do Black como referência: lifecycle, Vulkan, áudio, entrada; revisão por arquivo antes de incorporação | Interfaces e exclusões identificadas; nenhum hook Black importado |
+| Disco | XDVDFS próprio limitado; XboxKit como referência externa de Redump | Sintéticos XISO/pasta/offset XGD1 passam; disco comercial não testado |
+| HUD | Ações Urban Chaos verificadas, ícones originais, perfis e multitouch | Especificação; mapeamento binário pendente |
+
+`android/` contém o diagnóstico da etapa anterior, preservado como histórico. Ele não é o módulo do jogo, não contém lógica original e não será ampliado para aparentar gameplay. A nova CI Android compila apenas `native/portability`, explicitamente sem APK.
+
+## Contratos obrigatórios
+
+Endianness little-endian, endereços guest de 32 bits separados de ponteiros host de 64 bits, `X86Context` alinhado e sem reinterpretação de ponteiros truncados. Compilar código compatível com `-fsigned-char -fno-strict-aliasing`; validar registradores, flags, x87/SSE, convenções de retorno e callbacks. O probe atual cobre tamanho/alinhamento/offsets e acesso desalinhado compilável, não memória virtual completa ou fidelidade de todas as operações.
+
+Black remove do build os módulos Windows `app/`, `core/input.cpp`, `gpu/d3d12.cpp`, `gpu/render_thread.cpp`, `audio/xaudio2.cpp`, `xdk/dsound.cpp`, `xdk/d3d8.cpp` e fornece substitutos. Parte desses substitutos está acoplada a Black; não equivale a um backend reutilizável sem revisão. Inventariar includes de `common/options`, símbolos `SYM`, estruturas guest, estado D3D e layouts XDK antes de extrair componentes MIT.
+
+## Dados e execução na nuvem
+
+`private/` e `build/` são ignorados; futuras execuções comerciais ocorrem em runner privado efêmero, sem jobs de pull request público, sem cache e sem upload de dados/código gerado/logs que contenham bytes do título. O usuário pode disponibilizar sua cópia em volume privado na nuvem ou importar localmente pelo SAF do tablet; não é exigido upload pelo chat nem PC pessoal.
+
+Dados Android separados: `game`, `saves`, `config`, `cache/shaders`, `logs`. Publicar somente código de infraestrutura autorizado, avisos, documentação e ferramentas permitidas. Releases do jogo precisam de qualificação e assinatura do proprietário.
+
+## Decisões
+
+1. Manter pins Burner/Black distintos. O SDK observado em `cc9edda...` contém mudança para DLL/compilação no primeiro início; trocar para `main` agora ampliaria o trabalho e invalidaria os contratos auditados.
+2. Priorizar G1 e execução PC real antes do build completo ARM64. Tests sintéticos são testes de ferramenta, nunca aprovação de boot.
+3. XboxKit não é um recompilador e não recupera hooks/configuração ausentes. C#/.NET e dependências NuGet ficam fora do APK nesta fase.
+4. Reuso Burner continua condicionado à licença aplicável. A nova diretriz de reaproveitamento não cria uma licença que a fonte publicada não concede explicitamente.
+5. Preservar apresentação original. Resolução, escalonamento e otimização só avançam depois de menu/missão reais e medições no dispositivo.

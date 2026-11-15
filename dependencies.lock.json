@@ -48,6 +48,13 @@
       "url": "https://github.com/zyantific/zycore-c",
       "commit": "0b2432ced0884fd152b471d97ecf0258ff4d859f",
       "license": "MIT"
+    },
+    "xboxkit": {
+      "url": "https://github.com/Deterous/XboxKit.git",
+      "commit": "e8c57ca4d8e15fba27c0d1d2f6a21d56b1f38819",
+      "tree": "f4477d2c96d79018e531b2e2cf24dac59cf67a42",
+      "license": "MIT declared in csproj PackageLicenseExpression; no LICENSE text in tree",
+      "role": "audit-only Redump/XDVDFS reference; no embedded C# source"
     }
   },
   "toolchain": {
@@ -176,5 +183,9 @@
   "gradle_verification": {
     "path": "android/gradle/verification-metadata.xml",
     "sha256": "4b68041f3c9ef4cdff1c85bd1bf108db5f6fc15218f94e376982c77b5dbfe3ad"
+  },
+  "audit_heads": {
+    "runtime_observed": "cc9edda3a821a4204dc28783f429b88a27ade4f9",
+    "policy": "keep existing Burner/Black runtime pins; current main changed the generation/loading model"
   }
 }

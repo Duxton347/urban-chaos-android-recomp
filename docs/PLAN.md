@@ -1,5 +1,7 @@
 # Execução por gates
 
+> Histórico da etapa anterior. A rota vigente está em [BUILD_STATUS.md](BUILD_STATUS.md). O diagnóstico não faz parte da entrega do jogo; o teste determinístico antigo não comprovava funções emitidas, corrigido na nova rota.
+
 Plano original preservado em [REQUESTED_PLAN.md](REQUESTED_PLAN.md). Esta execução substitui a antiga condição “sessão em planejamento” por implementação e evidências reais dos componentes independentes.
 
 | Gate/fase | Status | Evidência / condição de saída |

@@ -1,0 +1,73 @@
+{
+  "status": "BLOCKED_GAME_RECOMPILATION",
+  "references": {
+    "burner": {
+      "commit": "bdaef722ef1d589af30e5a58dd8543f64564c4fc",
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition.git",
+      "license": "UNRESOLVED for project adaptations",
+      "files": {
+        "README.md": "ef69366733dac1c6409e4ee12058659c7e8dc677d3990241be0e46cef131875a",
+        "COPYRIGHT": "042694328599846b136f47de07e8c738c224d94c6db4872dfb42992cac866440",
+        "docs/BUILDING.md": "d40492d9ff8769a5759037ead0dfa2976298d1739eeb17832f760402c992331f",
+        "dependencies.lock.json": "52aef50d659e24cd53e7f26f7ea633a4c440101e3886d43b130a2bbfe5b04b51",
+        "scripts/build_xbe_game_trial.py": "67ea16a519624afa6847e815a05bbc761db1d193db8cef917c1b6df3c81faa1a"
+      }
+    },
+    "runtime": {
+      "commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+      "url": "https://github.com/TGP482/XboxXBERecomp.git",
+      "license": "MIT",
+      "files": {
+        "README.md": "9abb05e78f2772da9c60ba25fc50df0c48e2ab93ef37e8048a7f420afe3e46ac",
+        "LICENSE": "b61d0b216ea6b3a6be922ef85f6348568069fb3c5fc816d021ee66ec43de8157",
+        "cmake/XbeRecomp.cmake": "9e3bca173b4d5cc1d8cdde60b5fa4f729285dd0e3f3502b9b4ddd89726c86792",
+        "tools/recomp/main.cpp": "3f82fbb66f70c8656225c1e96e4836eb81727e6ef3b4120c3e34c0b546c53f9c"
+      }
+    },
+    "black": {
+      "commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
+      "url": "https://github.com/RanggaCasper/Black-Android.git",
+      "license": "MIT; bundled assets require separate review",
+      "files": {
+        "README.md": "338852d0ce92402c53ea3e9f48bbe4aa08fc255b6a2b689dc8d4d29992566b0c",
+        "LICENSE": "844e017c30b7d78d1484c91c4babe9906df5d9cd800613284ee1c4b0dbc4f609",
+        "CMakeLists.txt": "e79ba3e8dfd9fb5a6283fbf6c0566f819883ab1d9cf08d2478c349bf9c137897",
+        "native/touch.cpp": "924edac81ec8aa744d37a726c5dba7e9a225acb767e220cbdb68f74a11b083de"
+      }
+    },
+    "xboxkit": {
+      "commit": "e8c57ca4d8e15fba27c0d1d2f6a21d56b1f38819",
+      "url": "https://github.com/Deterous/XboxKit.git",
+      "license": "MIT declared in csproj PackageLicenseExpression; no LICENSE text in tree",
+      "files": {
+        "README.md": "8061be9d49f527c83128a95d289db8d39c008cf6cea37feab6a4a83c0f981981",
+        "LibXGD/LibXGD.csproj": "2108fbb751b98f20ca9032eb457aec49b360c69d128422af43ddb0adf3a8b9f3",
+        "LibXGD/XGD.cs": "0cb51e1d04d7c82ee43c93a9dce7e5d250c3c76d3026822dccdb5bac2cd384f2",
+        "XboxKit/XboxKit.csproj": "ef9ff2ddb7579d5a87043ff26d2d197f829e8a170df083f97178b0bbede54f11"
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "private-generation-inputs",
+      "present": false,
+      "evidence": "burner/docs/BUILDING.md:3-7",
+      "result": "not reproducible from the published checkout alone"
+    },
+    {
+      "id": "xboxkit-license",
+      "evidence": "both csproj PackageLicenseExpression=MIT; no LICENSE text in tracked tree",
+      "result": "audit-only; no XboxKit C# embedded"
+    },
+    {
+      "id": "runtime-pins",
+      "burner": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+      "black": "99078b119b5d5e0d1d6afb1390e29437c0c984c0",
+      "result": "different pins; compare contracts before reuse"
+    },
+    {
+      "id": "diagnostic",
+      "result": "historical module is not a game port and is excluded from current APK delivery"
+    }
+  ]
+}

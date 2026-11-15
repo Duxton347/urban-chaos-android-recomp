@@ -1,5 +1,7 @@
 # Auditoria executada — 2026-11-15
 
+> Histórico da etapa anterior. A rota vigente está em [BUILD_STATUS.md](BUILD_STATUS.md). O diagnóstico não faz parte da entrega do jogo; o teste determinístico antigo não comprovava funções emitidas, corrigido na nova rota.
+
 **GO** para ferramentas host e diagnóstico Android independente. **BLOCKED** para recompilação de Urban Chaos (G1) e gates dependentes. Nenhum boot ou frame do jogo foi produzido.
 
 ## Proveniência e reprodução

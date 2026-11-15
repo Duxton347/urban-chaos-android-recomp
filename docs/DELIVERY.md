@@ -1,5 +1,7 @@
 # Entrega — 2026-11-15
 
+> Histórico da etapa anterior. A rota vigente está em [BUILD_STATUS.md](BUILD_STATUS.md). O diagnóstico não faz parte da entrega do jogo; o teste determinístico antigo não comprovava funções emitidas, corrigido na nova rota.
+
 **GO: diagnóstico independente. BLOCKED: Urban Chaos Android em G1.**
 
 APK: [UrbanChaos-Diagnostic-0.1-arm64-debug.apk](../artifacts/UrbanChaos-Diagnostic-0.1-arm64-debug.apk)
