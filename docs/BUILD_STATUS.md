@@ -2,6 +2,12 @@
 
 Atualizado em 2026-11-15. **GO para ferramentas e auditoria. BLOCKED para jogo original (G1). Nenhum novo APK do jogo foi criado.**
 
+## Tentativa de recuperação PC executada
+
+Ver [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md): inventariadas 21 revisões, três ZIPs de source e o pacote PC publicado, todos os downloads conferidos contra hashes oficiais. Recuperados Title ID/identidade histórica, 247 seeds e a receita anterior baseada em `sp00nznet/xboxrecomp`. Nenhum código gerado ou XBE foi encontrado nas entradas inspecionadas.
+
+O núcleo real do SDK compilou no Linux e o teste de memória virtual/aliases passou. O parser legado foi executado e falhou por `Default.xbe` ausente. Há um workflow Windows para executar CMake/builder originais da versão 0.18 e registrar a falha/sucesso efetivos, sem stubs. Esses resultados não equivalem a boot do jogo.
+
 ## Primeira entrega
 
 Estrutura local, `AGENTS.md`, os seis documentos solicitados e seis workflows iniciais estão preparados. Destino confirmado: `Duxton347/urban-chaos-android-recomp`, público, leitura/escrita verificadas após criação pelo usuário. Nenhum repositório alternativo criado. A integração inicialmente recusou `createRepository`; o usuário criou o destino exato e o acesso foi revalidado antes da publicação. Status de publicação/CI será registrado em [PUBLICATION.md](PUBLICATION.md).

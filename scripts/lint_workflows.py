@@ -14,4 +14,4 @@ if not (d/'actionlint').exists():
  with tarfile.open(archive) as t:t.extractall(d,filter='data')
 subprocess.run([str(d/'actionlint'),'-version'],check=True)
 subprocess.run([str(d/'actionlint'),'-no-color'],cwd=R,check=True)
-print('All six workflows passed actionlint and action SHA checks')
+print('All workflows passed actionlint and action SHA checks')

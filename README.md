@@ -6,6 +6,7 @@ Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por 
 
 ## Primeira entrega e rota
 
+- [Recuperação da compilação PC: tentativas e resultados](docs/PC_BUILD_RECOVERY.md)
 - [Build status e evidências](docs/BUILD_STATUS.md)
 - [Arquitetura](docs/ARCHITECTURE.md)
 - [Recompilação e menor caminho para primeiro executável](docs/RECOMPILATION.md)
@@ -32,7 +33,7 @@ python3 scripts/publication_check.py
 
 O smoke gera e executa somente uma função x86 **sintética**; não é jogo ou boot. Para os checks Java, usar JDK 17 e `scripts/test.sh`. Para o contrato Android, instalar NDK `28.2.13676358` e CMake `3.31.6` no SDK local da nuvem, exportar `ANDROID_HOME` e executar `scripts/build_portability.sh`. Não produz APK.
 
-Os seis workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smoke, compilação ARM64, testes, artefatos de desenvolvimento e gate de releases. Actions são fixadas por SHA, ferramentas por versão/checksum e caches contêm apenas dependências públicas. O gate de release falha enquanto o jogo não estiver qualificado. `AGENTS.md` orienta mudanças futuras.
+Os workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smoke, compilação ARM64, testes, artefatos de desenvolvimento e gate de releases. Actions são fixadas por SHA, ferramentas por versão/checksum e caches contêm apenas dependências públicas. A tentativa de reprodução PC executa o builder original no Windows e preserva falhas. O gate de release falha enquanto o jogo não estiver qualificado. `AGENTS.md` orienta mudanças futuras.
 
 ## Próximo bloqueio
 

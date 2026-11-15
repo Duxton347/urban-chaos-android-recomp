@@ -28,7 +28,7 @@ python3 tools/prepare_game.py private/extracted-folder private/imported-folder -
 
 O inspetor emite somente metadados estruturais: SHA-256, certificado (Title ID, versão, disc number, media/region), seções sem payload, bibliotecas/XDK e ordinais kernel. Não imprime chaves ou nome do título. Não autentica RSA nem verifica direitos de posse. Integridade de estrutura e hash candidato não equivale a compatibilidade Android.
 
-Candidato Burner: tamanho **5.283.840**, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. Title ID e versão esperados não foram inferidos de Black: aguardam leitura do executável real. O hash exato implicitamente identifica a revisão candidata; outras revisões exigem nova auditoria.
+Candidato Burner: tamanho **5.283.840**, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. A recuperação histórica encontrou Title ID `534300F7` e versão declarada `3` em `config/game.json` da Burner 0.01. Esses metadados não foram inferidos de Black e ainda precisam de confirmação no executável real; ver [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md). O hash exato implicitamente identifica a revisão candidata; outras revisões exigem nova auditoria.
 
 ## SAF e testes bloqueados
 
