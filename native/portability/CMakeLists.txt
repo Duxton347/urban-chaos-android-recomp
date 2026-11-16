@@ -7,3 +7,9 @@ add_library(urban_cpu_contract STATIC cpu_contract.cpp)
 target_compile_features(urban_cpu_contract PRIVATE cxx_std_20)
 target_compile_options(urban_cpu_contract PRIVATE -fsigned-char -fno-strict-aliasing)
 target_include_directories(urban_cpu_contract PRIVATE ../../vendor/runtime/runtime)
+
+# Compile authored recorded-packet fixture/decoder for the target ISA; execution remains a host test.
+add_library(urban_recorded_packet_contract STATIC ../../host/runtime-probes/recorded_push.cpp)
+target_compile_features(urban_recorded_packet_contract PRIVATE cxx_std_20)
+target_include_directories(urban_recorded_packet_contract PRIVATE ..)
+target_compile_options(urban_recorded_packet_contract PRIVATE -UNDEBUG)

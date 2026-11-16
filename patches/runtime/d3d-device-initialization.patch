@@ -1,14 +1,15 @@
 --- a/runtime/xdk/d3d8.cpp
 +++ b/runtime/xdk/d3d8.cpp
-@@ -5,6 +5,7 @@
+@@ -5,6 +5,8 @@
  #include <chrono>
  #include <map>
  #include <thread>
 +#include <tuple>
++#include "gpu/recorded_push.h"
  #include <unordered_map>
  #include <unordered_set>
 
-@@ -387,6 +388,12 @@
+@@ -387,6 +389,12 @@
      std::lock_guard<std::recursive_mutex> lock(g_lock);
      return g_backend ? g_backend->Fence() : 0;
  }
@@ -21,7 +22,7 @@
  HLE_STDCALL(D3DDevice_IsFencePending, 1) {
      std::lock_guard<std::recursive_mutex> lock(g_lock);
      return g_backend && g_backend->FencePending(a[0]) ? 1 : 0;
-@@ -542,7 +549,8 @@
+@@ -542,7 +550,8 @@
  HLE_STDCALL(D3DDevice_SetViewport, 1) {
      std::lock_guard<std::recursive_mutex> lock(g_lock);
      uint32_t v = a[0];
@@ -31,7 +32,44 @@
      g_state.scissor_count = 0;
      UpdateViewportConstants();
      return 0;
-@@ -1017,17 +1025,18 @@
+@@ -946,6 +955,36 @@
+     return 0;
+ }
+
++// Explicit recorded indexed-draw subset. Validate all packets before submitting any draw.
++HLE_STDCALL(D3DDevice_RunPushBuffer, 2) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if(a[1])x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"recorded push buffer fixups are not implemented");
++    auto mapped=[](uint32_t address,uint32_t bytes) {
++        if(!address||bytes>16u*1024*1024||address>0xFFFFFFFFu-bytes)return false;
++        for(uint64_t p=address;p<uint64_t(address)+bytes;p=(p&~uint64_t(4095))+4096)
++            if(!mem::IsCommitted(uint32_t(p)))return false;
++        return !bytes||mem::IsCommitted(address+bytes-1);
++    };
++    uint32_t object=a[0];
++    if(!mapped(object,16))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer object");
++    uint32_t data=R32(object+4),bytes=R32(object+12);
++    if(bytes%4||!mapped(data,bytes))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer extent");
++    std::vector<uint32_t> words(bytes/4);
++    if(bytes)std::memcpy(words.data(),HostPtr(data),bytes);
++    std::vector<urban::gpu::IndexedDraw> draws;std::string error;
++    if(!urban::gpu::DecodeRecordedIndices(words,draws,error)) {
++        LOGE("d3d: recorded push buffer rejected: %s",error.c_str());
++        x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"unsupported or malformed recorded GPU commands");
++    }
++    if(!g_backend)x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"recorded draw has no backend");
++    Walk(Dev(kDevPush));
++    SyncDeferred();
++    for(const auto& draw:draws)
++        g_backend->Draw(g_state,draw.primitive,0,uint32_t(draw.indices.size()),reinterpret_cast<const uint8_t*>(draw.indices.data()));
++    LOG_FIRST(8, "d3d: recorded indexed buffer submitted %zu draws",draws.size());
++    return 0;
++}
++
+ // DrawVerticesUP(prim, count, vertices, stride): the vertices are copied to a ring the render thread reads, stream 0
+ // points there through a vertex buffer header for the draw. A half of the ring is written again once the draws
+ // that read it are done.
+@@ -1017,17 +1056,18 @@
          std::shared_ptr<gpu::VertexShader> from, vs;
      };
      // the render thread tells shaders apart by pointer: one object per program and slot set, the program kept alive

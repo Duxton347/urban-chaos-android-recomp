@@ -70,6 +70,14 @@
         "stack"
       ],
       "evidence": "XTLID B0099; original caller 0x00251A50 passes identical pitch to buffer 0x00424F31 and stream 0x0042503E; stream body stores pitch then updates APU rate, ret 8"
+    },
+    "D3DDevice_RunPushBuffer": {
+      "address": "003EF870",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original caller 0x000B4EB0 passes recorded buffer plus null fixup; Data+4 and Size+12. Observed Begin/Element16/Element32/End/NOP; indexed subset only, lossless backend range, unknown methods/fixups trap"
     }
   },
   "qualifies_g1": false,

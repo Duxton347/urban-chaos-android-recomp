@@ -10,3 +10,5 @@ TASK_NDK="$TASK_SDK/ndk/28.2.13676358"
  -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-29 -DCMAKE_BUILD_TYPE=Release
 "$TASK_CMAKE" --build build/android-portability --parallel 4
 "$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/CMakeFiles/urban_cpu_contract.dir/cpu_contract.cpp.o
+
+"$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_recorded_packet_contract.a
