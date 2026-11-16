@@ -16,4 +16,4 @@ with tempfile.TemporaryDirectory(prefix='runtime-probes-', dir=ROOT/'build') as 
                     '-DURBAN_OVERLAY='+str(output/'overlay')], check=True)
     subprocess.run([str(cmake), '--build', str(output/'cmake'), '--parallel', '2'], check=True)
     subprocess.run([str(cmake.parent/'ctest'), '--test-dir', str(output/'cmake'), '--output-on-failure', '-V'], check=True)
-    print(json.dumps({'sdk': PIN, 'patches': hashes, 'synthetic_gpu_probes_passed': 2, 'recorded_packet_parser_passed': True, 'game_data_used': False}))
+    print(json.dumps({'sdk': PIN, 'patches': hashes, 'synthetic_gpu_probes_passed': 2, 'recorded_packet_parser_passed': True, 'reference_visibility_passed': True, 'game_data_used': False}))

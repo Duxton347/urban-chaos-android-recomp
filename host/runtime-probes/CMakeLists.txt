@@ -6,11 +6,13 @@ set(SDK "${REPO}/vendor/runtime")
 if(NOT EXISTS "${URBAN_OVERLAY}/runtime/gpu/state.h")
  message(FATAL_ERROR "Patched SDK overlay required")
 endif()
-add_executable(runtime_gpu_probes main.cpp gpu_probes.cpp
+add_executable(runtime_gpu_probes main.cpp gpu_probes.cpp visibility.cpp
+ "${URBAN_OVERLAY}/harness/reference_renderer.cpp" "${URBAN_OVERLAY}/harness/null_backend.cpp"
+ "${SDK}/runtime/gpu/shaders.cpp"
  "${SDK}/runtime/kernel/memory.cpp" "${SDK}/runtime/core/log.cpp"
  "${SDK}/runtime/gpu/texture.cpp" "${SDK}/harness/app_headless.cpp"
  "${URBAN_OVERLAY}/runtime/gpu/vertex.cpp" "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp")
-target_include_directories(runtime_gpu_probes PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness/compat")
+target_include_directories(runtime_gpu_probes PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness/compat" "${URBAN_OVERLAY}/harness" "${SDK}/harness")
 target_compile_definitions(runtime_gpu_probes PRIVATE XBE_RAW_VERTICES=0)
 target_compile_options(runtime_gpu_probes PRIVATE -O1 -UNDEBUG -march=x86-64-v2 -fsigned-char -fno-strict-aliasing)
 target_link_libraries(runtime_gpu_probes PRIVATE pthread)
@@ -24,3 +26,6 @@ target_include_directories(recorded_packet_probe PRIVATE "${REPO}/native")
 target_compile_options(recorded_packet_probe PRIVATE -UNDEBUG)
 add_test(NAME recorded_index_packets COMMAND recorded_packet_probe)
 set_tests_properties(recorded_index_packets PROPERTIES TIMEOUT 10)
+
+add_test(NAME real_reference_visibility COMMAND runtime_gpu_probes visibility)
+set_tests_properties(real_reference_visibility PROPERTIES TIMEOUT 20 ENVIRONMENT "REF_ALL=1")

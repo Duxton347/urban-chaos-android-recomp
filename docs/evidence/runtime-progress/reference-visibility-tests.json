@@ -1,0 +1,29 @@
+{
+  "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "result": "PASS",
+  "tests": [
+    "threaded_backend_busy",
+    "immediate_vertex_mode",
+    "recorded_index_packets",
+    "real_reference_visibility"
+  ],
+  "fixture": "authored geometry and state; no game input",
+  "visibility": [
+    "15 passing samples",
+    "occlusion and equal depth zero",
+    "nearer geometry passes",
+    "count enable/reset",
+    "alpha and texture clip rejection",
+    "color writes disabled equals color path count",
+    "16-byte report and trailing sentinel preserved",
+    "direct and threaded backends",
+    "unsupported counted topology explicitly rejected"
+  ],
+  "patches": {
+    "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc"
+  },
+  "game_or_android_validated": false
+}

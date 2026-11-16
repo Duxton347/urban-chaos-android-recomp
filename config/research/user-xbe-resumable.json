@@ -78,6 +78,15 @@
         "stack"
       ],
       "evidence": "Original caller 0x000B4EB0 passes recorded buffer plus null fixup; Data+4 and Size+12. Observed Begin/Element16/Element32/End/NOP; indexed subset only, lossless backend range, unknown methods/fixups trap"
+    },
+    "D3DDevice_GetVisibilityTestResult": {
+      "address": "003E2C30",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original caller 0x000A24C0 polls HRESULT 0x88760828; result reader checks 16-byte report status+12, copies count+8 and optional timestamp+0/+4. Wrapper flushes actual report work and preserves original reader."
     }
   },
   "qualifies_g1": false,
