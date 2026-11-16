@@ -1,6 +1,10 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-15. **GO para ferramentas e auditoria. BLOCKED para jogo original (G1). Nenhum novo APK do jogo foi criado.**
+Atualizado em 2026-11-16. **GO: imagem Xbox identificada, XBE extraído, geração determinística e compilação PC concluídas. REQUIRES_REVERSE_ENGINEERING: integração HLE/ABI; execução de pesquisa falha em áudio antes do menu. Nenhum APK do jogo foi criado.**
+
+## Nova entrada: executável disponível e código compilado
+
+[Inspeção da imagem fornecida e execução](USER_IMAGE_INSPECTION.md): 29.049 funções geradas duas vezes com saídas idênticas; 128 partições C++ e mapping compilados no Linux x86_64. Host de pesquisa ligado e executado com harness SDK: inicialização D3D e shaders observada, depois SIGSEGV em DSOUND `0x00423B41` com 79 recursos LST reais verificados. Nenhum frame/menu, missão, Windows ou Android validado. Hash da variante `c6f0c99a…044d1` difere da referência Burner; G1 qualificado permanece aberto. As ausências do título descritas na tentativa PC anterior são históricas, não indisponibilidade atual do XBE.
 
 ## Tentativa de recuperação PC executada
 
@@ -17,13 +21,15 @@ Estrutura local, `AGENTS.md`, os seis documentos solicitados e seis workflows in
 | Projeto | Revisão | Resultado / licença |
 |---|---|---|
 | Burner | `bdaef722ef1d589af30e5a58dd8543f64564c4fc` | Código público de patches/host; geração/configuração/fixtures privados ausentes. `COPYRIGHT` não concede licença geral explícita às adaptações. Não reutilizadas na implementação. |
-| XboxXBERecomp | `c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7` | MIT; scanner/recompilador Linux compilados. Runtime completo do título não construído. |
+| XboxXBERecomp | `c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7` | MIT; scanner/recompilador Linux compilados. Núcleo e host de pesquisa Linux compilados; runtime de produção do título não validado. |
 | Black Android | `8e9c6fc7d570503ea68d039cff16c09339ee6d30` | MIT no projeto, assets/terceiros exigem revisão. Android CMake/SDL/Vulkan/áudio/input/HUD e histórico inspecionados; nenhum hook/endereço Black transplantado. |
 | XboxKit | `e8c57ca4d8e15fba27c0d1d2f6a21d56b1f38819` | MIT declarado nos `.csproj`, texto LICENSE ausente. .NET/C# com NuGet; referência Redump/XDVDFS, não recompilador. Não compilado nem incorporado nesta sessão. |
 
 Pins, URLs, árvores e dependências no `dependencies.lock.json`. O SDK observado em `cc9edda...` mudou o modelo para DLL/compilação no primeiro início; mantidos os pins originais. Entre os pins Burner/Black há nove caminhos diferentes, incluindo flags de áudio em `kernel/xboxkrnl.cpp`. Contexto CPU, arquivos de memória e interfaces HLE comparados são idênticos; isso não prova compatibilidade semântica. [Matriz](COMPATIBILITY_MATRIX.md).
 
-## Comandos e resultados desta rota
+## Comandos e resultados anteriores da rota
+
+Os 21 testes abaixo pertencem à primeira auditoria. Após a inspeção de 2026-11-16 passaram 46 testes Python e 11 checks Java; [log sintético atualizado](evidence/user-image/tool-tests.log). Os testes do título foram privados e não são executados no CI público.
 
 | Comando | Resultado real | Evidência |
 |---|---|---|
@@ -39,13 +45,13 @@ Pins, URLs, árvores e dependências no `dependencies.lock.json`. O SDK observad
 
 ## Bloqueios e menor caminho viável
 
-1. Falta XBE Xbox legítimo: não há disco comercial nem executável no workspace. Sem esse arquivo não se executa scanner do título nem se conhece o conjunto real de símbolos/ABI faltantes. Não solicitar upload pelo chat; usar volume privado na nuvem quando disponível.
-2. O build Burner parte de área privada qualificada. Não há código gerado nem configuração completa pública do Urban Chaos que permita reproduzi-la nesta sessão. Recipes de algumas fixtures existem, mas requerem assets locais. [Entradas e consumidores](MISSING_INPUTS.md).
+1. XBE Xbox fornecido e extraído; scanner e geração executados. O bloqueio atual é qualificar a variante de hash diferente e corrigir integração HLE/ABI, começando pelo SIGSEGV DSOUND observado. Dados permanecem privados.
+2. O build Burner parte de área privada qualificada. A nova geração privada foi reproduzida a partir do XBE fornecido, mas não recupera automaticamente a configuração completa qualificada da Burner. Recipes de algumas fixtures existem, mas requerem assets locais. [Entradas e consumidores](MISSING_INPUTS.md).
 3. Reutilizar patches Burner exige licença aplicável. A intenção de reuso não esclarece direitos automaticamente. Não contactar terceiros sem instrução explícita.
 4. Primeiro executar geração limpa e determinística e boot/menu PC, preferencialmente com backend de referência em runner privado. Windows PC na nuvem pode ser menor caminho para primeiro boot; Proton não é nativo Linux.
 5. Depois adaptar backend Android compatível, sem transplante de endereços Black. Vulkan/áudio/memória/callbacks, missão, controles e saves precisam de evidência real.
 
-XboxKit reduz incerteza sobre formatos de disco e offsets; não remove os bloqueios 1–3. Não há dados suficientes para afirmar que todas as entradas privadas podem ser recuperadas só com ferramentas públicas.
+XboxKit reduz incerteza sobre formatos de disco e offsets; não resolve a integração HLE/ABI e a qualificação pendente. Não há dados suficientes para afirmar que todas as entradas privadas podem ser recuperadas só com ferramentas públicas.
 
 ## Estado separado
 
@@ -54,7 +60,8 @@ XboxKit reduz incerteza sobre formatos de disco e offsets; não remove os bloque
 | Ferramentas host | Sim | CLI e fixture sintético testados | Não se aplica | Não se aplica | Não se aplica |
 | Contrato CPU AArch64 | Sim | Não executado em dispositivo | Não se aplica | Não se aplica | Não se aplica |
 | Diagnóstico histórico | Build anterior registrado | Tablet não testado | Não é jogo | Não é jogo | Não é jogo |
-| Urban Chaos PC/Android | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
+| Urban Chaos Linux de pesquisa | Sim: código + host de teste | Inicializa parcialmente; SIGSEGV em áudio | Não demonstrado | Não demonstrado | Não demonstrado |
+| Urban Chaos Windows/Android | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
 
 ## CI inicial
 

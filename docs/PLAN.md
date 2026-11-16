@@ -9,7 +9,7 @@ Plano original preservado em [REQUESTED_PLAN.md](REQUESTED_PLAN.md). Esta execu�
 | F0 — fontes e licenças | GO para auditoria; BLOCKED para adaptações Burner | Três projetos fixos, lockfile, consumidores, licenças e comparação produzidos. Não há conclusão de clean build do título. |
 | Infra host | GO | Scanner/recompilador Linux compilados isoladamente; testes sintéticos. |
 | Diagnóstico Android | GO para APK debug | SDL3/Vulkan, SAF com staging/retomada, HUD diagnóstico. Instalação, apresentação de frames e lifecycle em hardware pendentes. |
-| G1 — geração original | BLOCKED; análise de símbolos será REQUIRES_REVERSE_ENGINEERING | Falta XBE Xbox e configuração reproduzível. Logs reais, configuração completa, ABI e geração limpa determinística são obrigatórios. |
+| G1 — geração original | BLOCKED; análise de símbolos será REQUIRES_REVERSE_ENGINEERING | XBE extraído, duas gerações idênticas e compilação PC concluídas; revisão HLE/ABI e qualificação pendentes. Execução Linux de pesquisa falha em DSOUND antes de menu. Logs reais, configuração completa, ABI e geração limpa determinística são obrigatórios. |
 | G2 — boot ARM64 | BLOCKED por G1 | Código real gerado compilado, memória, kernel, threads, arquivos e callbacks testados. |
 | G3 — menu/recursos | BLOCKED por G1–G2 | D3D8→Vulkan e áudio do Urban Chaos; frames reais de logo/menu. Cores do diagnóstico não satisfazem esse gate. |
 | G4 — missão/saves | BLOCKED por G3 | Missão original, checkpoint, morte, reload, cutscenes, save/load após encerramento. |
@@ -26,4 +26,4 @@ Plano original preservado em [REQUESTED_PLAN.md](REQUESTED_PLAN.md). Esta execu�
 
 ## Próxima ação verificável
 
-Testar manualmente o APK diagnóstico pelo roteiro [DEVICE_TESTS.md](DEVICE_TESTS.md). Para avançar no jogo, disponibilizar localmente o executável da cópia Xbox legítima, fora do Git; a ISO PS2 não substitui essa entrada. A importação não equivale à aprovação de G1. Não foram criados hooks/endereços Urban Chaos nem status de qualificação fictícios.
+Testar manualmente o APK diagnóstico pelo roteiro [DEVICE_TESTS.md](DEVICE_TESTS.md). O executável Xbox já está disponível privadamente. A rota atual é corrigir a integração DSOUND identificada na [inspeção real](USER_IMAGE_INSPECTION.md), revisar a variante e validar boot/menu PC antes de ARM64. A importação não equivale à aprovação de G1. Não foram criados hooks/endereços Urban Chaos nem status de qualificação fictícios.

@@ -2,6 +2,10 @@
 
 Aceitar somente dados da cópia legítima do usuário. Não procurar/downloadar discos comerciais, não pedir upload pelo chat e não publicar imagens, executáveis, arquivos de jogo, saves ou cópias criptografadas. Dados ficam em `private/` ou em volume privado na nuvem; o APK final usará SAF no tablet.
 
+## Inspeção da origem fornecida
+
+Em 2026-11-16 `tools/inspect_disc.py` identificou XDVDFS e extraiu `Default.xbe` por intervalos HTTP, sem download completo. [Resultados reais e limitações](USER_IMAGE_INSPECTION.md). A ferramenta aceita ISO local, URL direta em arquivo privado ou link Drive em arquivo privado; exige respostas HTTP 206 exatas, valida extents e só ativa o XBE após inspeção estrutural. Não inclui URLs/tokens nos relatórios. Não extrai todos os recursos nem valida o hash completo da imagem.
+
 ## Caminho implementado e limites
 
 `tools/prepare_game.py` importa pasta extraída ou percorre XDVDFS. Reconhece descritor `MICROSOFT*XBOX*MEDIA` no setor 32 da partição; valida assinatura inicial/final, diretórios, limites dos extents, ciclos e colisões de caminhos. Rejeita escapes, links, truncamento, falta de espaço e destinos existentes. Usa staging e só renomeia após validar `Default.xbe`. A imagem original é aberta somente para leitura.
@@ -26,9 +30,9 @@ python3 tools/prepare_game.py private/own-disc.iso private/imported --require-ca
 python3 tools/prepare_game.py private/extracted-folder private/imported-folder --require-candidate
 ```
 
-O inspetor emite somente metadados estruturais: SHA-256, certificado (Title ID, versão, disc number, media/region), seções sem payload, bibliotecas/XDK e ordinais kernel. Não imprime chaves ou nome do título. Não autentica RSA nem verifica direitos de posse. Integridade de estrutura e hash candidato não equivale a compatibilidade Android.
+O inspetor emite somente metadados estruturais: SHA-256, certificado (Title ID, versão, disc number, media/region), seções sem payload, bibliotecas/XDK e ordinais kernel. Não imprime chaves ou nome do título. Não autentica RSA nem verifica direitos de posse. O inspetor também compara os digests SHA-1 das seções, sem autenticar RSA. Integridade de estrutura e hash candidato não equivale a compatibilidade Android.
 
-Candidato Burner: tamanho **5.283.840**, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. A recuperação histórica encontrou Title ID `534300F7` e versão declarada `3` em `config/game.json` da Burner 0.01. Esses metadados não foram inferidos de Black e ainda precisam de confirmação no executável real; ver [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md). O hash exato implicitamente identifica a revisão candidata; outras revisões exigem nova auditoria.
+Candidato Burner: tamanho **5.283.840**, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. A recuperação histórica encontrou Title ID `534300F7` e versão declarada `3` em `config/game.json` da Burner 0.01. Esses metadados não foram inferidos de Black e foram confirmados no executável fornecido em 2026-11-16, cujo SHA-256 difere da referência; ver [PC_BUILD_RECOVERY.md](PC_BUILD_RECOVERY.md). O hash exato implicitamente identifica a revisão candidata; outras revisões exigem nova auditoria.
 
 ## SAF e testes bloqueados
 

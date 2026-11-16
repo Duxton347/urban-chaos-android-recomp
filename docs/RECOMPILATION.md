@@ -1,6 +1,6 @@
 # Recompilação e menor caminho executável
 
-**G1 BLOCKED:** não há XBE Xbox no workspace, configuração Urban Chaos revisada ou geração limpa reproduzida. Não foi compilado ou executado Urban Chaos nesta sessão.
+**G1 qualificado pendente:** o XBE fornecido já foi extraído, gerado deterministicamente e compilado no Linux x86_64. Um host SDK de pesquisa inicia parcialmente e falha em DSOUND antes de menu. Ver [execução atual e próximos passos](USER_IMAGE_INSPECTION.md). O roteiro abaixo preserva os requisitos da referência; a variante fornecida exige sua própria revisão.
 
 ## Pins auditados
 
@@ -26,7 +26,7 @@ O SDK implementa famílias de kernel, memória, threads, arquivos, objetos, cryp
 
 ## Etapas mínimas
 
-1. Disponibilizar a cópia Xbox legítima em volume privado na nuvem. Validar o candidato: 5.283.840 bytes, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. Title ID/versão são lidos do certificado; ainda não verificados no título real.
+1. Disponibilizar a cópia Xbox legítima em volume privado na nuvem. Validar o candidato: 5.283.840 bytes, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3aa738e649ecaef4068d8531e07071b5dac`. Title ID `534300F7`/versão `3` foram confirmados no executável fornecido; seu SHA-256 é diferente da referência.
 2. Executar scanner público pinado e conservar TOML/logs privadamente. Revisar símbolos XDK ausentes, funções, jump tables, ABI e hooks comprovados. A declaração de build Windows Burner não substitui esse trabalho.
 3. Executar `tools/recompile_xbe.py` com configuração explícita em `private/config/urban-chaos.toml`. Gerar duas vezes em `build/`, exigir funções emitidas e comparar hashes. Recriar backups somente de saídas limpas.
 4. Resolver licença dos patches Burner e separar implementação do jogo de backend. Compilar/rodar primeiro no PC da nuvem. Uma rota Windows hospedada em runner privado pode reduzir mudanças de backend para o primeiro boot; uma rota Linux nativa exige host adicional. Não chamaremos Proton de nativo.

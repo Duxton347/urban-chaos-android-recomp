@@ -2,10 +2,11 @@
 
 Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por recompilação estática. A meta é preservar o jogo original; o alvo prioritário é Xiaomi Pad 6 / HyperOS 2.0.16.0.
 
-**Estado: auditoria e ferramentas funcionais; jogo bloqueado em G1. Não existe APK jogável nesta entrega.** O diagnóstico da fase anterior está preservado em `android/` como infraestrutura histórica e não representa o port.
+**Estado: XBE Xbox extraído; código original gerado e compilado para PC. Host de pesquisa Linux inicia parcialmente e falha em DSOUND antes de menu. Não existe APK jogável nesta entrega.** O diagnóstico da fase anterior está preservado em `android/` como infraestrutura histórica e não representa o port.
 
 ## Primeira entrega e rota
 
+- [Imagem fornecida: extração, geração e falha de execução](docs/USER_IMAGE_INSPECTION.md)
 - [Recuperação da compilação PC: tentativas e resultados](docs/PC_BUILD_RECOVERY.md)
 - [Build status e evidências](docs/BUILD_STATUS.md)
 - [Arquitetura](docs/ARCHITECTURE.md)
@@ -37,7 +38,7 @@ Os workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smok
 
 ## Próximo bloqueio
 
-Não foi fornecido um XBE Xbox nesta sessão. A Burner publicada ainda depende de configuração/unidades/fixtures privados; o XboxKit não recupera essa geração. Reuso das adaptações Burner também precisa de licença aplicável. O menor caminho é qualificar o executável legítimo e a geração original, executar no PC da nuvem e depois adaptar o runtime Android com as partes compatíveis e autorizadas de Black.
+O XBE da imagem fornecida foi extraído, gerado duas vezes com saídas idênticas e compilado. O host Linux de pesquisa falha na função de áudio `0x00423B41`; ainda faltam revisão HLE/ABI e boot/menu reais. O hash da variante difere da referência Burner, cuja integração privada original continua não reproduzida. Reuso das adaptações Burner também precisa de licença aplicável. O próximo passo é corrigir a integração de áudio com evidência, qualificar essa variante e executar no PC da nuvem e depois adaptar o runtime Android com as partes compatíveis e autorizadas de Black.
 
 Não são exigidos PC local nem upload de jogo pelo chat. Futuras entradas legítimas ficam em volume privado na nuvem ou são selecionadas no tablet via SAF. `private/`, `generated/`, imagens, executáveis, saves e keystores nunca entram no Git ou nos artefatos públicos. Não serão usados executáveis criptografados de projetos de referência.
 

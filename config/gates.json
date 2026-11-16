@@ -14,5 +14,22 @@
   "pc_sdk_memory_services_tested": true,
   "pc_original_source_configure_exit": 0,
   "pc_original_source_build_exit": 1,
-  "pc_original_source_failure": "MISSING_QUALIFIED_TITLE_INPUTS"
+  "pc_original_source_failure": "MISSING_QUALIFIED_TITLE_INPUTS",
+  "user_supplied_xbox_image_identified": true,
+  "user_default_xbe_extracted": true,
+  "user_xbe_matches_burner_reference": false,
+  "user_xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+  "raw_guest_cpp_generated": true,
+  "raw_guest_cpp_deterministic": true,
+  "raw_guest_cpp_pc_compile_probe_passed": true,
+  "raw_guest_research_host_linked": true,
+  "raw_guest_research_boot_verified": false,
+  "raw_guest_initialization_observed": true,
+  "g1_remaining": [
+    "Qualify the provided non-reference XBE variant",
+    "Review function boundaries, HLE/ABI and callbacks",
+    "Validate original game execution with required assets"
+  ],
+  "raw_guest_research_latest_exit": 139,
+  "raw_guest_research_failure": "SIGSEGV in guest DSOUND export 0xB0036 / function 0x00423B41; HLE integration unqualified"
 }

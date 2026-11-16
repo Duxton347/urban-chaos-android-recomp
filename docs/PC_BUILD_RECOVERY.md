@@ -1,6 +1,8 @@
 # Recuperação da compilação PC — execução
 
-**Resultado atual:** núcleo do SDK compilado e memória real testada no Linux. A compilação completa de Urban Chaos ainda depende de entradas do título; há uma tentativa reproduzível do build original em Windows, sem stubs ou status de qualificação fabricado.
+> Registro da tentativa anterior à imagem fornecida. Em 2026-11-16 o XBE foi extraído e o código original compilou no Linux; ver [nova inspeção](USER_IMAGE_INSPECTION.md). Ausências descritas abaixo pertencem àquela tentativa.
+
+**Resultado daquela tentativa:** núcleo do SDK compilado e memória real testada no Linux. A compilação completa de Urban Chaos ainda depende de entradas do título; há uma tentativa reproduzível do build original em Windows, sem stubs ou status de qualificação fabricado.
 
 ## O que foi buscado e recuperado
 
