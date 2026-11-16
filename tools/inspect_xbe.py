@@ -31,7 +31,8 @@ def inspect(path, expected_hash=None):
         if va<base or va+vs>base+ims or rs>vs:raise Invalid('Seção fora da imagem')
         span(raw,rs); no=hdr(name,1); end=b.find(b'\0',no,min(hs,no+256))
         if end<0:raise Invalid('Nome de seção não terminado')
-        sections.append(dict(name=b[no:end].decode('ascii','replace'),flags=flags,va=va,virtual_size=vs,raw=raw,size=rs))
+        stored=span(off+36,20);actual=hashlib.sha1(struct.pack('<I',rs)+span(raw,rs)).digest()
+        sections.append(dict(name=b[no:end].decode('ascii','replace'),flags=flags,va=va,virtual_size=vs,raw=raw,size=rs,stored_sha1=stored.hex(),actual_sha1=actual.hex(),digest_match=stored==actual))
     def offset(va,n):
         if base<=va and va+n<=base+hs:return hdr(va,n)
         for s in sections:
