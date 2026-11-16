@@ -39,6 +39,9 @@ def main():
         profile = json.loads(args.profile.read_text())
         if profile['sdk_commit'] != PIN:
             raise Invalid('Profile runtime mismatch')
+        for binding in profile['bindings'].values():
+            if any(location != 'stack' for location in binding.get('abi', [])):
+                raise Invalid('Research bindings currently require reviewed stack-only ABI')
         report = inspect(xbe, profile['xbe_sha256'])
         if profile.get('resumable_guest') and '#define IMAGE_RESUMABLE_GUEST 1' not in (generated/'image_symbols.h').read_text():
             raise Invalid('Resumable profile requires freshly regenerated continuation-aware guest code')

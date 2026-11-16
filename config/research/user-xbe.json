@@ -62,6 +62,14 @@
         "stack"
       ],
       "evidence": "XTLID B0098 tail-jumps to stream output attachment; this is a live SDK stream; forwarding observer confirmed first destination is null. Only default mix-bin route supported; nonzero bus destination returns E_NOTIMPL"
+    },
+    "CDirectSoundStream_SetPitch": {
+      "address": "0042503E",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "XTLID B0099; original caller 0x00251A50 passes identical pitch to buffer 0x00424F31 and stream 0x0042503E; stream body stores pitch then updates APU rate, ret 8"
     }
   },
   "qualifies_g1": false,

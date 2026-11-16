@@ -64,6 +64,7 @@ X86_EXTERN_FUNC(GUEST(IDirectSound_CreateSoundStream));
 X86_EXTERN_FUNC(GUEST(CDirectSoundStream_AddRef));
 X86_EXTERN_FUNC(GUEST(CDirectSoundStream_Release));
 X86_EXTERN_FUNC(GUEST(CDirectSoundStream_SetOutputBuffer));
+X86_EXTERN_FUNC(GUEST(CDirectSoundStream_SetPitch));
 int VoicePropertiesSelfTest() {
     if(!mem::Init()) return 2;
     kernel::g_base=mem::Base();static xbe::Image empty;kernel::g_image=&empty;
@@ -122,6 +123,12 @@ int VoicePropertiesSelfTest() {
        !call(GUEST(IDirectSound_CreateSoundStream),{device,stream_desc,stream_out,0})) return 14;
     uint32_t stream=kernel::R32(stream_out);
     if(!stream || !mem::AllocationSize(stream) || !kernel::R32(stream) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{stream,out}) ||
+       int32_t(kernel::R32(out+0x44))!=-4096 || kernel::R32(out+0x48)!=0 ||
+       !call(GUEST(CDirectSoundStream_SetPitch),{stream,4096}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{stream,out}) || int32_t(kernel::R32(out+0x44))!=4096 ||
+       !call(GUEST(CDirectSoundStream_SetPitch),{stream,8192},0x80070057u) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{stream,out}) || int32_t(kernel::R32(out+0x44))!=4096 ||
        !call(GUEST(CDirectSoundStream_SetOutputBuffer),{stream,0}) ||
        !call(GUEST(CDirectSoundStream_SetOutputBuffer),{stream,voice},0x80004001u) ||
        !call(GUEST(CDirectSoundStream_AddRef),{stream},2) ||
