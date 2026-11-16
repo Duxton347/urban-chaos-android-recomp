@@ -1,0 +1,47 @@
+--- a/runtime/xdk/dsound.cpp
++++ b/runtime/xdk/dsound.cpp
+@@ -134,6 +134,7 @@
+ std::atomic<int64_t> g_pumped{0};          // the last DirectSoundDoWork, steady ms
+ bool g_started = false;
+ uint32_t g_ds = 0;
++uint32_t g_ds_refs = 0; // Research device lifetime, protected by g_lock
+
+ float Db(int32_t hundredths) { return hundredths <= -10000 ? 0.0f : std::pow(10.0f, hundredths / 2000.0f); }
+
+@@ -422,7 +423,7 @@
+ // DSOUND objects are the host's; .XTLID names linked exports that would still run console code on them
+ static void AuditExports() {
+     static const uint32_t handled[] = {
+-        SYM(DirectSoundCreate), SYM(IDirectSound_Release), SYM(DirectSoundUseFullHRTF), SYM(DirectSoundUseLightHRTF),
++        SYM(DirectSoundCreate), SYM(IDirectSound_AddRef), SYM(IDirectSound_Release), SYM(DirectSoundUseFullHRTF), SYM(DirectSoundUseLightHRTF),
+         SYM(IDirectSound_GetSpeakerConfig),
+         SYM(IDirectSound_SetEffectData), SYM(IDirectSound_EnableHeadphones), SYM(IDirectSound_SetMixBinHeadroom),
+         SYM(IDirectSound_CommitDeferredSettings), SYM(IDirectSound_SetDopplerFactor), SYM(IDirectSound_SetRolloffFactor),
+@@ -476,10 +477,26 @@
+         g_ds = mem::AllocSystem(0x40);
+         std::memset(HostPtr(g_ds), 0, 0x40);
+     }
++    ++g_ds_refs;
+     W32(a[1], g_ds);
+     return 0;
+ }
+-HLE_STDCALL(IDirectSound_Release, 1) { return 0; }
++HLE_STDCALL(IDirectSound_AddRef, 1) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if (!g_ds || a[0] != g_ds || !g_ds_refs)
++        x86_trap(ctx, SYM(IDirectSound_AddRef), "Unknown DirectSound device in AddRef");
++    LOGI("research: DirectSound device AddRef %08X -> %u", g_ds, g_ds_refs + 1);
++    return ++g_ds_refs;
++}
++HLE_STDCALL(IDirectSound_Release, 1) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if (!g_ds || a[0] != g_ds || !g_ds_refs)
++        x86_trap(ctx, SYM(IDirectSound_Release), "Unknown DirectSound device in Release");
++    if (--g_ds_refs) return g_ds_refs;
++    mem::FreeSystem(g_ds);
++    g_ds = 0;
++    return 0;
++}
+ HLE_STDCALL(DirectSoundUseFullHRTF, 0) { return 0; }
+ HLE_STDCALL(DirectSoundUseLightHRTF, 0) { return 0; }
+ HLE_STDCALL(IDirectSound_GetSpeakerConfig, 2) {
