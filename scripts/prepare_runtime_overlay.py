@@ -8,8 +8,8 @@ import subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PIN = 'c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7'
 PATHS = ('runtime/xdk/dsound.cpp', 'runtime/xdk/d3d8.cpp', 'runtime/gpu/backend.h',
-         'runtime/gpu/render_thread.cpp', 'runtime/gpu/state.h', 'runtime/gpu/vertex.cpp')
-PATCHES = ('directsound-device-lifetime.patch', 'd3d-device-initialization.patch')
+         'runtime/gpu/render_thread.cpp', 'runtime/gpu/state.h', 'runtime/gpu/vertex.cpp', 'runtime/kernel/xboxkrnl.cpp')
+PATCHES = ('directsound-device-lifetime.patch', 'd3d-device-initialization.patch', 'io-apc-dispatch.patch')
 
 
 def prepare(destination, context=False, tools_only=False):

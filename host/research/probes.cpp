@@ -138,3 +138,40 @@ int VoicePropertiesSelfTest() {
     std::puts("VOICE_PROPERTIES_SELFTEST: live bins/gains/headroom/frequency/distance/pitch, bounded 92-byte layout, invalid arguments, lifetime and stdcall passed; no title instructions");
     std::fflush(stdout);return 0;
 }
+
+// Exercise the real APC queue and kernel export with authored callbacks, without a title.
+namespace dispatch { uint32_t HostThunk(X86Func*); uint32_t KernelThunkAddress(uint32_t); }
+#include <array>
+#include <vector>
+static std::vector<std::array<uint32_t,3>> io_completions;
+static void SyntheticIoComplete(X86Context& ctx, uint8_t*) {
+    kernel::Args args{ctx};
+    io_completions.push_back({args[0],args[1],args[2]});
+    kernel::Return(ctx,0,3);
+}
+int IoApcSelfTest() {
+    if(!mem::Init()) return 2;
+    kernel::g_base=mem::Base();
+    X86Context ctx{};ctx.esp=mem::AllocStack(0x10000);ctx.esi=0x12345678;
+    uint32_t stack=ctx.esp, blocks=mem::AllocSystem(24);
+    kernel::Thread thread;thread.ctx=&ctx;
+    uint32_t callback=dispatch::HostThunk(SyntheticIoComplete);
+    uint32_t adapter=dispatch::KernelThunkAddress(232);
+    const uint32_t status[]={kernel::kSuccess,kernel::kEndOfFile,kernel::kAccessDenied};
+    const uint32_t expected[]={0,38,5};
+    for(unsigned i=0;i<3;i++) {
+        uint32_t block=blocks+8*i;
+        kernel::W32(block,status[i]);kernel::W32(block+4,i?0:4096);
+        kernel::QueueApc(thread,adapter,callback,block,0);
+    }
+    if(!io_completions.empty())return 3;
+    if(!kernel::RunApcs(thread)||io_completions.size()!=3||kernel::RunApcs(thread))return 4;
+    for(unsigned i=0;i<3;i++) {
+        std::array<uint32_t,3> wanted={expected[i],i?0u:4096u,blocks+8*i};
+        if(io_completions[i]!=wanted)return 5;
+        if(kernel::R32(blocks+8*i)!=status[i])return 6;
+    }
+    if(ctx.esp!=stack||ctx.esi!=0x12345678)return 7;
+    std::puts("IO_APC_SELFTEST: real queue, deferred exactly-once delivery, success/EOF/access errors, byte count, IOSB identity and nested callback stack passed; authored callbacks only");
+    return 0;
+}

@@ -11,6 +11,7 @@ int ViewportSelfTest();
 int BackendBusySelfTest();
 int VertexModeSelfTest();
 int VoicePropertiesSelfTest();
+int IoApcSelfTest();
 static void Crash(int signal, siginfo_t* info, void*) {
     char message[160];
     int n = std::snprintf(message, sizeof(message), "RESEARCH_SIGNAL=%d address=%p\n", signal, info->si_addr);
@@ -33,6 +34,7 @@ static void Init() {
         if (!std::strcmp(probe, "viewport")) std::_Exit(ViewportSelfTest());
         if (!std::strcmp(probe, "busy")) std::_Exit(BackendBusySelfTest());
         if (!std::strcmp(probe, "vertex")) std::_Exit(VertexModeSelfTest());
+        if (!std::strcmp(probe, "apc")) std::_Exit(IoApcSelfTest());
         if (!std::strcmp(probe, "voice")) std::_Exit(VoicePropertiesSelfTest());
         std::_Exit(2);
     }
