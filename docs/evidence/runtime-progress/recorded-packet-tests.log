@@ -1,0 +1,63 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/runtime-probes-nj8wxx0e/cmake
+[  9%] Building CXX object CMakeFiles/runtime_gpu_probes.dir/main.cpp.o
+[ 18%] Building CXX object CMakeFiles/recorded_packet_probe.dir/recorded_push.cpp.o
+[ 27%] Linking CXX executable recorded_packet_probe
+[ 27%] Built target recorded_packet_probe
+[ 36%] Building CXX object CMakeFiles/runtime_gpu_probes.dir/gpu_probes.cpp.o
+[ 45%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/kernel/memory.cpp.o
+[ 54%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/core/log.cpp.o
+[ 63%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/gpu/texture.cpp.o
+[ 72%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/harness/app_headless.cpp.o
+[ 81%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/build/runtime-probes-nj8wxx0e/overlay/runtime/gpu/vertex.cpp.o
+[ 90%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/build/runtime-probes-nj8wxx0e/overlay/runtime/gpu/render_thread.cpp.o
+[100%] Linking CXX executable runtime_gpu_probes
+[100%] Built target runtime_gpu_probes
+Internal ctest changing into directory: <workspace>/build/runtime-probes-nj8wxx0e/cmake
+UpdateCTestConfiguration  from :<workspace>/build/runtime-probes-nj8wxx0e/cmake/DartConfiguration.tcl
+UpdateCTestConfiguration  from :<workspace>/build/runtime-probes-nj8wxx0e/cmake/DartConfiguration.tcl
+Test project <workspace>/build/runtime-probes-nj8wxx0e/cmake
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: threaded_backend_busy
+
+1: Test command: <workspace>/build/runtime-probes-nj8wxx0e/cmake/runtime_gpu_probes "busy"
+1: Working Directory: <workspace>/build/runtime-probes-nj8wxx0e/cmake
+1: Test timeout computed to be: 10
+1: [    0.000] [info] [tfd01] memory: guest space at 0x100000000
+1: BACKEND_BUSY_SELFTEST: empty queue idle, queued draw pending without blocking, completed draw idle; actual SDK worker, no title instructions
+1/3 Test #1: threaded_backend_busy ............   Passed    0.00 sec
+test 2
+    Start 2: immediate_vertex_mode
+
+2: Test command: <workspace>/build/runtime-probes-nj8wxx0e/cmake/runtime_gpu_probes "vertex"
+2: Working Directory: <workspace>/build/runtime-probes-nj8wxx0e/cmake
+2: Test timeout computed to be: 10
+2: [    0.000] [info] [te202] memory: guest space at 0x100000000
+2: VERTEX_MODE_SELFTEST: expanded immediate XYZRHW preserves position/RHW and screen-space mode; programmable and FVF modes remain distinct; no title instructions
+2/3 Test #2: immediate_vertex_mode ............   Passed    0.00 sec
+test 3
+    Start 3: recorded_index_packets
+
+3: Test command: <workspace>/build/runtime-probes-nj8wxx0e/cmake/recorded_packet_probe
+3: Working Directory: <workspace>/build/runtime-probes-nj8wxx0e/cmake
+3: Test timeout computed to be: 10
+3: RECORDED_INDEX_PACKETS: two draws, bounded 32-bit conversion, terminal return, ordering, little-endian index pairs, NOPs, atomic validation, malformed/control/unknown packet rejection passed; authored packets only
+3/3 Test #3: recorded_index_packets ...........   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =   0.01 sec
+{"sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7", "patches": {"directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34", "d3d-device-initialization.patch": "aa83a9e4c5acffa8b34e355e109a875300c2df97c0f85830c5e3fa70d41a02de", "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc"}, "synthetic_gpu_probes_passed": 2, "recorded_packet_parser_passed": true, "game_data_used": false}

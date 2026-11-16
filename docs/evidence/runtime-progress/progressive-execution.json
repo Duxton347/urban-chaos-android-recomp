@@ -44,6 +44,13 @@
       "requested_disc_paths_missing": 0,
       "fault_guest_function": "003EF870",
       "failure": "recorded D3D push buffer execution"
+    },
+    {
+      "change": "bounded recorded index packets and terminal return",
+      "exit": -6,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "003EF870",
+      "failure": "GPU old-style jump, control flag 1, word 165; at least eight recorded buffers submitted"
     }
   ]
 }

@@ -42,3 +42,8 @@ Commits `e688a49`, `4dc432b`, `76d5d50` adicionaram compilação do núcleo real
 A revisão no mesmo PR #1 adiciona correções explícitas MIT de GPU/áudio, geração optativa com continuações, regressões autorais e receita para o host privado. Compilação e execução do título ocorreram somente no ambiente privado da nuvem; o CI público recebe os testes sintéticos GPU/contexto e nenhuma entrada comercial. [Resultados locais e limites](RUNTIME_PROGRESS.md).
 
 O acesso ao destino exato foi reconfirmado antes da publicação. O PR permanece aberto; nenhum merge, release do jogo ou APK foi autorizado como validado. Os checks do novo HEAD serão acompanhados após o push; os sucessos históricos acima não são evidência automática desta revisão.
+
+
+No commit `482f0120214edb0b8b62a21a4adfb00d6cd41a40`, passaram [auditoria](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43869841739), [testes](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43869841303), [native/contexto](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43869841354) e [contrato ARM64](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43869841375). A [reprodução Windows original](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43869841331) voltou a falhar: configure exit 0, build exit 1, `integration-status.json` privado ausente. O erro foi conferido no log; não foi mascarado.
+
+Esse commit antecede o novo decodificador de pacotes gravados. O novo HEAD acrescenta o teste autoral de índices/retorno ao CI nativo e sua compilação ARM64; seus checks precisam ser acompanhados separadamente. O PR segue aberto, sem merge ou release.

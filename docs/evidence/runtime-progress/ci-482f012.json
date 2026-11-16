@@ -1,0 +1,12 @@
+{
+  "commit": "482f0120214edb0b8b62a21a4adfb00d6cd41a40",
+  "scope": "Infrastructure only; predates the recorded GPU packet decoder addition",
+  "checks": [
+    {"name": "audit", "conclusion": "success", "run": 43869841739},
+    {"name": "tests", "conclusion": "success", "run": 43869841303},
+    {"name": "native", "conclusion": "success", "run": 43869841354},
+    {"name": "arm64_portability", "conclusion": "success", "run": 43869841375},
+    {"name": "original_windows_reproduction", "conclusion": "failure", "run": 43869841331,
+      "configure_exit": 0, "build_exit": 1, "failure": "Missing original qualified integration-status.json; no synthetic status created"}
+  ]
+}
