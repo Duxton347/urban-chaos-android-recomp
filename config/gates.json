@@ -30,8 +30,8 @@
     "Review function boundaries, ABI, callbacks and remaining HLE",
     "Complete original mission execution and validate saves/audio"
   ],
-  "raw_guest_research_latest_exit": -6,
-  "raw_guest_research_failure": "Recorded indexed path submits at least eight buffers; old-style GPU jump (control flag 1 at word 165) explicitly rejected pending mapped control-flow integration",
+  "raw_guest_research_latest_exit": 124,
+  "raw_guest_research_failure": "First mission presentation unverified; GPU reports complete with real reference samples; guest tree insertion/rebalancing stalls at 000B9A10; allocation origin under investigation",
   "raw_audio_device_lifetime_experiment_passed": true,
   "raw_audio_device_lifetime_hle_probe_exit": 0,
   "game_audio_output_validated": false,
@@ -49,5 +49,8 @@
   "recorded_gpu_packet_decoder_tested": true,
   "recorded_gpu_packet_decoder_arm64_compiled": true,
   "recorded_gpu_first_draw_submitted": true,
-  "recorded_gpu_submitted_buffers_observed_minimum": 8
+  "recorded_gpu_submitted_buffers_observed_minimum": 8,
+  "recorded_xdk_linkage_boundary_tested": true,
+  "reference_visibility_reports_tested": true,
+  "reference_visibility_reports_observed_in_title": true
 }

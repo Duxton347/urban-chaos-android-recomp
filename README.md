@@ -41,7 +41,7 @@ Os workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smok
 
 ## Próximo bloqueio
 
-A execução já passou pelas falhas iniciais de áudio e gráficos e chegou ao menu original. A investigação segue no carregamento da primeira missão: foram corrigidos retornos não locais entre pilhas guest e identificadas chamadas de áudio ainda sem HLE compatível. [Evidências e limitações](docs/RUNTIME_PROGRESS.md). Ainda faltam missão jogável, fidelidade de áudio, save/load, backend Android e testes no tablet. O hash da variante difere da referência Burner; sua integração privada original continua não reproduzida, e as adaptações próprias da Burner não foram incorporadas sem licença esclarecida.
+A execução já passou pelas falhas iniciais de áudio e gráficos e chegou ao menu original. A investigação segue no carregamento da primeira missão: foram corrigidos retornos não locais, chamadas de áudio, linkage de buffers XDK e reports reais de visibilidade. A próxima falha observada está na inserção de uma árvore durante a carga da cena. [Evidências e limitações](docs/RUNTIME_PROGRESS.md). Ainda faltam missão jogável, fidelidade de áudio, save/load, backend Android e testes no tablet. O hash da variante difere da referência Burner; sua integração privada original continua não reproduzida, e as adaptações próprias da Burner não foram incorporadas sem licença esclarecida.
 
 Não são exigidos PC local nem upload de jogo pelo chat. Futuras entradas legítimas ficam em volume privado na nuvem ou são selecionadas no tablet via SAF. `private/`, `generated/`, imagens, executáveis, saves e keystores nunca entram no Git ou nos artefatos públicos. Não serão usados executáveis criptografados de projetos de referência.
 
