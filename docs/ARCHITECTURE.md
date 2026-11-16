@@ -1,6 +1,6 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: infraestrutura compilada; jogo bloqueado em G1.**
+**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux de pesquisa inicia parcialmente. Integração HLE/D3D e qualificação G1 pendentes.**
 
 ## Fluxo de produção pretendido
 
@@ -11,7 +11,8 @@ flowchart TD
   Validate --> Scan[Scanner XboxXBERecomp pinado]
   Scan --> Review[Configuração, funções, ABI e hooks comprovados]
   Review --> Generate[Geração C++ limpa e determinística]
-  Generate --> PC[Build e execução real no PC em runner privado]
+  Generate --> PC[Build e depuração Linux na nuvem com dados privados]
+  PC -. Comparação opcional .-> Windows[Backend Windows de referência]
   PC --> ARM[Build Android arm64-v8a]
   ARM --> Runtime[Kernel / memória / arquivos / threads / callbacks]
   Runtime --> GPU[D3D8 para Vulkan]
@@ -20,18 +21,20 @@ flowchart TD
   Runtime --> Saves[Savegame original em armazenamento privado]
 ```
 
+Windows não é entrada nem requisito do build Android: o mesmo C++ gerado é compilado para cada arquitetura com seu host. O host Linux serve para depurar HLE/ABI e estado do dispositivo; Windows fica como comparação opcional. [Investigação executada](AUDIO_INVESTIGATION.md).
+
 Importação de assets e recompilação são etapas distintas. O APK final deverá ser compilado contra uma versão de executável qualificada; importar outro XBE não o torna automaticamente compatível. O código gerado deriva do executável comercial: precisa de revisão de direitos antes de qualquer distribuição, mesmo que não contenha a ISO. Não publicar esse código ou incluí-lo indiscriminadamente em artefatos CI.
 
 ## Camadas e proveniência
 
 | Camada | Base e decisão | Estado |
 |---|---|---|
-| Conteúdo/lógica do título | Executável Xbox e seus assets do usuário; nenhum substituto simplificado | Ausentes nesta sessão |
-| Geração estática | XboxXBERecomp `c1f7d60...` com Zydis e toml++ | Host tools compilam; fixture sintético executa |
+| Conteúdo/lógica do título | Executável Xbox e seus assets do usuário; nenhum substituto simplificado | XBE extraído; recursos solicitados disponíveis privadamente |
+| Geração estática | XboxXBERecomp `c1f7d60...` com Zydis e toml++ | 29.049 funções geradas duas vezes com saídas idênticas; código compila em x86_64 |
 | Integração Urban Chaos | Consumidores, hooks e patches públicos da Burner; não transplantar Black | Auditados por leitura; licença das adaptações precisa ser esclarecida |
 | Runtime portátil | Contratos CPU/kernel/HLE do SDK; pin Burner | Contrato CPU AArch64 compila; runtime completo do título não demonstrado |
 | Host Android | Infraestrutura MIT do Black como referência: lifecycle, Vulkan, áudio, entrada; revisão por arquivo antes de incorporação | Interfaces e exclusões identificadas; nenhum hook Black importado |
-| Disco | XDVDFS próprio limitado; XboxKit como referência externa de Redump | Sintéticos XISO/pasta/offset XGD1 passam; disco comercial não testado |
+| Disco | XDVDFS próprio limitado; XboxKit como referência externa de Redump | Imagem fornecida inspecionada; XBE e recursos parciais extraídos/verificados; ISO inteira não validada |
 | HUD | Ações Urban Chaos verificadas, ícones originais, perfis e multitouch | Especificação; mapeamento binário pendente |
 
 `android/` contém o diagnóstico da etapa anterior, preservado como histórico. Ele não é o módulo do jogo, não contém lógica original e não será ampliado para aparentar gameplay. A nova CI Android compila apenas `native/portability`, explicitamente sem APK.

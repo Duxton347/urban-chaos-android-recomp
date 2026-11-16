@@ -1,6 +1,10 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-16. **GO: imagem Xbox identificada, XBE extraído, geração determinística e compilação PC concluídas. REQUIRES_REVERSE_ENGINEERING: integração HLE/ABI; execução de pesquisa falha em áudio antes do menu. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-16. **GO: imagem Xbox identificada, XBE extraído, geração determinística e compilação PC concluídas. REQUIRES_REVERSE_ENGINEERING: integração HLE/ABI; patch de referências passa primeira falha de áudio; execução agora falha em D3D antes do menu. Nenhum APK do jogo foi criado.**
+
+## Investigação posterior da falha de áudio
+
+[Diagnóstico e testes progressivos](AUDIO_INVESTIGATION.md): incompatibilidade do objeto DirectSound confirmada. Patch MIT experimental de referências passa AddRef e um probe de oito chamadas HLE. `AudioData.bin` e `Movies/dolby.xmv` foram extraídos da própria ISO e tiveram hashes verificados. O próximo SIGSEGV está em D3D `0x003E7F70`, com ponteiro de vertex shader zero; ele se repete com o vídeo disponível. Não é a única falha, nem falta de outro pacote. Windows não é requisito da compilação Android; o host Linux continua sendo a rota de depuração.
 
 ## Nova entrada: executável disponível e código compilado
 
@@ -45,7 +49,7 @@ Os 21 testes abaixo pertencem à primeira auditoria. Após a inspeção de 2026-
 
 ## Bloqueios e menor caminho viável
 
-1. XBE Xbox fornecido e extraído; scanner e geração executados. O bloqueio atual é qualificar a variante de hash diferente e corrigir integração HLE/ABI, começando pelo SIGSEGV DSOUND observado. Dados permanecem privados.
+1. XBE Xbox fornecido e extraído; scanner e geração executados. O bloqueio atual é qualificar a variante de hash diferente e corrigir integração HLE/ABI, agora no estado D3D/shaders e nos demais objetos de áudio após o primeiro patch experimental. Dados permanecem privados.
 2. O build Burner parte de área privada qualificada. A nova geração privada foi reproduzida a partir do XBE fornecido, mas não recupera automaticamente a configuração completa qualificada da Burner. Recipes de algumas fixtures existem, mas requerem assets locais. [Entradas e consumidores](MISSING_INPUTS.md).
 3. Reutilizar patches Burner exige licença aplicável. A intenção de reuso não esclarece direitos automaticamente. Não contactar terceiros sem instrução explícita.
 4. Primeiro executar geração limpa e determinística e boot/menu PC, preferencialmente com backend de referência em runner privado. Windows PC na nuvem pode ser menor caminho para primeiro boot; Proton não é nativo Linux.

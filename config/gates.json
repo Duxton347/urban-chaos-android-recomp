@@ -27,9 +27,13 @@
   "raw_guest_initialization_observed": true,
   "g1_remaining": [
     "Qualify the provided non-reference XBE variant",
-    "Review function boundaries, HLE/ABI and callbacks",
+    "Review function boundaries, HLE/ABI, callbacks and D3D device/shader state",
     "Validate original game execution with required assets"
   ],
   "raw_guest_research_latest_exit": 139,
-  "raw_guest_research_failure": "SIGSEGV in guest DSOUND export 0xB0036 / function 0x00423B41; HLE integration unqualified"
+  "raw_guest_research_failure": "SIGSEGV in D3D function 0x003E7F70 after experimental audio lifetime patch; null current shader object",
+  "raw_audio_device_lifetime_experiment_passed": true,
+  "raw_audio_device_lifetime_hle_probe_exit": 0,
+  "game_audio_output_validated": false,
+  "windows_build_required_for_android": false
 }

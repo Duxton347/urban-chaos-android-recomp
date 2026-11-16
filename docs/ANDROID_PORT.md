@@ -14,7 +14,7 @@ No pin `8e9c6fc...`, `native/main.cpp` coordena SDL e lifecycle, `native/vulkan.
 
 ## Ordem de integração
 
-1. G1 e primeiro boot/menu PC com código original e patches licenciados.
+1. Qualificar geração e integração do título; depurar boot/menu no host Linux da nuvem. Windows é uma referência opcional, não uma etapa de conversão para Android. O C++ gerado é compilado diretamente para ARM64; testes independentes de portabilidade podem avançar antes do menu. [Falhas atuais](AUDIO_INVESTIGATION.md).
 2. Memória guest e ponteiros: verificar mapeamento 32/64 bits, alinhamento, permissões, endianness, TLS, threads, ordinais e callbacks. Não truncar ponteiros host.
 3. Host Android: SDL3, pausa/foco/retorno, destruição/recriação de superfície e orientação. Nenhuma thread continua usando swapchain destruída; estados de input devem ser liberados na perda de foco.
 4. D3D8→Vulkan: preservar recursos, shaders/combiner, estados, render targets, fences/locks, leituras de memória e ordem observada de draws. Primeiro frames reais de logo/menu, depois primeira missão. O frame colorido do diagnóstico não serve como evidência.

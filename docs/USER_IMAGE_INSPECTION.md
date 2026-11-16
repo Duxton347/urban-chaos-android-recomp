@@ -1,5 +1,7 @@
 # Imagem Xbox fornecida — inspeção e execução real
 
+> Relatório da primeira execução. A [investigação posterior de áudio](AUDIO_INVESTIGATION.md) passou pela falha inicial com patch experimental e encontrou uma falha gráfica. Windows é opcional para a rota Android.
+
 Em 2026-11-16 a imagem indicada pelo usuário foi acessada na nuvem. **O `Default.xbe` foi encontrado e extraído.** A falta desse arquivo deixou de ser o bloqueio. O código original foi regenerado, compilado e ligado a um host de pesquisa Linux; a execução ainda falha antes de comprovar menu ou frames. Não há APK jogável nem boot Windows demonstrado.
 
 ## O que a imagem contém
