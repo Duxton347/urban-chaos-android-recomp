@@ -49,11 +49,11 @@
 +    uint32_t object=a[0];
 +    if(!mapped(object,16))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer object");
 +    uint32_t data=R32(object+4),bytes=R32(object+12);
-+    if(bytes%4||!mapped(data,bytes))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer extent");
++    if(bytes<4||bytes%4||!mapped(data,bytes))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer extent");
 +    std::vector<uint32_t> words(bytes/4);
 +    if(bytes)std::memcpy(words.data(),HostPtr(data),bytes);
 +    std::vector<urban::gpu::IndexedDraw> draws;std::string error;
-+    if(!urban::gpu::DecodeRecordedIndices(words,draws,error)) {
++    if(!urban::gpu::DecodeXdkRecordedIndices(words,draws,error)) {
 +        LOGE("d3d: recorded push buffer rejected: %s",error.c_str());
 +        x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"unsupported or malformed recorded GPU commands");
 +    }

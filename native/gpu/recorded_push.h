@@ -55,4 +55,13 @@ inline bool DecodeRecordedIndices(std::span<const uint32_t> words, std::vector<I
     if(current.primitive)return fail("unterminated primitive");
     return true;
 }
+// XDK D3DPushBuffer::Size includes a final DWORD reserved for submission linkage.
+// RunPushBuffer either patches it to the caller's GPU continuation or copies Size-4 bytes.
+// This adapter models the return to the host submitter; the generic packet decoder
+// still rejects unsupported control flow anywhere in the executable payload.
+inline bool DecodeXdkRecordedIndices(std::span<const uint32_t> storage, std::vector<IndexedDraw>& draws, std::string& error) {
+    if(storage.empty()) { draws.clear();error="XDK recorded buffer is missing its linkage word";return false; }
+    return DecodeRecordedIndices(storage.first(storage.size()-1),draws,error);
+}
+
 }

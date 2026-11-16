@@ -35,5 +35,16 @@ int main() {
     auto partial=good;partial.push_back(Header(0x1808,1));partial.push_back(1);
     assert(!DecodeRecordedIndices(partial,draws,error)&&draws.empty()); // validate the whole stream before drawing
     assert(DecodeRecordedIndices({},draws,error)&&draws.empty());
-    std::puts("RECORDED_INDEX_PACKETS: two draws, bounded 32-bit conversion, terminal return, ordering, little-endian index pairs, NOPs, atomic validation, malformed/control/unknown packet rejection passed; authored packets only");
+    for(uint32_t linkage:{0u,9u,0xABCDE001u,0x00020000u}) {
+        auto storage=good;storage.push_back(linkage);
+        assert(DecodeXdkRecordedIndices(storage,draws,error)&&draws.size()==2);
+        assert((draws[0].indices==std::vector<uint16_t>{1,2,3,65535}));
+        assert((draws[1].indices==std::vector<uint16_t>{7,8}));
+    }
+    assert(!DecodeXdkRecordedIndices({},draws,error)&&draws.empty());
+    auto internal_jump=good;internal_jump.push_back(9);internal_jump.push_back(0);
+    assert(!DecodeXdkRecordedIndices(internal_jump,draws,error)&&draws.empty());
+    auto damaged=good;damaged.push_back(Header(0x1800,2,true));damaged.push_back(0);
+    assert(!DecodeXdkRecordedIndices(damaged,draws,error)&&draws.empty());
+    std::puts("RECORDED_INDEX_PACKETS: two draws, bounded 32-bit conversion, terminal return, ordering, little-endian index pairs, NOPs, XDK linkage boundary, atomic validation, malformed/control/unknown packet rejection passed; authored packets only");
 }

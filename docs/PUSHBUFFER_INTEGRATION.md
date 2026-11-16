@@ -2,6 +2,8 @@
 
 **IMPLEMENTAÇÃO PARCIAL / REQUIRES_REVERSE_ENGINEERING.** Após as correções de contexto, DirectSound e conclusão de I/O, a execução da primeira missão alcança D3D `0x003EF870`, chamada por `0x000B4EB0`, e falha no estado de submissão Xbox ausente. O teste terminou com SIGSEGV/exit 139 após aproximadamente 72 s, sem arquivos solicitados ausentes. Não é mais a primeira falha de áudio.
 
+> Atualização: o salto que motivou esta investigação foi rastreado ao campo de retorno reservado do objeto XDK, que a rotina original sobrescreve. [Causa, implementação e regressões](GPU_LINKAGE.md). O histórico abaixo preserva a sequência de diagnóstico.
+
 ## Evidência e limite atual
 
 O consumidor passa um objeto de push buffer e fixup nulo. A rotina original consulta os campos de endereço/tamanho do buffer, interage com estado de submissão/fences do dispositivo e prepara comandos para a GPU Xbox. A cópia original do dispositivo HLE não contém a infraestrutura de hardware esperada.
