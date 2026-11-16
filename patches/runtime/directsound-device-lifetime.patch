@@ -1,6 +1,15 @@
 --- a/runtime/xdk/dsound.cpp
 +++ b/runtime/xdk/dsound.cpp
-@@ -134,6 +134,7 @@
+@@ -112,6 +112,8 @@
+     int32_t bin_mb[32] = {};  // by mix bin
+     std::vector<float> curve;  // rolloff
+     bool is3d = false;
++    uint32_t pending_mode = 0;
++    bool mode_pending = false;
+     uint32_t mode = 0;  // DS3DMODE: 1 head relative, 2 disabled
+     float p[3] = {}, min_dist = 1, max_dist = 1e9f;
+     // ADPCM block cache
+@@ -134,6 +136,7 @@
  std::atomic<int64_t> g_pumped{0};          // the last DirectSoundDoWork, steady ms
  bool g_started = false;
  uint32_t g_ds = 0;
@@ -8,7 +17,50 @@
 
  float Db(int32_t hundredths) { return hundredths <= -10000 ? 0.0f : std::pow(10.0f, hundredths / 2000.0f); }
 
-@@ -422,7 +423,7 @@
+@@ -201,6 +204,24 @@
+     } else if (pk.context) {
+         if (ObjectRef e = FromHandle(pk.context)) SetEvent(*e);
+     }
++}
++
++float DistanceAttenuation(const Voice& v) {
++    if (!v.is3d || v.mode == 2) return 1;
++    float d[3] = {v.p[0], v.p[1], v.p[2]};
++    for (int i = 0; i < 3 && v.mode != 1; i++) d[i] -= g_listener[i];
++    float dist = std::sqrt(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]);
++    float att = 1;
++    if (dist > v.min_dist && v.curve.empty()) {
++        att = v.min_dist / std::min(dist, v.max_dist);
++    } else if (dist > v.min_dist && v.max_dist > v.min_dist) {
++        // points spread evenly from min to max distance, 1.0 at min
++        float at = (std::min(dist, v.max_dist) - v.min_dist) / (v.max_dist - v.min_dist) * v.curve.size();
++        size_t i = std::min(size_t(at), v.curve.size() - 1);
++        float from = i ? v.curve[i - 1] : 1.0f;
++        att = from + (v.curve[i] - from) * (at - i);
++    }
++    return att;
+ }
+
+ // gain of voice channel c on host left and right. A hardware voice holds two channels and owns a run of slots,
+@@ -228,16 +249,7 @@
+     float d[3] = {v.p[0], v.p[1], v.p[2]};
+     for (int i = 0; i < 3 && !rel; i++) d[i] -= g_listener[i];
+     float dist = std::sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+-    float att = 1;
+-    if (dist > v.min_dist && v.curve.empty()) {
+-        att = v.min_dist / std::min(dist, v.max_dist);
+-    } else if (dist > v.min_dist && v.max_dist > v.min_dist) {
+-        // points spread evenly from min to max distance, 1.0 at min
+-        float at = (std::min(dist, v.max_dist) - v.min_dist) / (v.max_dist - v.min_dist) * v.curve.size();
+-        size_t i = std::min(size_t(at), v.curve.size() - 1);
+-        float from = i ? v.curve[i - 1] : 1.0f;
+-        att = from + (v.curve[i] - from) * (at - i);
+-    }
++    float att = DistanceAttenuation(v);
+     float right[3] = {g_top[1] * g_front[2] - g_top[2] * g_front[1], g_top[2] * g_front[0] - g_top[0] * g_front[2],
+                       g_top[0] * g_front[1] - g_top[1] * g_front[0]};
+     float side = rel ? d[0] : d[0] * right[0] + d[1] * right[1] + d[2] * right[2];
+@@ -422,7 +434,7 @@
  // DSOUND objects are the host's; .XTLID names linked exports that would still run console code on them
  static void AuditExports() {
      static const uint32_t handled[] = {
@@ -17,7 +69,25 @@
          SYM(IDirectSound_GetSpeakerConfig),
          SYM(IDirectSound_SetEffectData), SYM(IDirectSound_EnableHeadphones), SYM(IDirectSound_SetMixBinHeadroom),
          SYM(IDirectSound_CommitDeferredSettings), SYM(IDirectSound_SetDopplerFactor), SYM(IDirectSound_SetRolloffFactor),
-@@ -476,10 +477,26 @@
+@@ -433,14 +445,14 @@
+         SYM(IDirectSoundBuffer_SetFormat), SYM(IDirectSoundBuffer_SetOutputBuffer), SYM(IDirectSoundBuffer_SetRolloffCurve),
+         SYM(IDirectSoundBuffer_StopEx),
+         SYM(XAudioDownloadEffectsImage), SYM(DirectSoundCreateBuffer), SYM(IDirectSound_CreateSoundBuffer),
+-        SYM(IDirectSoundBuffer_Release), SYM(IDirectSoundBuffer_Unlock), SYM(IDirectSoundBuffer_SetBufferData),
++        SYM(IDirectSoundBuffer_GetVoiceProperties), SYM(IDirectSoundBuffer_Release), SYM(IDirectSoundBuffer_Unlock), SYM(IDirectSoundBuffer_SetBufferData),
+         SYM(IDirectSoundBuffer_Play), SYM(IDirectSoundBuffer_Stop), SYM(IDirectSoundBuffer_SetLoopRegion),
+         SYM(IDirectSoundBuffer_GetStatus), SYM(IDirectSoundBuffer_GetCurrentPosition), SYM(IDirectSoundBuffer_SetCurrentPosition),
+         SYM(IDirectSoundBuffer_Lock), SYM(IDirectSoundBuffer_SetVolume), SYM(IDirectSoundBuffer_SetFrequency),
+-        SYM(IDirectSoundBuffer_SetFilter), SYM(IDirectSoundBuffer_SetHeadroom), SYM(IDirectSoundBuffer_SetMixBinVolumes),
++        SYM(IDirectSoundBuffer_SetMode), SYM(IDirectSoundBuffer_SetPitch), SYM(IDirectSoundBuffer_SetFilter), SYM(IDirectSoundBuffer_SetHeadroom), SYM(IDirectSoundBuffer_SetMixBinVolumes),
+         SYM(IDirectSoundBuffer_SetMixBins), SYM(IDirectSoundBuffer_SetMaxDistance), SYM(IDirectSoundBuffer_SetMinDistance),
+         SYM(IDirectSoundBuffer_SetPosition), SYM(IDirectSoundBuffer_SetVelocity), SYM(IDirectSoundBuffer_SetI3DL2Source),
+-        SYM(DirectSoundCreateStream), SYM(CDirectSoundStream_AddRef), SYM(CDirectSoundStream_SetFormat),
++        SYM(IDirectSound_CreateSoundStream), SYM(DirectSoundCreateStream), SYM(CDirectSoundStream_AddRef), SYM(CDirectSoundStream_SetFormat),
+         SYM(CDirectSoundStream_Release), SYM(CDirectSoundStream_GetInfo), SYM(CDirectSoundStream_GetStatus),
+         SYM(CDirectSoundStream_Process), SYM(CDirectSoundStream_Discontinuity), SYM(CDirectSoundStream_Flush),
+         SYM(CDirectSoundStream_FlushEx), SYM(CDirectSoundStream_Pause), SYM(CDirectSoundStream_SetVolume),
+@@ -476,10 +488,26 @@
          g_ds = mem::AllocSystem(0x40);
          std::memset(HostPtr(g_ds), 0, 0x40);
      }
@@ -45,3 +115,109 @@
  HLE_STDCALL(DirectSoundUseFullHRTF, 0) { return 0; }
  HLE_STDCALL(DirectSoundUseLightHRTF, 0) { return 0; }
  HLE_STDCALL(IDirectSound_GetSpeakerConfig, 2) {
+@@ -489,7 +517,14 @@
+ HLE_STDCALL(IDirectSound_SetEffectData, 6) { return 0; }
+ HLE_STDCALL(IDirectSound_EnableHeadphones, 2) { return 0; }
+ HLE_STDCALL(IDirectSound_SetMixBinHeadroom, 3) { return 0; }
+-HLE_STDCALL(IDirectSound_CommitDeferredSettings, 1) { return 0; }
++HLE_STDCALL(IDirectSound_CommitDeferredSettings, 1) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    for (auto& [object, voice] : g_voices) if (voice.mode_pending) {
++        voice.mode = voice.pending_mode;
++        voice.mode_pending = false;
++    }
++    return 0;
++}
+ HLE_STDCALL(IDirectSound_SetDopplerFactor, 3) { return 0; }
+ HLE_STDCALL(IDirectSound_SetRolloffFactor, 3) { return 0; }
+ HLE_STDCALL(IDirectSound_SetDistanceFactor, 3) { return 0; }
+@@ -598,6 +633,31 @@
+     }                                                       \
+     static uint32_t buf_##name([[maybe_unused]] Voice& v, [[maybe_unused]] const Args& a)
+
++// DSVOICEPROPS: count, eight (mix-bin, millibel) pairs, pitch and five spatial/effect values.
++// Reports software-mixer state rather than reading Xbox APU registers through a console object.
++BUFFER(GetVoiceProperties, 2) {
++    uint32_t out = a[1];
++    if (!out) return 0x80070057u;
++    uint32_t n = v.nbins ? v.nbins : 2;
++    W32(out, n);
++    auto millibels = [](float gain) {
++        return gain > 0 ? std::max(-10000, int(std::lround(2000.0 * std::log10(gain)))) : -10000;
++    };
++    int32_t base = millibels(v.volume * v.headroom);
++    for (uint32_t i = 0; i < 8; i++) {
++        uint32_t bin = i < n ? (v.nbins ? v.bin[i] : i) : 0xFFFFFFFFu;
++        W32(out + 4 + i*8, bin);
++        int32_t volume = i < n ? std::clamp(base + v.bin_mb[bin], -10000, 0) : -10000;
++        W32(out + 8 + i*8, uint32_t(volume));
++    }
++    uint32_t rate = std::max(v.freq ? v.freq : v.rate, 1u);
++    W32(out + 0x44, uint32_t(int32_t(std::lround(4096.0 * std::log2(double(rate) / audio::kRate)))));
++    W32(out + 0x48, uint32_t(millibels(DistanceAttenuation(v))));
++    // The existing mixer applies no cone, Doppler or I3DL2 processing; report its actual zero contributions.
++    for (uint32_t offset = 0x4C; offset <= 0x58; offset += 4) W32(out + offset, 0);
++    return 0;
++}
++
+ BUFFER(Release, 1) {
+     if (--v.refs > 0) return uint32_t(v.refs);
+     if (v.owned) mem::FreeContiguous(v.owned);
+@@ -684,6 +744,12 @@
+     v.volume = Db(int32_t(a[1]));
+     return 0;
+ }
++BUFFER(SetPitch, 2) {
++    int32_t pitch = int32_t(a[1]);
++    if (pitch < -8192 || pitch > 8191) return 0x80070057u;
++    v.freq = uint32_t(std::lround(audio::kRate * std::exp2(double(pitch) / 4096.0)));
++    return 0;
++}
+ BUFFER(SetFrequency, 2) {
+     v.freq = a[1];
+     return 0;
+@@ -707,6 +773,12 @@
+ }
+ BUFFER(SetMinDistance, 3) {
+     v.min_dist = F32(a[1]);
++    return 0;
++}
++BUFFER(SetMode, 3) {
++    if (a[1] > 2 || a[2] > 1) return 0x80070057u;
++    if (a[2]) { v.pending_mode = a[1]; v.mode_pending = true; }
++    else { v.mode = a[1]; v.mode_pending = false; }
+     return 0;
+ }
+ BUFFER(SetPosition, 5) {
+@@ -739,12 +811,12 @@
+
+ // streams, the object carries the XDK's own vtable
+
+-HLE_STDCALL(DirectSoundCreateStream, 2) {
++static uint32_t NewStream(uint32_t desc, uint32_t output) {
++    if (!desc || !output) return 0x80070057u;
+     XDK_REQUIRE("dsound", XDK_KEY(CDirectSoundStream_Vtable), XDK_KEY(CDirectSoundStream_Vtable2),
+                 XDK_DATA(DSound_StreamVtable), XDK_DATA(DSound_StreamVtable2));
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
+     Start();
+-    uint32_t desc = a[0];
+     uint32_t obj = mem::AllocSystem(0x80);
+     std::memset(HostPtr(obj), 0, 0x80);
+     W32(obj + XDK_CDirectSoundStream_Vtable, kStreamVtable);
+@@ -760,8 +832,14 @@
+     SetBins(v, R32(desc + 20));
+     v.is3d = flags & 0x10;  // DSBCAPS_CTRL3D
+     v.headroom = DefaultHeadroom(flags);
+-    W32(a[1], obj);
+-    return 0;
++    W32(output, obj);
++    return 0;
++}
++HLE_STDCALL(DirectSoundCreateStream, 2) { return NewStream(a[0], a[1]); }
++HLE_STDCALL(IDirectSound_CreateSoundStream, 4) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if (!g_ds || a[0] != g_ds || a[3]) return 0x80070057u;
++    return NewStream(a[1], a[2]);
+ }
+
+ #define STREAM(name, nargs)                                     \

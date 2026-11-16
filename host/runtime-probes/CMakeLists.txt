@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.31.6)
+project(UrbanRuntimeSyntheticProbes LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+get_filename_component(REPO "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+set(SDK "${REPO}/vendor/runtime")
+if(NOT EXISTS "${URBAN_OVERLAY}/runtime/gpu/state.h")
+ message(FATAL_ERROR "Patched SDK overlay required")
+endif()
+add_executable(runtime_gpu_probes main.cpp gpu_probes.cpp
+ "${SDK}/runtime/kernel/memory.cpp" "${SDK}/runtime/core/log.cpp"
+ "${SDK}/runtime/gpu/texture.cpp" "${SDK}/harness/app_headless.cpp"
+ "${URBAN_OVERLAY}/runtime/gpu/vertex.cpp" "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp")
+target_include_directories(runtime_gpu_probes PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness/compat")
+target_compile_definitions(runtime_gpu_probes PRIVATE XBE_RAW_VERTICES=0)
+target_compile_options(runtime_gpu_probes PRIVATE -O1 -UNDEBUG -march=x86-64-v2 -fsigned-char -fno-strict-aliasing)
+target_link_libraries(runtime_gpu_probes PRIVATE pthread)
+enable_testing()
+add_test(NAME threaded_backend_busy COMMAND runtime_gpu_probes busy)
+add_test(NAME immediate_vertex_mode COMMAND runtime_gpu_probes vertex)
+set_tests_properties(threaded_backend_busy immediate_vertex_mode PROPERTIES TIMEOUT 10)
