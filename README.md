@@ -2,10 +2,12 @@
 
 Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por recompilação estática. A meta é preservar o jogo original; o alvo prioritário é Xiaomi Pad 6 / HyperOS 2.0.16.0.
 
-**Estado: XBE Xbox extraído; código original gerado e compilado para PC. Host de pesquisa Linux passou pela primeira falha de áudio com patch experimental e agora falha na inicialização gráfica, antes de menu. Não existe APK jogável nesta entrega.** O diagnóstico da fase anterior está preservado em `android/` como infraestrutura histórica e não representa o port.
+**Estado: intro, tela de título, menu principal e seleção de dificuldade originais executados no host Linux de pesquisa. Código baseline também compilado em ARM64. A primeira missão ainda está em depuração; não existe APK jogável nesta entrega.** O diagnóstico histórico em `android/` não representa o port.
 
 ## Primeira entrega e rota
 
+- [Progresso do runtime: menu original, correções e testes](docs/RUNTIME_PROGRESS.md)
+- [Retornos não locais e callbacks do recompilador](docs/CONTEXT_SWITCHING.md)
 - [Investigação de áudio, testes posteriores e rota sem Windows obrigatório](docs/AUDIO_INVESTIGATION.md)
 - [Imagem fornecida: extração, geração e falha de execução](docs/USER_IMAGE_INSPECTION.md)
 - [Recuperação da compilação PC: tentativas e resultados](docs/PC_BUILD_RECOVERY.md)
@@ -39,7 +41,7 @@ Os workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smok
 
 ## Próximo bloqueio
 
-O XBE da imagem fornecida foi extraído, gerado duas vezes com saídas idênticas e compilado. A função de áudio `0x00423B41` passou com gestão experimental de referências; o novo crash está em D3D `0x003E7F70`. Ainda faltam revisão HLE/ABI e boot/menu reais. O hash da variante difere da referência Burner, cuja integração privada original continua não reproduzida. Reuso das adaptações Burner também precisa de licença aplicável. O próximo passo é corrigir a inicialização de shaders e completar a integração de áudio com evidência, qualificar essa variante e executar no PC da nuvem e depois adaptar o runtime Android com as partes compatíveis e autorizadas de Black.
+A execução já passou pelas falhas iniciais de áudio e gráficos e chegou ao menu original. A investigação segue no carregamento da primeira missão: foram corrigidos retornos não locais entre pilhas guest e identificadas chamadas de áudio ainda sem HLE compatível. [Evidências e limitações](docs/RUNTIME_PROGRESS.md). Ainda faltam missão jogável, fidelidade de áudio, save/load, backend Android e testes no tablet. O hash da variante difere da referência Burner; sua integração privada original continua não reproduzida, e as adaptações próprias da Burner não foram incorporadas sem licença esclarecida.
 
 Não são exigidos PC local nem upload de jogo pelo chat. Futuras entradas legítimas ficam em volume privado na nuvem ou são selecionadas no tablet via SAF. `private/`, `generated/`, imagens, executáveis, saves e keystores nunca entram no Git ou nos artefatos públicos. Não serão usados executáveis criptografados de projetos de referência.
 

@@ -1,0 +1,64 @@
+# Progresso do runtime — 2026-11-16
+
+**GO para pesquisa: intro, tela de título, menu principal e seleção de dificuldade originais executados no Linux. REQUIRES_REVERSE_ENGINEERING para concluir a primeira missão e o runtime Android. Nenhum APK do jogo foi produzido.**
+
+A variante Xbox do usuário (`c6f0c99a…044d1`) permanece privada. Este avanço usa o C++ gerado desse executável e o runtime MIT do SDK pinado. Não usa lógica substituta, hooks de Black ou adaptações Burner sem licença esclarecida. O renderer de teste/referência e o sink de áudio não constituem backend final de produção.
+
+## Falhas investigadas e mudanças
+
+| Falha real | Correção / evidência |
+|---|---|
+| AddRef DirectSound acessava objeto incompatível | Referências e vida útil do dispositivo geridas pelo runtime; oito chamadas HLE com criação repetida, liberação e balanço stdcall passaram |
+| Shader FVF nulo na inicialização D3D | Binding `D3D_FvfShader=003F68B8` comprovado em duas rotinas originais; inicialização já existente do SDK passa a preencher o objeto correto |
+| SetViewport recebia nullptr e era desreferenciado | Reaplica viewport atual, como o caminho original; teste preserva viewport customizado e seus dados espelhados |
+| IsBusy acessava registradores de GPU inexistentes | HLE consulta ocupação real do backend; teste com worker bloqueado verifica idle, pendência e conclusão sem espera bloqueante |
+| Vértices XYZRHW perdiam seu modo na expansão imediata | Modo pretransformado preservado no shader e chave de cache; teste verifica posição, RHW e diferenciação dos modos |
+| GetVoiceProperties de buffer e SetPitch de buffer/stream seguiam código original sobre objetos host | Consulta de 92 bytes reflete mixer real; pitch altera frequência de resampling compartilhada; limites e escrita limitada testados |
+| Restauração de contexto retornava ao chamador C++ errado | Geração optativa de continuações e dispatcher de retornos não locais; [decisão e regressão](CONTEXT_SWITCHING.md) |
+| Criação de stream pelo dispositivo seguia código original sobre objeto host | Nova entrada HLE usa a mesma implementação real de buffers/packets/callbacks do SDK; criação, AddRef, liberação e argumentos inválidos passaram no probe |
+| SetMode 3D seguia código original sobre objeto host no carregamento da missão | Operação implementada sobre modo espacial do mixer, validação dos argumentos e aplicação adiada no CommitDeferredSettings; teste verifica mudança real de atenuação |
+| Conclusão de leitura assíncrona abortava no export de kernel 232 | NtUserIoApcDispatcher entrega o callback real via fila APC; teste verifica entrega adiada, exatamente uma vez, status, bytes, IOSB e preservação de pilha/registradores |
+| Saída padrão de stream em `0x00426156` ainda acessava objetos Xbox | Entrada própria aceita destino nulo, comprovado no consumidor; buses não nulos retornam E_NOTIMPL até existir roteamento real |
+
+As adaptações são patches explícitos em `patches/runtime/`. `vendor/runtime` permanece no commit original, sem alterações. Os bindings ficam em `config/research/` e valem exclusivamente para o hash documentado; não devem ser usados com outra variante.
+
+A disposição binária de DSVOICEPROPS foi conferida contra as escritas/leitura originais e, como referência de interface, o header Cxbx listado em `dependencies.lock.json`. Nenhuma implementação GPL foi incorporada. O SDK ainda não implementa todo o DSP, cone, Doppler e efeitos I3DL2. A consulta reporta as contribuições efetivamente aplicadas; isso não comprova fidelidade completa do áudio.
+
+## O que foi observado no título
+
+Execuções privadas mostraram os vídeos originais, “PRESS START BUTTON”, MAIN MENU, opção Singleplayer e seleção de dificuldade. START e A foram enviados pelo harness de controle já existente do SDK, sem alteração de estado ou lógica guest. As capturas de referência foram inspecionadas privadamente; não foram publicadas como assets do projeto.
+
+Na versão anterior à correção de contexto, o carregamento da missão falhava em `0x002012C0`. Após corrigir também o dispatcher de callbacks, o teste avançou até cerca de 69 s / frame 1740 e revelou SetMode em `0x0042601C` / interno `0x004254D1`, sem recursos solicitados ausentes. As correções seguintes passaram esses pontos: o teste com SetMode expôs a criação de stream pelo dispositivo; a execução com ambas as APIs chegou a cerca de 101 s / frame 1740 e falhou em `0x00426156`, interno `0x00425332`, ao acessar estado de saída de áudio que não existe no objeto host. Nenhum arquivo solicitado estava ausente. Um observador que apenas encaminha a chamada confirmou destino nulo: esse caso mantém a saída direta nos mix bins já implementada pelo mixer. Foi adicionada uma entrada de stream para esse caso; destinos de bus não nulos retornam E_NOTIMPL explícito, pois exigem grafo de roteamento real. Esse caso passou na execução real seguinte, que revelou a operação de pitch do stream em `0x0042503E` / interno `0x00424088`. O consumidor original `0x00251A50` passa o mesmo pitch à versão de buffer e à versão de stream, comprovando a semântica; a implementação compartilha o cálculo de frequência já testado. A execução seguinte passou o pitch e abortou no export de kernel 232, NtUserIoApcDispatcher, aos 70 s. Esse export foi implementado e passou no teste com fila/callbacks reais do SDK. Na execução posterior, o jogo passou essa entrega e revelou a execução de push buffer gravado em D3D `0x003EF870`, chamada por `0x000B4EB0`, aproximadamente aos 72 s. O SDK não fornece esse caminho completo de comandos de GPU. [Próxima integração](PUSHBUFFER_INTEGRATION.md). Não foi habilitado o stub de sucesso do buffer como se fosse suporte completo.
+
+O mixer produziu milhões de amostras não nulas, sem valores não finitos nos testes observados. O sink de pesquisa descarta a saída após medir: **não houve audição, saída SDL3 ou validação de sincronismo**. Houve acesso a perfis e arquivos originais de save, mas isso **não valida checkpoint ou carregamento de progresso após reiniciar**.
+
+94 recursos do disco foram extraídos progressivamente e tiveram SHA-256 conferido, incluindo os pacotes necessários às tentativas do menu/primeira missão. A ISO completa não foi baixada nem teve seu hash integral validado. Nenhum asset, captura, código gerado ou log bruto do jogo entrou no Git.
+
+## Compilação e testes executados
+
+- 46 testes Python e 11 checks Java: [log](evidence/runtime-progress/tool-tests.log).
+- Dois testes nativos GPU sem dados do título: [log](evidence/runtime-progress/gpu-probes.log).
+- Fixture autoral de troca de contexto: controle negativo original retorna 2989; implementação corrigida e callback aninhado retornam 42. [Resultado](evidence/runtime-progress/context-result.json).
+- Seis probes HLE/estado do SDK no host de pesquisa: áudio, viewport, busy, vértices, voice properties/streams e APC, todos exit 0. Não executam instruções do título; os logs desse host permanecem privados por usarem metadata da variante.
+- Geração com continuações: 29.049 funções, 83.240 continuações, duas saídas idênticas; 129 unidades C++ compiladas em x86_64 e host ligado.
+- Geração **baseline**: todas as 129 unidades também compilaram para Android ARM64 API 29, NDK `28.2.13676358`, CMake `3.31.6`. [Inventário](evidence/runtime-progress/baseline-arm64-result.json). Isso é um arquivo estático AArch64; não runtime Android ligado, APK ou execução no tablet. A geração posterior **com continuações** também compilou: 129 objetos AArch64, sem erro. [Inventário separado](evidence/runtime-progress/resumable-arm64-result.json). Nenhum dos dois arquivos está ligado a um host Android.
+
+## Reprodução privada do host
+
+```bash
+python3 scripts/build_context_tools.py
+# Gerar com o tool e configuração privada revisada, contendo [xbe] resumable=true.
+scripts/compile_private_generated.sh build/title-generated build/title-linux linux build/context-tools-patched/sdk/runtime
+python3 scripts/build_research_runtime.py \
+  --xbe private/game/Default.xbe --generated build/title-generated \
+  --archive build/title-linux/liburban_generated_compile_probe.a \
+  --profile config/research/user-xbe-resumable.json --out build/title-host
+# Executar somente com dados legítimos em ambiente privado; nunca no PR público.
+build/title-host/cmake/urban_research private/game
+```
+
+A receita não cria configuração qualificada ou integration-status fictício. Os scripts exigem paths ignorados, pin limpo e saída nova; registram hashes de fontes, patches, profile e arquivo estático. Os arquivos scanner/configuração específicos precisam ser revisados antes da geração; não são automaticamente a configuração privada da Burner.
+
+## Próximos gates
+
+Implementar o consumo real dos push buffers gravados, preservando estados e draws; concluir a carga original da missão e corrigir falhas seguintes com evidência; validar memória/ABI/callbacks além dos fixtures; executar missão, câmera, armas, escudo, áudio e save/load. Depois ligar Vulkan/SDL3/Android ARM64, validar lifecycle e importação, e testar no Pad 6. Windows permanece opcional como comparação, sem ser entrada do APK. Não há medição de desempenho Android ou promessa de FPS.

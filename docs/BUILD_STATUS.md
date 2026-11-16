@@ -1,12 +1,14 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-16. **GO: imagem Xbox identificada, XBE extraído, geração determinística e compilação PC concluídas. REQUIRES_REVERSE_ENGINEERING: integração HLE/ABI; patch de referências passa primeira falha de áudio; execução agora falha em D3D antes do menu. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-16. **GO: geração determinística, compilação Linux e baseline ARM64; intro, título, menu principal e dificuldade originais executados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: carga da primeira missão, APIs HLE restantes e integração Android. Nenhum APK do jogo foi criado.**
 
-## Investigação posterior da falha de áudio
+[Estado atual e regressões](RUNTIME_PROGRESS.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
+
+## Histórico: investigação posterior da falha de áudio
 
 [Diagnóstico e testes progressivos](AUDIO_INVESTIGATION.md): incompatibilidade do objeto DirectSound confirmada. Patch MIT experimental de referências passa AddRef e um probe de oito chamadas HLE. `AudioData.bin` e `Movies/dolby.xmv` foram extraídos da própria ISO e tiveram hashes verificados. O próximo SIGSEGV está em D3D `0x003E7F70`, com ponteiro de vertex shader zero; ele se repete com o vídeo disponível. Não é a única falha, nem falta de outro pacote. Windows não é requisito da compilação Android; o host Linux continua sendo a rota de depuração.
 
-## Nova entrada: executável disponível e código compilado
+## Histórico: executável disponível e código compilado
 
 [Inspeção da imagem fornecida e execução](USER_IMAGE_INSPECTION.md): 29.049 funções geradas duas vezes com saídas idênticas; 128 partições C++ e mapping compilados no Linux x86_64. Host de pesquisa ligado e executado com harness SDK: inicialização D3D e shaders observada, depois SIGSEGV em DSOUND `0x00423B41` com 79 recursos LST reais verificados. Nenhum frame/menu, missão, Windows ou Android validado. Hash da variante `c6f0c99a…044d1` difere da referência Burner; G1 qualificado permanece aberto. As ausências do título descritas na tentativa PC anterior são históricas, não indisponibilidade atual do XBE.
 
@@ -49,7 +51,7 @@ Os 21 testes abaixo pertencem à primeira auditoria. Após a inspeção de 2026-
 
 ## Bloqueios e menor caminho viável
 
-1. XBE Xbox fornecido e extraído; scanner e geração executados. O bloqueio atual é qualificar a variante de hash diferente e corrigir integração HLE/ABI, agora no estado D3D/shaders e nos demais objetos de áudio após o primeiro patch experimental. Dados permanecem privados.
+1. XBE Xbox fornecido e extraído; scanner e geração executados. O bloqueio atual é qualificar a variante de hash diferente e corrigir integração HLE/ABI, agora no carregamento da primeira missão e nas APIs restantes após corrigir gráficos, contexto e novas operações de áudio. Dados permanecem privados.
 2. O build Burner parte de área privada qualificada. A nova geração privada foi reproduzida a partir do XBE fornecido, mas não recupera automaticamente a configuração completa qualificada da Burner. Recipes de algumas fixtures existem, mas requerem assets locais. [Entradas e consumidores](MISSING_INPUTS.md).
 3. Reutilizar patches Burner exige licença aplicável. A intenção de reuso não esclarece direitos automaticamente. Não contactar terceiros sem instrução explícita.
 4. Primeiro executar geração limpa e determinística e boot/menu PC, preferencialmente com backend de referência em runner privado. Windows PC na nuvem pode ser menor caminho para primeiro boot; Proton não é nativo Linux.
@@ -64,7 +66,8 @@ XboxKit reduz incerteza sobre formatos de disco e offsets; não resolve a integr
 | Ferramentas host | Sim | CLI e fixture sintético testados | Não se aplica | Não se aplica | Não se aplica |
 | Contrato CPU AArch64 | Sim | Não executado em dispositivo | Não se aplica | Não se aplica | Não se aplica |
 | Diagnóstico histórico | Build anterior registrado | Tablet não testado | Não é jogo | Não é jogo | Não é jogo |
-| Urban Chaos Linux de pesquisa | Sim: código + host de teste | Inicializa parcialmente; SIGSEGV em áudio | Não demonstrado | Não demonstrado | Não demonstrado |
+| Urban Chaos Linux de pesquisa | Sim: código + host de teste | Intro/título; depuração da carga da missão | Principal e dificuldade observados | Ainda não jogável | Não verificada |
+| Código guest baseline Android ARM64 | Sim: 129 objetos AArch64 | Não ligado a host Android | Não testado em Android | Não testada | Não verificada |
 | Urban Chaos Windows/Android | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
 
 ## CI inicial

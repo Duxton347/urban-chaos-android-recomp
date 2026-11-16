@@ -1,6 +1,6 @@
 # Rota Android ARM64
 
-**O jogo ainda não compila nem inicia no Android.** O módulo diagnóstico anterior não é o port. Esta etapa não gera novo APK visual como substituto da recompilação.
+**Código guest baseline e com continuações compilado para ARM64; runtime Android completo e APK ainda não ligados nem executados.** O host Linux já executa menu original; [progresso e limites](RUNTIME_PROGRESS.md).
 
 ## Toolchain fixada
 
@@ -14,7 +14,7 @@ No pin `8e9c6fc...`, `native/main.cpp` coordena SDL e lifecycle, `native/vulkan.
 
 ## Ordem de integração
 
-1. Qualificar geração e integração do título; depurar boot/menu no host Linux da nuvem. Windows é uma referência opcional, não uma etapa de conversão para Android. O C++ gerado é compilado diretamente para ARM64; testes independentes de portabilidade podem avançar antes do menu. [Falhas atuais](AUDIO_INVESTIGATION.md).
+1. Qualificar geração e integração do título; depurar boot/menu no host Linux da nuvem. Windows é uma referência opcional, não uma etapa de conversão para Android. O C++ gerado é compilado diretamente para ARM64; testes independentes de portabilidade podem avançar antes do menu. [Falhas atuais](RUNTIME_PROGRESS.md).
 2. Memória guest e ponteiros: verificar mapeamento 32/64 bits, alinhamento, permissões, endianness, TLS, threads, ordinais e callbacks. Não truncar ponteiros host.
 3. Host Android: SDL3, pausa/foco/retorno, destruição/recriação de superfície e orientação. Nenhuma thread continua usando swapchain destruída; estados de input devem ser liberados na perda de foco.
 4. D3D8→Vulkan: preservar recursos, shaders/combiner, estados, render targets, fences/locks, leituras de memória e ordem observada de draws. Primeiro frames reais de logo/menu, depois primeira missão. O frame colorido do diagnóstico não serve como evidência.
@@ -30,4 +30,4 @@ A CI `android-arm64.yml` compila esse contrato e registra G1 bloqueado. O job co
 
 Saves: planejar volumes Xbox dentro de `files/saves/`, reproduzir caminhos/semântica originais, escrita atômica quando compatível e isolamento por versão/perfil. Validar checkpoint, morte, load após fechar processo e update preservando dados. `config/hud.json` do diagnóstico é configuração de interface, **não progresso do jogo**.
 
-[Testes manuais históricos](DEVICE_TESTS.md) continuam úteis para infraestrutura, mas o novo relatório do jogo deve separar boot/menu/missão/áudio/save/transições/lifecycle. Todos permanecem pendentes.
+[Testes manuais históricos](DEVICE_TESTS.md) continuam úteis para infraestrutura, mas o novo relatório do jogo deve separar boot/menu/missão/áudio/save/transições/lifecycle. No Android, todos permanecem pendentes; o menu observado pertence ao host Linux de pesquisa.

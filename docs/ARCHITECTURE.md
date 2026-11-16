@@ -1,6 +1,6 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux de pesquisa inicia parcialmente. Integração HLE/D3D e qualificação G1 pendentes.**
+**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux executa intro, título e menu originais. Carga da missão, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
 
 ## Fluxo de produção pretendido
 
@@ -58,3 +58,5 @@ Dados Android separados: `game`, `saves`, `config`, `cache/shaders`, `logs`. Pub
 3. XboxKit não é um recompilador e não recupera hooks/configuração ausentes. C#/.NET e dependências NuGet ficam fora do APK nesta fase.
 4. Reuso Burner continua condicionado à licença aplicável. A nova diretriz de reaproveitamento não cria uma licença que a fonte publicada não concede explicitamente.
 5. Preservar apresentação original. Resolução, escalonamento e otimização só avançam depois de menu/missão reais e medições no dispositivo.
+
+6. Retornos não locais exigem continuação guest explícita; modo experimental documentado em [CONTEXT_SWITCHING.md](CONTEXT_SWITCHING.md). Compilar guest e runtime com o mesmo layout e macro; nunca misturar arquivos baseline e retomáveis.

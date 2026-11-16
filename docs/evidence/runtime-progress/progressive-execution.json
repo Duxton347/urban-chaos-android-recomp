@@ -1,0 +1,49 @@
+{
+  "scope": "sanitized research execution outcomes only; no raw title logs or payloads",
+  "runs": [
+    {
+      "change": "first continuation scheduler",
+      "exit": -6,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": null
+    },
+    {
+      "change": "nested callback scheduler",
+      "exit": 139,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "004254D1"
+    },
+    {
+      "change": "buffer 3D mode",
+      "exit": 139,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "0042E1C2"
+    },
+    {
+      "change": "device stream factory",
+      "exit": 139,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "00425332"
+    },
+    {
+      "change": "default stream output",
+      "exit": 139,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "00424088"
+    },
+    {
+      "change": "stream pitch",
+      "exit": -6,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": null,
+      "failure": "kernel 232 missing"
+    },
+    {
+      "change": "I/O completion APC dispatcher",
+      "exit": 139,
+      "requested_disc_paths_missing": 0,
+      "fault_guest_function": "003EF870",
+      "failure": "recorded D3D push buffer execution"
+    }
+  ]
+}

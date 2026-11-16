@@ -1,0 +1,22 @@
+{
+  "host_sources": {
+    "host/research/CMakeLists.txt": "224480eeff97c9c9525b54180ea8b90dfdc0b7becbbf5636f0fe310cd99fe803",
+    "host/research/game_info.cpp": "12201e0674257a88f0dcb520b0d2d1602bbdb609ad23dc2ce9b4a7f7c740c429",
+    "host/research/probes.cpp": "4ae1593fce0bd4a9edcc1737334673f0d506b17cd5c71b7a4aff50c16a4e7753",
+    "host/research/audio_sink.cpp": "2af94fd66a794324695619e6857f364acda6370d844a0565afa897af0c8bd3e8",
+    "host/runtime-probes/gpu_probes.cpp": "9dd497a939401575a2a57e19c3b2d826f2e8b5921b1cfea70aca2caf3d29e5fe",
+    "host/audio-device/test_device_lifetime.cpp": "9640de90efdabe95b8473e925790b7984c0a9b4abde584de11fe3d1339d5c99a"
+  },
+  "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "g1_qualified": false,
+  "patches": {
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "9552a81c159089059d4fa8dc0a8e22483ae3649ac6f4a602119771c4280a2ee8",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+    "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd"
+  },
+  "status": "RESEARCH_HOST_COMPILED",
+  "profile_sha256": "a958a3b1ddbd59624ccd81ccc030c1aa618432d0872e8b8938a92d4d2d9aed0d",
+  "image_symbols_sha256": "8a3551d5eec10423962f0f50140f4c137feb148f7cd7ac083a3072eacc2efab5",
+  "guest_archive_sha256": "3ff47a34fe041b3c6b22d943070d0846f2ba5e4351a42738fc13740a3b02db5e"
+}

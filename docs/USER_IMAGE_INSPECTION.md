@@ -1,5 +1,7 @@
 # Imagem Xbox fornecida — inspeção e execução real
 
+> Histórico desta etapa. O estado posterior, incluindo menu original e novas correções, está em [RUNTIME_PROGRESS.md](RUNTIME_PROGRESS.md).
+
 > Relatório da primeira execução. A [investigação posterior de áudio](AUDIO_INVESTIGATION.md) passou pela falha inicial com patch experimental e encontrou uma falha gráfica. Windows é opcional para a rota Android.
 
 Em 2026-11-16 a imagem indicada pelo usuário foi acessada na nuvem. **O `Default.xbe` foi encontrado e extraído.** A falta desse arquivo deixou de ser o bloqueio. O código original foi regenerado, compilado e ligado a um host de pesquisa Linux; a execução ainda falha antes de comprovar menu ou frames. Não há APK jogável nem boot Windows demonstrado.

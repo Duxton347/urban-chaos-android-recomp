@@ -1,5 +1,7 @@
 # Áudio: causa rastreada, correção experimental e falha seguinte
 
+> Histórico desta etapa. O estado posterior, incluindo menu original e novas correções, está em [RUNTIME_PROGRESS.md](RUNTIME_PROGRESS.md).
+
 **Resultado de 2026-11-16:** a primeira falha foi localizada na integração de objetos DirectSound. Uma implementação experimental de referências passou pelo ponto original e revelou uma falha gráfica posterior. Não há evidência de que o áudio fosse o único impedimento. Nenhum novo arquivo externo é necessário neste momento: os dois recursos pedidos depois estavam na ISO já fornecida e foram extraídos/verificados privadamente.
 
 ## Por que falhou

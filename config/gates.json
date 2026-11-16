@@ -5,7 +5,7 @@
   "g1_reproducible_generation": false,
   "pc_game_runtime_validated": false,
   "arm64_game_boot_validated": false,
-  "original_menu_validated": false,
+  "original_menu_validated": true,
   "mission_validated": false,
   "campaign_validated": false,
   "release_enabled": false,
@@ -23,17 +23,27 @@
   "raw_guest_cpp_deterministic": true,
   "raw_guest_cpp_pc_compile_probe_passed": true,
   "raw_guest_research_host_linked": true,
-  "raw_guest_research_boot_verified": false,
+  "raw_guest_research_boot_verified": true,
   "raw_guest_initialization_observed": true,
   "g1_remaining": [
-    "Qualify the provided non-reference XBE variant",
-    "Review function boundaries, HLE/ABI, callbacks and D3D device/shader state",
-    "Validate original game execution with required assets"
+    "Qualify provided non-reference XBE variant",
+    "Review function boundaries, ABI, callbacks and remaining HLE",
+    "Complete original mission execution and validate saves/audio"
   ],
   "raw_guest_research_latest_exit": 139,
-  "raw_guest_research_failure": "SIGSEGV in D3D function 0x003E7F70 after experimental audio lifetime patch; null current shader object",
+  "raw_guest_research_failure": "Original mission loading passed I/O APC; SIGSEGV in recorded D3D push buffer execution 0x003EF870. SDK lacks full recorded command path; requires real GPU packet/state integration",
   "raw_audio_device_lifetime_experiment_passed": true,
   "raw_audio_device_lifetime_hle_probe_exit": 0,
   "game_audio_output_validated": false,
-  "windows_build_required_for_android": false
+  "windows_build_required_for_android": false,
+  "original_menu_validation_scope": "Linux research host, CPU reference captures; not Windows, Android or playable mission",
+  "raw_guest_baseline_arm64_compile_probe_passed": true,
+  "raw_guest_baseline_arm64_objects": 129,
+  "raw_guest_resumable_deterministic": true,
+  "raw_guest_resumable_pc_compile_passed": true,
+  "runtime_progress_evidence": "docs/RUNTIME_PROGRESS.md",
+  "resumable_guest_arm64_compile_probe_passed": true,
+  "resumable_guest_arm64_objects": 129,
+  "io_apc_dispatch_probe_passed": true,
+  "io_apc_dispatch_observed_in_title": true
 }

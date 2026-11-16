@@ -35,3 +35,10 @@ As alterações finais de isolamento de checkout/cache são verificadas novament
 ## Recuperação PC — tentativa real
 
 Commits `e688a49`, `4dc432b`, `76d5d50` adicionaram compilação do núcleo real do SDK, inventário de releases/histórico e reprodução do comando original no Windows. No commit `76d5d50`, os quatro checks de infraestrutura passaram. A [tentativa PC original](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43740071363) **falhou**, com configure exit 0 e build exit 1 por `integration-status.json` ausente. O erro foi preservado; não há build do jogo ou novo APK. [Relatório](PC_BUILD_RECOVERY.md).
+
+
+## Runtime e continuações — 2026-11-16
+
+A revisão no mesmo PR #1 adiciona correções explícitas MIT de GPU/áudio, geração optativa com continuações, regressões autorais e receita para o host privado. Compilação e execução do título ocorreram somente no ambiente privado da nuvem; o CI público recebe os testes sintéticos GPU/contexto e nenhuma entrada comercial. [Resultados locais e limites](RUNTIME_PROGRESS.md).
+
+O acesso ao destino exato foi reconfirmado antes da publicação. O PR permanece aberto; nenhum merge, release do jogo ou APK foi autorizado como validado. Os checks do novo HEAD serão acompanhados após o push; os sucessos históricos acima não são evidência automática desta revisão.
