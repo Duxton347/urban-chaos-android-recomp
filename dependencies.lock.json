@@ -187,5 +187,22 @@
   "audit_heads": {
     "runtime_observed": "cc9edda3a821a4204dc28783f429b88a27ade4f9",
     "policy": "keep existing Burner/Black runtime pins; current main changed the generation/loading model"
+  },
+  "research_references": {
+    "voice_properties_layout": {
+      "url": "https://github.com/Cxbx-Reloaded/Cxbx-Reloaded",
+      "commit": "585c49a50af1255ab155099e06f24505f9c5a800",
+      "path": "src/core/hle/DSOUND/XbDSoundTypes.h",
+      "license": "GPL-2.0-or-later",
+      "role": "binary interface facts cross-checked against original wrapper; no implementation incorporated"
+    },
+    "synthetic_x86_oracle": {
+      "name": "unicorn",
+      "version": "2.1.4",
+      "wheel": "unicorn-2.1.4-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "9d6e6dea140560de4ebd8446661f7ef84a357d428c14a3ef09dacd306ec8c239",
+      "license": "GPL-2.0",
+      "role": "optional local test tool for authored fixture only; not used to execute game or shipped in runtime"
+    }
   }
 }

@@ -11,6 +11,6 @@ if(NOT UNITS)
  message(FATAL_ERROR "No generated code units")
 endif()
 add_library(urban_generated_compile_probe STATIC ${UNITS} "${URBAN_GENERATED}/x86_func_mapping.cpp")
-target_include_directories(urban_generated_compile_probe PRIVATE "${URBAN_GENERATED}" "${CMAKE_CURRENT_LIST_DIR}/../../vendor/runtime/runtime")
+target_include_directories(urban_generated_compile_probe PRIVATE "${URBAN_GENERATED}" "${URBAN_RUNTIME_HEADERS}" "${CMAKE_CURRENT_LIST_DIR}/../../vendor/runtime/runtime")
 target_compile_options(urban_generated_compile_probe PRIVATE -O0 -g0 -fsigned-char -fno-strict-aliasing)
 # A compile probe only: this archive is not linked to a game host and proves no boot.

@@ -22,3 +22,6 @@ __pycache__/
 /saves/
 *.enc
 .env
+
+# Raw research-host logs may contain title data.
+/logs/

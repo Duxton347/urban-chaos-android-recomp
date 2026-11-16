@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "status": "EXPERIMENTAL_REQUIRES_VALIDATION",
+  "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+  "bindings": {
+    "IDirectSound_AddRef": {
+      "address": "00423B41",
+      "abi": [
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0036; original interface wrapper calls AddRef slot and pops one stack argument"
+    },
+    "D3D_FvfShader": {
+      "address": "003F68B8",
+      "evidence": "Original D3D initialization 0x003EA6EB stores this object into device+0x794; SetVertexShader uses same object at 0x003E6F27"
+    },
+    "D3DDevice_IsBusy": {
+      "address": "003E3A80",
+      "abi": [],
+      "evidence": "Original function compares GPU DMA get/put and engine status; no arguments; returns occupancy boolean"
+    },
+    "IDirectSoundBuffer_GetVoiceProperties": {
+      "address": "0042501D",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0055; original wrapper and 92-byte voice properties writes agree with observed caller"
+    },
+    "IDirectSoundBuffer_SetPitch": {
+      "address": "00424F31",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0076; wrapper calls pitch setter which stores signed pitch before APU rate update; ret 8"
+    },
+    "IDirectSoundBuffer_SetMode": {
+      "address": "0042601C",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND XTLID 0xB0073; original wrapper ret 12, internal call stores mode at voice-state+0x40 and tests deferred flag"
+    },
+    "IDirectSound_CreateSoundStream": {
+      "address": "00427181",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND XTLID 0xB003B adjacent to CreateSoundBuffer B003A; wrapper ret 16 passes this, descriptor, output, aggregation to stream constructor; original constructor takes a device COM reference"
+    },
+    "CDirectSoundStream_SetOutputBuffer": {
+      "address": "00426156",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "XTLID B0098 tail-jumps to stream output attachment; this is a live SDK stream; forwarding observer confirmed first destination is null. Only default mix-bin route supported; nonzero bus destination returns E_NOTIMPL"
+    }
+  },
+  "qualifies_g1": false,
+  "menu_verified": true,
+  "mission_verified": false,
+  "resumable_guest": false,
+  "menu_verification_scope": "Linux research host with CPU reference captures only"
+}

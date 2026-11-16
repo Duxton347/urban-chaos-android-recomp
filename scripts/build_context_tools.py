@@ -21,7 +21,7 @@ for name,relative in (('zydis','vendor/zydis'),('tomlplusplus','vendor/tomlplusp
         raise SystemExit('Dependency pin mismatch: '+name)
 output.mkdir(parents=True)
 overlay = output/'sdk'
-patches = prepare(overlay, context=True)
+patches = prepare(overlay, context=True, tools_only=True)
 cmake = ROOT/'.toolchain/cmake/cmake-3.31.6-linux-x86_64/bin/cmake'
 subprocess.run([str(cmake),'-S',str(ROOT/'host/context-tools'),'-B',str(output/'cmake'),
                 '-DURBAN_CONTEXT_SDK='+str(overlay),'-DCMAKE_BUILD_TYPE=Release'],check=True)

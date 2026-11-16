@@ -12,7 +12,9 @@ PATHS = ('runtime/xdk/dsound.cpp', 'runtime/xdk/d3d8.cpp', 'runtime/gpu/backend.
 PATCHES = ('directsound-device-lifetime.patch', 'd3d-device-initialization.patch')
 
 
-def prepare(destination, context=False):
+def prepare(destination, context=False, tools_only=False):
+    if tools_only and not context:
+        raise ValueError("Tool-only overlays require continuation support")
     destination = pathlib.Path(destination).resolve()
     if not any((ROOT/folder) in destination.parents for folder in ('build','private')) or destination.exists():
         raise ValueError('Overlay must be new and inside ignored build/ or private/')
@@ -21,7 +23,7 @@ def prepare(destination, context=False):
         raise ValueError('Runtime pin mismatch')
     if subprocess.check_output(['git', '-C', str(sdk), 'status', '--porcelain'], text=True).strip():
         raise ValueError('Pinned runtime checkout must remain clean')
-    paths = list(PATHS)
+    paths = [] if tools_only else list(PATHS)
     if context:
         paths += ['runtime/cpu/x86_context.h', 'runtime/cpu/x86_ops.h', 'runtime/cpu/dispatch.cpp', 'runtime/kernel/kernel.h']
         paths += [str(path.relative_to(sdk)) for path in (sdk/'tools/recomp').glob('*') if path.suffix in ('.cpp', '.h')]
@@ -30,7 +32,8 @@ def prepare(destination, context=False):
         path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(sdk/relative, path)
     hashes = {}
-    for name in PATCHES + (("resumable-context.patch",) if context else ()):
+    selected = (() if tools_only else PATCHES) + (("resumable-context.patch",) if context else ())
+    for name in selected:
         patch = ROOT/'patches/runtime'/name
         hashes[name] = hashlib.sha256(patch.read_bytes()).hexdigest()
         subprocess.run(['git', 'apply', '--directory='+str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True, capture_output=True)
