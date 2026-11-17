@@ -31,7 +31,7 @@
     "Complete original mission execution and validate saves/audio"
   ],
   "raw_guest_research_latest_exit": 124,
-  "raw_guest_research_failure": "First mission presentation unverified; GPU reports complete with real reference samples; guest tree insertion/rebalancing stalls at 000B9A10; allocation origin under investigation",
+  "raw_guest_research_failure": null,
   "raw_audio_device_lifetime_experiment_passed": true,
   "raw_audio_device_lifetime_hle_probe_exit": 0,
   "game_audio_output_validated": false,
@@ -52,5 +52,12 @@
   "recorded_gpu_submitted_buffers_observed_minimum": 8,
   "recorded_xdk_linkage_boundary_tested": true,
   "reference_visibility_reports_tested": true,
-  "reference_visibility_reports_observed_in_title": true
+  "reference_visibility_reports_observed_in_title": true,
+  "original_mission_scene_presented": true,
+  "original_mission_scene_scope": "Opening Hope Street cinematic, CPU reference image at frame 1800; gameplay, sound output and full fidelity unvalidated",
+  "surface_parent_ownership_regression_passed": true,
+  "raw_guest_research_process_exit": -15,
+  "raw_guest_research_next_gate": "Continue original mission beyond cinematic, qualify rendering and inputs/audio/save; link Vulkan/SDL3 Android runtime",
+  "directional_audio_model_tested": true,
+  "spatial_audio_hle_probe_passed": true
 }

@@ -1,6 +1,6 @@
-# Progresso do runtime — 2026-11-16
+# Progresso do runtime — 2026-11-17
 
-**GO para pesquisa: intro, tela de título, menu principal e seleção de dificuldade originais executados no Linux. REQUIRES_REVERSE_ENGINEERING para concluir a primeira missão e o runtime Android. Nenhum APK do jogo foi produzido.**
+**GO para pesquisa: intro, menus e primeira cena da abertura de Hope Street renderizados no Linux. REQUIRES_REVERSE_ENGINEERING para concluir a primeira missão e o runtime Android. Nenhum APK do jogo foi produzido.**
 
 A variante Xbox do usuário (`c6f0c99a…044d1`) permanece privada. Este avanço usa o C++ gerado desse executável e o runtime MIT do SDK pinado. Não usa lógica substituta, hooks de Black ou adaptações Burner sem licença esclarecida. O renderer de teste/referência e o sink de áudio não constituem backend final de produção.
 
@@ -62,7 +62,7 @@ A receita não cria configuração qualificada ou integration-status fictício. 
 
 ## Próximos gates
 
-Investigar a origem do nó inválido na inserção de árvore; ampliar o consumo real dos push buffers onde necessário, preservando estados e draws; concluir a carga original da missão e corrigir falhas seguintes com evidência; validar memória/ABI/callbacks além dos fixtures; executar missão, câmera, armas, escudo, áudio e save/load. Depois ligar Vulkan/SDL3/Android ARM64, validar lifecycle e importação, e testar no Pad 6. Windows permanece opcional como comparação, sem ser entrada do APK. Não há medição de desempenho Android ou promessa de FPS.
+Validar a continuação da missão e os consumidores de input; ampliar o consumo real dos push buffers onde necessário, preservando estados e draws; concluir a carga original da missão e corrigir falhas seguintes com evidência; validar memória/ABI/callbacks além dos fixtures; executar missão, câmera, armas, escudo, áudio e save/load. Depois ligar Vulkan/SDL3/Android ARM64, validar lifecycle e importação, e testar no Pad 6. Windows permanece opcional como comparação, sem ser entrada do APK. Não há medição de desempenho Android ou promessa de FPS.
 
 ## Avanço: trailer XDK, reports reais e novo bloqueio
 
@@ -73,3 +73,13 @@ Após essa correção, a thread esperava consultas de visibilidade nunca conclu�
 Testes privados de cena limitados a 360 s concluíram consultas reais, mas permaneceram sem a apresentação seguinte ao frame 1740. A amostragem posterior mostrou repetição na rotina original de inserção de árvore `0x000B9A10`, com contagem de um e encadeamento de pais repetido; a origem precisa ser rastreada. Não há prova de missão carregada, execução de armas/escudo, save/load ou runtime Android. O modo de referência sincroniza as consultas e executa rasterização na CPU: não é medição de desempenho no Pad 6.
 
 Um host novo foi compilado de fontes e overlays públicos, sem observador privado, com receipt de fontes/patches/arquivo guest. Os seis selftests passaram nesse executável: [inventário sanitizado](evidence/runtime-progress/clean-reference-host.json). O binário e o arquivo guest derivam do XBE e permanecem privados. O arquivo estático Linux baseline antigo foi removido por falta de espaço; a versão com continuações usada no build foi preservada.
+
+## Retenção de superfícies e primeira cena original
+
+A investigação rastreou o sentinela duplicado até uma lista de heap corrompida após double free. O alocador x86 original repetiu o resultado do C++ com o mesmo estado capturado; não foi substituído. A busca no port PC identificou o contrato de retenção pública de superfícies. A rotina original foi conferida no XBE e ligada aos três getters: [diagnóstico, correção e controle negativo](RESOURCE_LIFETIME.md).
+
+O jogo passou pelo travamento anterior e expôs cone de áudio e depois fatores espaciais ainda acessando objetos Xbox. Seis interfaces de buffer foram ligadas ao mixer; cone, rolloff, velocidades e Doppler agora têm efeitos reais e commit de atualizações adiadas. [ABI, modelos e limites](SPATIAL_AUDIO.md). O build limpo intermediário falhou por duas declarações duplicadas de lock; foram corrigidas, e o host limpo seguinte compilou e passou nos seis probes. O erro intermediário não foi classificado como sucesso.
+
+Na execução limpa limitada a 180 s, o jogo chegou ao frame 1800. A captura 640×480 foi inspecionada: sequência original de Hope Street Police Station, cenário e policiais visíveis. Não houve nova exceção registrada ou recurso solicitado ausente nesse ensaio. A execução terminou por timeout controlado, não por conclusão de missão. Há defeitos visuais no renderer CPU. [Receipt sanitizado](evidence/runtime-progress/surface-spatial-host.json); imagem, logs e dados derivados permanecem privados.
+
+Oito CTests autorais passaram (incluindo controle negativo do getter antigo e modelos de cone/fatores); os contratos de áudio também compilaram AArch64. O áudio continua descartado pelo sink, sem validação audível de músicas/vozes/efeitos. Input durante gameplay, checkpoint, morte/load, transição de missão e campanha não foram aprovados. [Rota de reaproveitamento PC](PC_REUSE_MATRIX.md) e [contratos/runner de ensaios privados](RUNTIME_CONTRACTS.md).

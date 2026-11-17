@@ -1,6 +1,6 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-16. **GO: geração determinística, compilação Linux e baseline ARM64; intro, título, menu principal e dificuldade originais executados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: carga da primeira missão, APIs HLE restantes e integração Android. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-17. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
 

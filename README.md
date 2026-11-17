@@ -7,6 +7,7 @@ Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por 
 ## Primeira entrega e rota
 
 - [Progresso do runtime: menu original, correções e testes](docs/RUNTIME_PROGRESS.md)
+- [Reaproveitamento PC](docs/PC_REUSE_MATRIX.md) e [contratos de runtime e receita de testes](docs/RUNTIME_CONTRACTS.md)
 - [Retornos não locais e callbacks do recompilador](docs/CONTEXT_SWITCHING.md)
 - [Investigação de áudio, testes posteriores e rota sem Windows obrigatório](docs/AUDIO_INVESTIGATION.md)
 - [Imagem fornecida: extração, geração e falha de execução](docs/USER_IMAGE_INSPECTION.md)
@@ -41,7 +42,7 @@ Os workflows em `.github/workflows/` separam auditoria, ferramentas/runtime smok
 
 ## Próximo bloqueio
 
-A execução já passou pelas falhas iniciais de áudio e gráficos e chegou ao menu original. A investigação segue no carregamento da primeira missão: foram corrigidos retornos não locais, chamadas de áudio, linkage de buffers XDK e reports reais de visibilidade. A próxima falha observada está na inserção de uma árvore durante a carga da cena. [Evidências e limitações](docs/RUNTIME_PROGRESS.md). Ainda faltam missão jogável, fidelidade de áudio, save/load, backend Android e testes no tablet. O hash da variante difere da referência Burner; sua integração privada original continua não reproduzida, e as adaptações próprias da Burner não foram incorporadas sem licença esclarecida.
+A execução chegou aos menus e à primeira cena da abertura de Hope Street. A investigação segue no carregamento da primeira missão: foram corrigidos retornos não locais, chamadas de áudio, linkage de buffers XDK e reports reais de visibilidade. A corrupção da árvore foi rastreada até ownership de superfícies e corrigida; cone e fatores espaciais também receberam integração. [Evidências e limitações](docs/RUNTIME_PROGRESS.md). Ainda faltam missão jogável, fidelidade de áudio, save/load, backend Android e testes no tablet. O hash da variante difere da referência Burner; sua integração privada original continua não reproduzida, e as adaptações próprias da Burner não foram incorporadas sem licença esclarecida.
 
 Não são exigidos PC local nem upload de jogo pelo chat. Futuras entradas legítimas ficam em volume privado na nuvem ou são selecionadas no tablet via SAF. `private/`, `generated/`, imagens, executáveis, saves e keystores nunca entram no Git ou nos artefatos públicos. Não serão usados executáveis criptografados de projetos de referência.
 

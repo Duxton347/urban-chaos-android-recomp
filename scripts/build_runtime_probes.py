@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build/run SDK GPU regression tests with entirely synthetic state, without a game."""
+"""Build/run SDK GPU and spatial-audio regressions with authored state, without a game."""
 import json
 import pathlib
 import subprocess

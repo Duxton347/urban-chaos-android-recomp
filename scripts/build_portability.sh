@@ -14,3 +14,5 @@ TASK_NDK="$TASK_SDK/ndk/28.2.13676358"
 "$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_recorded_packet_contract.a
 
 "$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_audio_cone_contract.a
+
+"$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_audio_spatial_contract.a

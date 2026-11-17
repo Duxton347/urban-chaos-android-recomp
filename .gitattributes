@@ -2,3 +2,6 @@
 licenses/** -whitespace
 android/app/src/main/assets/licenses/** -whitespace
 docs/evidence/** -whitespace
+
+# Unified diffs require a context prefix on otherwise empty lines.
+patches/runtime/*.patch whitespace=-blank-at-eol

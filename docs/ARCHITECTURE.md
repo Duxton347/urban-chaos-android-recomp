@@ -1,6 +1,6 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux executa intro, título e menu originais. Carga da missão, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
+**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
 
 ## Fluxo de produção pretendido
 
@@ -60,3 +60,5 @@ Dados Android separados: `game`, `saves`, `config`, `cache/shaders`, `logs`. Pub
 5. Preservar apresentação original. Resolução, escalonamento e otimização só avançam depois de menu/missão reais e medições no dispositivo.
 
 6. Retornos não locais exigem continuação guest explícita; modo experimental documentado em [CONTEXT_SWITCHING.md](CONTEXT_SWITCHING.md). Compilar guest e runtime com o mesmo layout e macro; nunca misturar arquivos baseline e retomáveis.
+
+Os contratos entre CPU, memória, GPU, input, áudio, arquivos e saves, com limites da validação PC e requisitos Android, estão em [RUNTIME_CONTRACTS.md](RUNTIME_CONTRACTS.md). A revisão direcionada dos componentes do port de PC está em [PC_REUSE_MATRIX.md](PC_REUSE_MATRIX.md).
