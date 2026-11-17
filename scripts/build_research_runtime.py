@@ -43,22 +43,25 @@ def main():
             if any(location != 'stack' for location in binding.get('abi', [])):
                 raise Invalid('Research bindings currently require reviewed stack-only ABI')
         report = inspect(xbe, profile['xbe_sha256'])
-        if profile.get('resumable_guest') and '#define IMAGE_RESUMABLE_GUEST 1' not in (generated/'image_symbols.h').read_text():
-            raise Invalid('Resumable profile requires freshly regenerated continuation-aware guest code')
+        generated_resumable = '#define IMAGE_RESUMABLE_GUEST 1' in (generated/'image_symbols.h').read_text()
+        if bool(profile.get('resumable_guest')) != generated_resumable:
+            raise Invalid('Profile and generated guest must agree on continuation support in both directions')
         if not (generated/'image_symbols.h').is_file() or not archive.is_file():
             raise Invalid('Actual generated headers and compiled guest archive required')
         cmake = ROOT/'.toolchain/cmake/cmake-3.31.6-linux-x86_64/bin/cmake'
         out.mkdir(parents=True)
         overlay = out/'source-overlay'
         sources = list((ROOT/'host/research').glob('*')) + [ROOT/'host/runtime-probes/gpu_probes.cpp', ROOT/'host/audio-device/test_device_lifetime.cpp', ROOT/'native/gpu/recorded_push.h', ROOT/'native/audio/cone.h', ROOT/'native/audio/spatial.h']
+        sources += list((ROOT/'native/game').glob('*'))
         host_sources = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources if path.is_file()}
-        receipt = {'host_sources': host_sources, 'sdk': PIN, 'xbe_sha256': report['sha256'], 'g1_qualified': False, 'patches': {}, 'status': 'BUILDING'}
+        receipt = {'host_sources': host_sources, 'sdk': PIN, 'xbe_sha256': report['sha256'], 'g1_qualified': False, 'source_title_id': report['certificate']['title_id'], 'source_entry': report['entry'], 'patches': {}, 'status': 'BUILDING'}
         try:
             receipt['patches'] = prepare(overlay, context=profile.get('resumable_guest', False))
             with (out/'build.log').open('w') as log:
                 subprocess.run([str(cmake), '-S', str(ROOT/'host/research'), '-B', str(out/'cmake'),
                                 '-DURBAN_GENERATED='+str(generated), '-DURBAN_GUEST_ARCHIVE='+str(archive),
-                                '-DURBAN_OVERLAY='+str(overlay), '-DURBAN_PROFILE='+str(args.profile.resolve())],
+                                '-DURBAN_OVERLAY='+str(overlay), '-DURBAN_PROFILE='+str(args.profile.resolve()),
+                                '-DURBAN_TITLE_ID='+report['certificate']['title_id']],
                                stdout=log, stderr=subprocess.STDOUT, check=True)
                 subprocess.run([str(cmake), '--build', str(out/'cmake'), '--parallel', '2'], stdout=log, stderr=subprocess.STDOUT, check=True)
             receipt['status'] = 'RESEARCH_HOST_COMPILED'

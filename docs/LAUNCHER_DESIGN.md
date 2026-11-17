@@ -57,4 +57,22 @@ Já existem inspetor/importador Xbox, suporte `kernel::Disc`/`MountDisc` no SDK,
 
 O leitor nativo do pin do SDK procura partições em `0` e `0x18300000`. Layouts adicionais reconhecidos por ferramentas Python não são automaticamente suportados na montagem nativa. Validar as duas camadas antes de declarar suporte a uma imagem.
 
-Para obter a experiência proposta, ainda é necessário ligar importação/seleção a esse núcleo, integrar Vulkan com reports reais, compatibilizar o callback de áudio SDL3 e validar os controles/saves. [Contratos](RUNTIME_CONTRACTS.md), [Android](ANDROID_PORT.md) e [estado executado](BUILD_STATUS.md). Não foi criado ou compilado outro APK nesta mudança de planejamento.
+O reconhecimento e a montagem já estão ligados ao host Linux pelo componente compartilhado `native/game/source.*`. A seleção Android/SAF ainda precisa chamar esse componente. Para obter a experiência completa, faltam integrar Vulkan com reports reais, compatibilizar o callback de áudio SDL3 e validar os controles/saves. [Contratos](RUNTIME_CONTRACTS.md), [Android](ANDROID_PORT.md) e [estado executado](BUILD_STATUS.md). Não foi criado ou compilado outro APK nesta mudança de planejamento.
+
+## Ligação executável da fonte do jogo
+
+`native/game/source.*` abre pasta ou ISO, valida estrutura e digests das seções do XBE, calcula SHA-256 e compara Title ID/entry ao perfil do build. A montagem só ocorre após a aceitação da revisão; uma recusa preserva a montagem anterior. Outra revisão exige escolha explícita e continua experimental. Não há conversão de executáveis nem alteração da imagem.
+
+O patch explícito `bounded-disc-reader.patch` preserva o pin MIT e limita leituras à imagem, tamanho/acúmulo de tabelas, profundidade e quantidade de entradas. Rejeita ciclos, registros sobrepostos, colisões de nomes e nomes que escapariam de diretórios. O arquivo é aberto somente para leitura. A pasta alternativa valida o XBE; a árvore completa continua sob responsabilidade do importador/staging, não desta API.
+
+O host de pesquisa usa esse caminho antes de `kernel::Boot`. Para conferir uma fonte sem executar o jogo:
+
+```sh
+build/urban-chaos-user-image/iso-host-v2/cmake/urban_research private/jogo.iso --check-source
+```
+
+Remover `--check-source` solicita o boot real. `--allow-other-revision` é opt-in experimental: não ignora Title ID, entry ou integridade estrutural. Não trocar a montagem enquanto existirem threads de uma instalação anterior. O gravador `run_private_research.py` continua aceitando pasta; a CLI nativa aceita ambas as fontes.
+
+Doze testes nativos usam somente arquivos de autoria própria: SHA-256, revisão/cancelamento, PS2/arquivo comprimido, truncamento, diretórios inválidos, leituras simultâneas e EOF. `scripts/build_source_probes.py` os executa; `scripts/build_portability.sh` compila o mesmo leitor/validador para AArch64. Compilação ARM64 não equivale a execução no tablet.
+
+O XBE real também passou na pasta e dentro de um contêiner privado construído apenas para reconhecimento. Esse contêiner contém somente o XBE, não representa a ISO completa e não foi usado para alegar boot por ISO. A execução integral da imagem comercial nesse novo caminho permanece pendente; os recursos reais extraídos continuam disponíveis para regressões do host.

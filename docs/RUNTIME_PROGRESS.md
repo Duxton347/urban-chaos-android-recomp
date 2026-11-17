@@ -4,6 +4,10 @@
 
 A variante Xbox do usuário (`c6f0c99a…044d1`) permanece privada. Este avanço usa o C++ gerado desse executável e o runtime MIT do SDK pinado. Não usa lógica substituta, hooks de Black ou adaptações Burner sem licença esclarecida. O renderer de teste/referência e o sink de áudio não constituem backend final de produção.
 
+## Ligação da fonte ISO ao runtime
+
+O host usa agora o reconhecimento/montagem compartilhado em `native/game/source.*`, também compilado para AArch64. Passaram 12 testes nativos de autoria própria, 46 testes Python e seis probes HLE. A regressão com recursos reais em pasta apresentou 480 frames em 130 segundos, sem exceção ou recurso solicitado ausente; término controlado. A ISO completa ainda não foi executada neste caminho e a ponte SAF/Android continua pendente. A tentativa inicial com perfil baseline falhou; o modo de continuação agora é verificado nos dois sentidos antes do build. [Resultados, tentativa falha e recibos](evidence/runtime-progress/iso-source-integration.json), [fluxo do launcher](LAUNCHER_DESIGN.md).
+
 ## Falhas investigadas e mudanças
 
 | Falha real | Correção / evidência |

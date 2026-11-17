@@ -4,6 +4,8 @@
 
 A experiência final de seleção da ISO, reconhecimento e início do jogo está definida em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O diagrama abaixo descreve a construção do núcleo; o tablet não executa essa recompilação ao importar a imagem.
 
+A API compartilhada `native/game/source.*` faz reconhecimento, validação e ativação da montagem antes do boot. O host Linux já a utiliza; o contrato compila para Android AArch64. A seleção SAF ainda deve chamar essa API após concluir staging, sem publicar uma instalação incompleta. Ver [testes e limites](LAUNCHER_DESIGN.md#ligação-executável-da-fonte-do-jogo).
+
 ## Construção do núcleo na nuvem
 
 ```mermaid

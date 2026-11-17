@@ -43,3 +43,7 @@ Sem disco: não foram executados extração comercial, comparação integral con
 ## Rota ISO do launcher definida em 2026-11-17
 
 Priorizar importar a ISO para staging privado e montá-la somente para leitura pelo runtime; extração completa passa a ser alternativa. O fluxo detalhado, o reconhecimento por hash do XBE e o aviso para outra revisão estão em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O SDK já oferece Disc/MountDisc e volume D: por imagem, mas esse caminho ainda precisa ser integrado e validado no launcher Android. Ferramentas de extração existentes não equivalem a essa integração concluída.
+
+## Leitor compartilhado do launcher
+
+A integração nativa está em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md#ligação-executável-da-fonte-do-jogo): reconhecimento de pasta/ISO, validação do XBE e montagem somente para leitura no host real. Testes nativos cobrem XISO e offset Redump `0x18300000`; outros layouts do inspetor Python não estão automaticamente disponíveis no runtime. ZIP/RAR/7z devem ser descompactados antes da seleção. A ponte Android/SAF para esse componente ainda não está implementada; nenhum APK funcional decorre desses testes.
