@@ -32,6 +32,7 @@ jobs:
         run: |
           SDK_MANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           "$SDK_MANAGER" --sdk_root="$ANDROID_HOME" --licenses < <(yes)
-          "$SDK_MANAGER" --sdk_root="$ANDROID_HOME" 'ndk;28.2.13676358' 'cmake;3.31.6'
+          "$SDK_MANAGER" --sdk_root="$ANDROID_HOME" 'ndk;28.2.13676358' 'cmake;3.31.6' 'platforms;android-34'
       - run: scripts/build_portability.sh
+      - run: bash scripts/compile_android_reports.sh
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"

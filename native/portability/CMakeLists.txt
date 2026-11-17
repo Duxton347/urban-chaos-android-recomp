@@ -35,3 +35,7 @@ target_compile_features(urban_game_source_contract PRIVATE cxx_std_20)
 target_include_directories(urban_game_source_contract PRIVATE
  "${URBAN_SOURCE_OVERLAY}/runtime" ../../vendor/runtime/runtime ..)
 target_compile_options(urban_game_source_contract PRIVATE -fsigned-char -fno-strict-aliasing)
+
+add_library(urban_diagnostics_contract STATIC ../diagnostics/contract.cpp)
+target_compile_features(urban_diagnostics_contract PRIVATE cxx_std_20)
+target_include_directories(urban_diagnostics_contract PRIVATE ..)

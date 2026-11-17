@@ -52,7 +52,7 @@ def main():
         out.mkdir(parents=True)
         overlay = out/'source-overlay'
         sources = list((ROOT/'host/research').glob('*')) + [ROOT/'host/runtime-probes/gpu_probes.cpp', ROOT/'host/audio-device/test_device_lifetime.cpp', ROOT/'native/gpu/recorded_push.h', ROOT/'native/audio/cone.h', ROOT/'native/audio/spatial.h']
-        sources += list((ROOT/'native/game').glob('*'))
+        sources += list((ROOT/'native/game').glob('*')) + list((ROOT/'native/diagnostics').glob('*'))
         host_sources = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources if path.is_file()}
         receipt = {'host_sources': host_sources, 'sdk': PIN, 'xbe_sha256': report['sha256'], 'g1_qualified': False, 'source_title_id': report['certificate']['title_id'], 'source_entry': report['entry'], 'patches': {}, 'status': 'BUILDING'}
         try:

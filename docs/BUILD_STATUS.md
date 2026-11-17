@@ -16,6 +16,10 @@ A primeira tentativa desta integração foi ligada com o perfil antigo e abortou
 
 A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e executou os recursos originais em pasta por 130 segundos: 480 apresentações de frame, nenhum pedido de recurso ausente e nenhuma exceção registrada. O controlador encerrou no limite programado (124; processo SIGTERM/-15). Não foi um teste de missão completa, áudio audível ou Android. [Recibo público sem conteúdo comercial](evidence/runtime-progress/iso-source-integration.json).
 
+## Coletor de relatórios do launcher
+
+Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O código do host instala o observer; não houve nova execução comercial nesta revisão porque o ambiente privado está indisponível. O CI testa fixtures próprias e compila os contratos; integração JNI, botão na Activity do launcher real e teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
+
 ## Histórico: investigação posterior da falha de áudio
 
 [Diagnóstico e testes progressivos](AUDIO_INVESTIGATION.md): incompatibilidade do objeto DirectSound confirmada. Patch MIT experimental de referências passa AddRef e um probe de oito chamadas HLE. `AudioData.bin` e `Movies/dolby.xmv` foram extraídos da própria ISO e tiveram hashes verificados. O próximo SIGSEGV está em D3D `0x003E7F70`, com ponteiro de vertex shader zero; ele se repete com o vídeo disponível. Não é a única falha, nem falta de outro pacote. Windows não é requisito da compilação Android; o host Linux continua sendo a rota de depuração.
