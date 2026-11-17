@@ -4,6 +4,10 @@ Atualizado em 2026-11-17. **GO: geração determinística, compilação Linux e 
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
 
+## Decisão de entrega: launcher baseado na ISO
+
+O usuário definiu seleção/importação da ISO, reconhecimento da revisão e execução pelo launcher, seguindo o Black. O README e o código do HEAD Black foram rastreados: o aplicativo contém libmain.so ARM64 recompilada antecipadamente, importa os recursos externos e monta a imagem. [Decisão e pontos de integração](LAUNCHER_DESIGN.md). Essa escolha aproveita o runtime atual e não declara Vulkan/SDL3 ou o launcher Android prontos. Nenhum novo APK foi produzido nesta revisão.
+
 ## Histórico: investigação posterior da falha de áudio
 
 [Diagnóstico e testes progressivos](AUDIO_INVESTIGATION.md): incompatibilidade do objeto DirectSound confirmada. Patch MIT experimental de referências passa AddRef e um probe de oito chamadas HLE. `AudioData.bin` e `Movies/dolby.xmv` foram extraídos da própria ISO e tiveram hashes verificados. O próximo SIGSEGV está em D3D `0x003E7F70`, com ponteiro de vertex shader zero; ele se repete com o vídeo disponível. Não é a única falha, nem falta de outro pacote. Windows não é requisito da compilação Android; o host Linux continua sendo a rota de depuração.

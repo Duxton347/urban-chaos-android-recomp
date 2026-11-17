@@ -1,5 +1,8 @@
 # Urban Chaos Android Recomp
 
+Entrega definida: **launcher Android para importar e executar a ISO original**, com runtime recompilado e recursos do disco externos. [Como o Black faz isso e como será aplicado aqui](docs/LAUNCHER_DESIGN.md).
+
+
 Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por recompilação estática. A meta é preservar o jogo original; o alvo prioritário é Xiaomi Pad 6 / HyperOS 2.0.16.0.
 
 **Estado: intro, tela de título, menu principal e seleção de dificuldade originais executados no host Linux de pesquisa. Código guest baseline e com continuações compilado em ARM64. A primeira missão ainda está em depuração; não existe APK jogável nesta entrega.** O diagnóstico histórico em `android/` não representa o port.

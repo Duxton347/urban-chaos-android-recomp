@@ -39,3 +39,7 @@ Candidato Burner: tamanho **5.283.840**, SHA-256 `b74ae76fdbf1ef5f95dcfabf4f94f3
 O módulo diagnóstico histórico já contém SAF, staging privado, progresso, cancelamento/retomada, validação do candidato e ponteiro atômico de instalação. É infraestrutura a revisar/integrar ao futuro APK do jogo, não um port. Não usar `MANAGE_EXTERNAL_STORAGE` do Black. Manter `game`, `saves`, `config`, `cache/shaders`, `logs` distintos.
 
 Sem disco: não foram executados extração comercial, comparação integral contra Redump, versão real, completude de assets, boot, streaming de missão ou saves. Os testes atuais usam somente XBE/XISO sintéticos, incluindo falhas e offset Redump; seus bytes são gerados em `build/`/temporários e não são publicados como assets.
+
+## Rota ISO do launcher definida em 2026-11-17
+
+Priorizar importar a ISO para staging privado e montá-la somente para leitura pelo runtime; extração completa passa a ser alternativa. O fluxo detalhado, o reconhecimento por hash do XBE e o aviso para outra revisão estão em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O SDK já oferece Disc/MountDisc e volume D: por imagem, mas esse caminho ainda precisa ser integrado e validado no launcher Android. Ferramentas de extração existentes não equivalem a essa integração concluída.

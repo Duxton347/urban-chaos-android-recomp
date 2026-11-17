@@ -1,12 +1,14 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** port nativo ARM64 do Xbox original, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
+**Objetivo:** launcher Android baseado na ISO Xbox original, com núcleo ARM64 recompilado, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
 
-## Fluxo de produção pretendido
+A experiência final de seleção da ISO, reconhecimento e início do jogo está definida em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O diagrama abaixo descreve a construção do núcleo; o tablet não executa essa recompilação ao importar a imagem.
+
+## Construção do núcleo na nuvem
 
 ```mermaid
 flowchart TD
-  Disc[Disco Xbox legítimo no tablet ou volume privado na nuvem] --> Import[SAF / importador Redump-XISO-pasta]
+  Disc[Cópia Xbox legítima no volume privado da nuvem] --> Import[SAF / importador Redump-XISO-pasta]
   Import --> Validate[XBE: estrutura, SHA-256, certificado, versão]
   Validate --> Scan[Scanner XboxXBERecomp pinado]
   Scan --> Review[Configuração, funções, ABI e hooks comprovados]

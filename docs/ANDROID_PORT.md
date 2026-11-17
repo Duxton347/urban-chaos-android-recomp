@@ -1,6 +1,8 @@
-# Rota Android ARM64
+# Launcher Android com núcleo ARM64
 
 **Código guest baseline e com continuações compilado para ARM64; runtime Android completo e APK ainda não ligados nem executados.** O host Linux já executa menu original; [progresso e limites](RUNTIME_PROGRESS.md).
+
+O produto é um launcher que importa e monta a ISO original, com o runtime incluído no pacote Android e os recursos do disco externos. O Black também usa esse modelo: sua biblioteca ARM64 é construída antes da instalação. [Fluxo e rastreio do código](LAUNCHER_DESIGN.md).
 
 ## Toolchain fixada
 
@@ -26,7 +28,7 @@ No pin `8e9c6fc...`, `native/main.cpp` coordena SDL e lifecycle, `native/vulkan.
 
 `native/portability/cpu_contract.cpp` compila como objeto ELF AArch64 com o NDK fixado. Verifica little-endian, ponteiros de 64 bits, alinhamento/offsets de `X86Context` e acesso guest desalinhado compilável. [Log](evidence/route-v2/android-portability.log). **Não é** execução do runtime, teste de Vulkan, instalação ou APK de jogo.
 
-A CI `android-arm64.yml` compila esse contrato e registra G1 bloqueado. O job completo de APK só será introduzido quando existirem fontes originais geradas e integração qualificada. Não há fallback para produzir um launcher no lugar do jogo.
+A CI `android-arm64.yml` compila esse contrato e registra G1 bloqueado. O job completo de APK só será introduzido quando existirem fontes originais geradas e integração qualificada. A entrega é o launcher com execução real do jogo; uma interface de seleção isolada não satisfaz esse resultado.
 
 Saves: planejar volumes Xbox dentro de `files/saves/`, reproduzir caminhos/semântica originais, escrita atômica quando compatível e isolamento por versão/perfil. Validar checkpoint, morte, load após fechar processo e update preservando dados. `config/hud.json` do diagnóstico é configuração de interface, **não progresso do jogo**.
 

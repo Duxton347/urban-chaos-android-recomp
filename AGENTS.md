@@ -4,6 +4,8 @@
 
 Port the original Xbox Urban Chaos: Riot Response to Android ARM64 by static recompilation. Preserve original logic and content. Do not implement a replacement game, a PS2 emulation solution or a visual simulation presented as gameplay. The target is Xiaomi Pad 6 / HyperOS 2.0.16.0; device behavior requires measured tests.
 
+User-facing delivery is an ISO-based Android launcher with the real recompiled runtime, matching the Black workflow: select/import a user disc, identify its XBE revision, mount read-only and launch. APK is the Android installation format; it does not bundle original disc assets or imply on-device recompilation. Prioritize direct ISO mounting over mandatory full extraction. Preserve the existing runtime work and keep experimental revision warnings distinct from validated compatibility. See docs/LAUNCHER_DESIGN.md.
+
 ## Evidence and gates
 
 Read docs/BUILD_STATUS.md and docs/ARCHITECTURE.md before changes. Keep distinct: tools compile; generated synthetic fixture executes; game compiles; game boots; original menu; playable mission; campaign verified. Never equate an APK or launcher with a working game. The historical android/ module is diagnostic-only and is not the port. Do not expand diagnostic UI as a substitute for recompilation.
