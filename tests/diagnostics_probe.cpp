@@ -44,6 +44,16 @@ int main(int argc,char**argv){
   });
   for(auto& worker:workers)worker.join();parallel.Finish();
  }
+ {
+  Journal blocked;Require(blocked.Start(root/"blocked","fixture-build",hash,true,4096));
+  fs::create_directory(root/"blocked/runtime.3.jsonl");
+  FILE* sentinel=std::fopen((root/"blocked/runtime.3.jsonl/owned-fixture.txt").string().c_str(),"wb");
+  Require(sentinel!=nullptr);std::fclose(sentinel);
+  bool failed=false;
+  for(unsigned n=0;n<100;n++)if(!blocked.Emit(Code::Trace,{{"counter",n}})){failed=true;break;}
+  Require(failed&&!blocked.Healthy());
+  Require(fs::exists(root/"blocked/runtime.3.jsonl/owned-fixture.txt"));
+ }
  Journal invalid;Require(!invalid.Start(root/"invalid","/private/user/path",hash));
  Require(SourceCode("ps2_image")==Code::SourcePs2);
  Require(SourceCode("wrong_title")==Code::SourceTitle);

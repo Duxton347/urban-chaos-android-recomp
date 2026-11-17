@@ -18,7 +18,7 @@ A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e execu
 
 ## Coletor de relatórios do launcher
 
-Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O código do host instala o observer; não houve nova execução comercial nesta revisão porque o ambiente privado está indisponível. O CI testa fixtures próprias e compila os contratos; integração JNI, botão na Activity do launcher real e teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
+Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O código do host instala o observer; não houve nova execução comercial nesta revisão porque o ambiente privado está indisponível. O CI testa fixtures próprias e compila os contratos; ligação da ponte JNI ao build do jogo, botão na Activity do launcher real e teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
 
 ## Histórico: investigação posterior da falha de áudio
 

@@ -1,6 +1,7 @@
 #pragma once
 // Authored diagnostic metadata only. Never pass game bytes, paths or formatted log messages.
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -82,7 +83,8 @@ class Journal {
  FILE* file_=nullptr;
  size_t bytes_=0,limit_=1024*1024;
  uint64_t sequence_=0;
- bool healthy_=false,detailed_=false;
+ std::atomic<bool> healthy_{false};
+ bool detailed_=false;
  std::chrono::steady_clock::time_point start_;
  bool Open() {
   auto p=directory_/"runtime.0.jsonl";
@@ -123,7 +125,7 @@ public:
    m=std::fopen((directory_/"session.open").string().c_str(),"wb");if(!m)return false;
    ok=std::fclose(m)==0;
    healthy_=ok&&Open();return healthy_;
-  }catch(...){return false;}
+  }catch(...){healthy_=false;return false;}
  }
  bool Healthy() {std::lock_guard lock(mutex_);return healthy_;}
  bool Emit(Code code,std::initializer_list<std::pair<std::string_view,uint64_t>> fields={},
@@ -150,7 +152,7 @@ public:
    if(bytes_+line.size()>limit_&&!Rotate()){healthy_=false;return false;}
    healthy_=std::fwrite(line.data(),1,line.size(),file_)==line.size()&&std::fflush(file_)==0;
    bytes_+=line.size();return healthy_;
-  }catch(...){return false;}
+  }catch(...){healthy_=false;return false;}
  }
  void Finish() noexcept {
   bool recorded=Emit(Code::SessionEnd);

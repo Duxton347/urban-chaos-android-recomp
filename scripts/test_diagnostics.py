@@ -56,7 +56,7 @@ def main():
         assert records(abrupt)[-1]['code']=='UC-CPU-002'
         classes=out/'classes';classes.mkdir()
         core=ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/ReportSession.java'
-        subprocess.run([javac,'-d',str(classes),str(core),str(ROOT/'tests/DiagnosticsTest.java')],check=True)
+        subprocess.run([javac,'-d',str(classes),str(core),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/NativeReports.java'),str(ROOT/'tests/DiagnosticsTest.java'),str(ROOT/'tests/DiagnosticsJniTest.java')],check=True)
         subprocess.run([java,'-cp',str(classes),'DiagnosticsTest',str(out/'java'),str(native)],check=True)
         with zipfile.ZipFile(out/'java/report-fixture.zip') as archive:
             assert all(not n.startswith('/') and '..' not in pathlib.PurePosixPath(n).parts for n in archive.namelist())
@@ -67,7 +67,22 @@ def main():
                     json.loads(data)
                 elif name.endswith('.jsonl'):
                     for line in data.splitlines():json.loads(line)
-        print(json.dumps({'status':'PASS','game_data_used':False,'native_release_observer':True,
+        jdk=pathlib.Path(javac).resolve().parent.parent
+        library=out/'liburban_diagnostics_fixture.so'
+        subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-fPIC','-shared','-pthread',
+            '-I'+str(jdk/'include'),'-I'+str(jdk/'include/linux'),
+            '-I'+str(ROOT/'native'),'-I'+str(overlay/'runtime'),'-I'+str(ROOT/'vendor/runtime/runtime'),
+            str(ROOT/'native/diagnostics/android_bridge.cpp'),str(ROOT/'tests/diagnostics_jni_fixture.cpp'),
+            str(overlay/'runtime/core/log.cpp'),'-o',str(library)],check=True)
+        subprocess.run([java,'-cp',str(classes),'DiagnosticsJniTest',str(library),str(out/'jni'),str(out/'jni.zip')],check=True,capture_output=True,text=True)
+        with zipfile.ZipFile(out/'jni.zip') as archive:
+            native_entries=[n for n in archive.namelist() if n.endswith('native/runtime.0.jsonl')]
+            assert len(native_entries)==1
+            items=[json.loads(line) for line in archive.read(native_entries[0]).splitlines()]
+            assert any(item['code']=='UC-KERNEL-001' and item['detail']['ordinal']==233 for item in items)
+            assert any(item['code']=='UC-SESSION-002' for item in items)
+            assert all(b'SENTINEL_' not in archive.read(name) for name in archive.namelist())
+        print(json.dumps({'status':'PASS','jni_bridge_executed':True,'game_data_used':False,'native_release_observer':True,
             'rotation':True,'concurrency':True,'abrupt_exit_persisted':True,'zip_json_validated':True,
             'private_payload_excluded':True,'android_device_tested':False}))
     return 0

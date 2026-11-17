@@ -24,6 +24,7 @@ public final class ReportSession implements AutoCloseable {
         NATIVE_EXIT("UC-NATIVE-001","warn","Android reported a previous process exit; inspect OS reason code",false),
         INPUT_PROFILE("UC-INPUT-001","info","Input profile changed; individual touches are omitted",true),
         SAVE_RESULT("UC-SAVE-001","info","Save operation status; save contents omitted",false),
+        NATIVE_LOG_FAILURE("UC-LOG-005","error","Native collector unavailable; inspect reason token",false),
         EXPORT("UC-EXPORT-001","info","Diagnostic export requested",true);
         final String code, level, reason; final boolean known;
         Event(String c,String l,String r,boolean k){code=c;level=l;reason=r;known=k;}
@@ -229,9 +230,12 @@ public final class ReportSession implements AutoCloseable {
     @Override public synchronized void close() throws IOException {
         if(closed)return;
         boolean ended=event(Event.END,Collections.emptyMap());closed=true;
-        if(output!=null)output.close();
-        if(ended)Files.deleteIfExists(directory.resolve("session.open"));
-        if(installed!=null&&Thread.getDefaultUncaughtExceptionHandler()==installed)
-            Thread.setDefaultUncaughtExceptionHandler(previous);
+        try {
+            if(output!=null)output.close();
+            if(ended)Files.deleteIfExists(directory.resolve("session.open"));
+        } finally {
+            if(installed!=null&&Thread.getDefaultUncaughtExceptionHandler()==installed)
+                Thread.setDefaultUncaughtExceptionHandler(previous);
+        }
     }
 }
