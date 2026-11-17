@@ -23,3 +23,15 @@ add_library(urban_audio_spatial_contract STATIC ../../host/runtime-probes/audio_
 target_compile_features(urban_audio_spatial_contract PRIVATE cxx_std_20)
 target_include_directories(urban_audio_spatial_contract PRIVATE ..)
 target_compile_options(urban_audio_spatial_contract PRIVATE -UNDEBUG)
+
+# Shared ISO/XBE recognition, compiled for Android; no game content is linked.
+if(NOT EXISTS "${URBAN_SOURCE_OVERLAY}/runtime/kernel/disc.cpp")
+ message(FATAL_ERROR "A fresh bounded reader overlay is required")
+endif()
+add_library(urban_game_source_contract STATIC
+ ../game/source.cpp "${URBAN_SOURCE_OVERLAY}/runtime/kernel/disc.cpp"
+ ../../vendor/runtime/runtime/kernel/crypto.cpp)
+target_compile_features(urban_game_source_contract PRIVATE cxx_std_20)
+target_include_directories(urban_game_source_contract PRIVATE
+ "${URBAN_SOURCE_OVERLAY}/runtime" ../../vendor/runtime/runtime ..)
+target_compile_options(urban_game_source_contract PRIVATE -fsigned-char -fno-strict-aliasing)
