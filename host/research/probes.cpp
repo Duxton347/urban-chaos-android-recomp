@@ -57,6 +57,13 @@ X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetFrequency));
 X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetPosition));
 X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_Release));
 X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetMode));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetConeAngles));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetConeOrientation));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetConeOutsideVolume));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetDistanceFactor));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetRolloffFactor));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetDopplerFactor));
+X86_EXTERN_FUNC(GUEST(IDirectSoundBuffer_SetVelocity));
 X86_EXTERN_FUNC(GUEST(IDirectSound_CommitDeferredSettings));
 X86_EXTERN_FUNC(GUEST(DirectSoundCreate));
 X86_EXTERN_FUNC(GUEST(IDirectSound_Release));
@@ -111,6 +118,33 @@ int VoicePropertiesSelfTest() {
        !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x48)!=0 ||
        !call(GUEST(IDirectSound_CommitDeferredSettings),{0}) ||
        !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || int32_t(kernel::R32(out+0x48))!=-1398) return 12;
+    if(!call(GUEST(IDirectSoundBuffer_SetConeAngles),{voice,60,120,0}) ||
+       !call(GUEST(IDirectSoundBuffer_SetConeOutsideVolume),{voice,uint32_t(-6000),1}) ||
+       !call(GUEST(IDirectSoundBuffer_SetConeOrientation),{voice,0x40400000,0x40800000,0,1}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x4C)!=0 ||
+       !call(GUEST(IDirectSound_CommitDeferredSettings),{0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || int32_t(kernel::R32(out+0x4C))!=-6000 ||
+       !call(GUEST(IDirectSoundBuffer_SetConeOrientation),{voice,0xC0400000,0xC0800000,0,0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x4C)!=0 ||
+       !call(GUEST(IDirectSoundBuffer_SetConeAngles),{voice,121,120,0},0x80070057u) ||
+       !call(GUEST(IDirectSoundBuffer_SetConeOutsideVolume),{voice,1,0},0x80070057u) ||
+       !call(GUEST(IDirectSoundBuffer_SetConeOrientation),{voice,0x7F800000,0,0,0},0x80070057u) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x4C)!=0) return 16;
+    if(!call(GUEST(IDirectSoundBuffer_SetRolloffFactor),{voice,0,0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x48)!=0 ||
+       !call(GUEST(IDirectSoundBuffer_SetRolloffFactor),{voice,0x3F800000,1}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x48)!=0 ||
+       !call(GUEST(IDirectSound_CommitDeferredSettings),{0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || int32_t(kernel::R32(out+0x48))!=-1398 ||
+       !call(GUEST(IDirectSoundBuffer_SetDistanceFactor),{voice,0,0},0x80070057u) ||
+       !call(GUEST(IDirectSoundBuffer_SetVelocity),{voice,0x40400000,0x40800000,0,1}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x50)!=0 ||
+       !call(GUEST(IDirectSound_CommitDeferredSettings),{0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || int32_t(kernel::R32(out+0x50))>=0 ||
+       !call(GUEST(IDirectSoundBuffer_SetDopplerFactor),{voice,0,1}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || int32_t(kernel::R32(out+0x50))>=0 ||
+       !call(GUEST(IDirectSound_CommitDeferredSettings),{0}) ||
+       !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,out}) || kernel::R32(out+0x50)!=0) return 17;
     if(!call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{voice,0},0x80070057u) ||
        !call(GUEST(IDirectSoundBuffer_GetVoiceProperties),{0,out},0x80004005u) ||
        !call(GUEST(IDirectSoundBuffer_Release),{voice})) return 9;
@@ -135,7 +169,7 @@ int VoicePropertiesSelfTest() {
        !call(GUEST(CDirectSoundStream_Release),{stream},1) ||
        !call(GUEST(CDirectSoundStream_Release),{stream},0) || mem::AllocationSize(stream) ||
        !call(GUEST(IDirectSound_Release),{device})) return 15;
-    std::puts("VOICE_PROPERTIES_SELFTEST: live bins/gains/headroom/frequency/distance/pitch, bounded 92-byte layout, invalid arguments, lifetime and stdcall passed; no title instructions");
+    std::puts("VOICE_PROPERTIES_SELFTEST: live bins/gains/headroom/frequency/distance/pitch, directional cone gain/deferred commit, bounded 92-byte layout, invalid arguments, lifetime and stdcall passed; no title instructions");
     std::fflush(stdout);return 0;
 }
 

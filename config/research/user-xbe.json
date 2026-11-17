@@ -87,6 +87,70 @@
         "stack"
       ],
       "evidence": "Original caller 0x000A24C0 polls HRESULT 0x88760828; result reader checks 16-byte report status+12, copies count+8 and optional timestamp+0/+4. Wrapper flushes actual report work and preserves original reader."
+    },
+    "D3D_PublicAddRef": {
+      "address": "003E5570",
+      "abi": [
+        "stack"
+      ],
+      "evidence": "Verified retail routine: first public surface reference retains its parent recursively; public count at Common low16, parent at +0x14; stdcall ret4. SHA256 of 55 original bytes fc04f80709305c363d8573abf7ed0d75db798bfb139abc8e23234f38282fd9b5."
+    },
+    "IDirectSoundBuffer_SetConeAngles": {
+      "address": "00425F5B",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetConeOrientation": {
+      "address": "00425F7F",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetConeOutsideVolume": {
+      "address": "00425FB4",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetDistanceFactor": {
+      "address": "004260A6",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
+    },
+    "IDirectSoundBuffer_SetRolloffFactor": {
+      "address": "004260CA",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
+    },
+    "IDirectSoundBuffer_SetDopplerFactor": {
+      "address": "004260EE",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
     }
   },
   "qualifies_g1": false,

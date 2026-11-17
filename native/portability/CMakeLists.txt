@@ -13,3 +13,13 @@ add_library(urban_recorded_packet_contract STATIC ../../host/runtime-probes/reco
 target_compile_features(urban_recorded_packet_contract PRIVATE cxx_std_20)
 target_include_directories(urban_recorded_packet_contract PRIVATE ..)
 target_compile_options(urban_recorded_packet_contract PRIVATE -UNDEBUG)
+
+add_library(urban_audio_cone_contract STATIC ../../host/runtime-probes/audio_cone.cpp)
+target_compile_features(urban_audio_cone_contract PRIVATE cxx_std_20)
+target_include_directories(urban_audio_cone_contract PRIVATE ..)
+target_compile_options(urban_audio_cone_contract PRIVATE -UNDEBUG)
+
+add_library(urban_audio_spatial_contract STATIC ../../host/runtime-probes/audio_spatial.cpp)
+target_compile_features(urban_audio_spatial_contract PRIVATE cxx_std_20)
+target_include_directories(urban_audio_spatial_contract PRIVATE ..)
+target_compile_options(urban_audio_spatial_contract PRIVATE -UNDEBUG)
