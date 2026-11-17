@@ -51,3 +51,9 @@ Esse commit antecede o novo decodificador de pacotes gravados. O novo HEAD acres
 ## Linkage e visibilidade — revisão seguinte
 
 A revisão acrescenta a separação comprovada do trailer XDK, contagens reais de visibilidade no renderer de referência e uma otimização de consultas sem escrita de cor. Quatro CTests locais passaram; um host novo compilou sem instrumentação privada e passou em seis selftests. A próxima falha observada é uma repetição na inserção de árvore durante a carga da cena. Missão, save/load e Android continuam não validados. Os resultados remotos desta revisão devem ser consultados nos checks do HEAD do PR #1; nenhuma entrada comercial é enviada.
+
+## Primeira cena original — 2026-11-17
+
+No commit `1a745aaa9f9788cf21bab2fc55547167e1c5dc1c`, passaram [auditoria](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43998624659), [testes](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43998624639), [native/ownership/áudio](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43998624621) e [contratos AArch64](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43998624619). A [reprodução Windows original](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/43998624607) falhou: configure 0, build 1, integration-status.json privado ausente, confirmado no log.
+
+Esse código apresentou a abertura original de Hope Street no host privado. A revisão de documentação seguinte registra o ensaio de 600 s, o menu original de pausa e as incompatibilidades de reports Vulkan/canais SDL encontradas em Black. Essas evidências não qualificam missão jogável, áudio audível ou APK do jogo. Nenhum dado comercial, captura ou executável do título foi publicado.

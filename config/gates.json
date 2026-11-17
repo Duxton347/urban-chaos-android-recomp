@@ -57,7 +57,9 @@
   "original_mission_scene_scope": "Opening Hope Street cinematic, CPU reference image at frame 1800; gameplay, sound output and full fidelity unvalidated",
   "surface_parent_ownership_regression_passed": true,
   "raw_guest_research_process_exit": -15,
-  "raw_guest_research_next_gate": "Continue original mission beyond cinematic, qualify rendering and inputs/audio/save; link Vulkan/SDL3 Android runtime",
+  "raw_guest_research_next_gate": "Qualify rendering and execute gameplay input after the Hope Street opening; Vulkan needs real visibility reports and SDL needs matching channel count; audible music and checkpoint pending",
   "directional_audio_model_tested": true,
-  "spatial_audio_hle_probe_passed": true
+  "spatial_audio_hle_probe_passed": true,
+  "original_mission_pause_observed": true,
+  "raw_guest_research_last_present_counter": 1920
 }

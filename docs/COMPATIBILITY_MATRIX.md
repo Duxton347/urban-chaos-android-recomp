@@ -20,3 +20,11 @@ Comparação executada: `git -C vendor/runtime diff --stat c1f7d60c8728c6151bcfb
 | Diagnóstico novo SDL3/Vulkan | Compilado sem código de jogo | **GO** para distribuir debug e testar manualmente; não estabelece G2–G3. |
 
 São nove caminhos modificados no total. O runtime pinado pela Burner permanece sem alterações locais. Não há compatibilidade declarada com o hash candidato até G1 e os testes dependentes.
+
+## Verificações adicionais após a primeira cena
+
+- **Vulkan Black:** `native/vulkan.cpp` não implementa ClearReport/GetReport. O backend herda as operações vazias do contrato original. A nova capability desta integração falharia explicitamente nesse backend: antes de usá-lo no título, é necessário produzir contagens Vulkan reais e conclusão de reports. Não adaptar retornando sucesso constante.
+- **Áudio Black:** `src/audio/output.h` define seis canais, enquanto nosso `audio::StartOutput` atual recebe PCM estéreo. `native/audio.cpp` dobra 5.1 para estéreo. Não conectar esse consumidor diretamente ao callback de dois canais; stride e número de amostras precisam coincidir.
+- **Shaders/plataforma:** Vulkan Black depende de glslang, ImGui, SDL e interfaces `common/options.h`, `common/aspect.h`, `d3d/gpu_frame.h` e `host.h`. Separar essas dependências de Black e confrontar as chaves de shader do pin, incluindo XYZRHW e reports, antes de qualificar o backend. Nenhum desses hooks de título foi transplantado.
+
+A primeira cena de Hope Street foi apresentada no renderer CPU da pesquisa; isso não muda esses gates de Vulkan/SDL3 nem comprova gameplay no Android.

@@ -51,3 +51,7 @@ Esquema versionado por perfil: `action_id`, posição normalizada, raio/escala, 
 ## Aceitação futura
 
 Multitouch simultâneo de mover+mirar+atirar, segurar escudo+atacar, recarregar/interagir por contexto, pressão contínua sem eventos perdidos, retorno de suspensão sem botões presos, alteração de escala/opacidade/posição persistida, perfis independentes e controle USB/Bluetooth real. Só aprovar em missão original executando, com resultados reproduzíveis.
+
+## Evidência de execução em 2026-11-17
+
+START (`input::Pad.buttons` máscara `0x0010`, campo digital de XINPUT_STATE em +4) abriu o menu original **PAUSED: HOPE STREET** durante a abertura da missão. A captura do frame 1920 foi inspecionada no host Linux. Isso qualifica essa observação de pausa na variante/profile atuais; não valida todos os contextos, Android ou HUD touch. A e START já navegaram pelos menus anteriores; A não foi classificado como interação em gameplay. Movimento e trigger foram agendados para frames posteriores, mas não foram alcançados pelo teste de 600 s. [Registro](evidence/runtime-progress/mission-progression.json).
