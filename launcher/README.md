@@ -1,10 +1,10 @@
-# Componentes do launcher real
+# Launcher experimental real
 
-core contém o coletor estruturado de relatórios e a exportação ZIP, testáveis com Java17.
-android contém o adaptador SAF/lifecycle/encerramento de processo, compilável contra SDK34.
-O journal C++ compartilhado está em native/diagnostics; o host Linux instala seu observer no SDK.
+`app/` contém as Activities do launcher/SDL, importação SAF da ISO e entrada inicial de menu.
+`core/` contém cópia retomável e coletor/exportação de relatórios, testáveis em Java17.
+`android/` contém os adaptadores de relatórios e exportação SAF.
+`native/android/` liga o runtime ARM64 e o renderer Vulkan; o código gerado do título permanece privado.
 
-Esses diretórios ainda não formam um aplicativo Android executável. O runtime ARM64, a ligação das APIs JNI/SAF à Activity e ao build do jogo, Vulkan e SDL3 precisam ser integrados antes do launcher do jogo.
-Não usar o módulo diagnóstico histórico como substituto. Ver docs/DIAGNOSTICS.md para formatos, privacidade, códigos e limites de evidência.
+O APK experimental privado foi compilado e assinado. Ainda não foi instalado ou executado no tablet; não há missão/campanha qualificada. O diagnóstico histórico em `android/` na raiz permanece separado.
 
-ReportExportController fornece menu/botão e encaminhamento SAF para a Activity definitiva. A saída estéreo compartilhada está em native/audio/sdl_output.* e já é selecionável no host de pesquisa; a ligação ao host Android ainda não está pronta.
+[Receita privada](../docs/ANDROID_BUILD.md) · [Primeiro teste](../docs/FIRST_TABLET_TEST.md) · [Códigos e privacidade](../docs/DIAGNOSTICS.md).
