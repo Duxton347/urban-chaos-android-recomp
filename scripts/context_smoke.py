@@ -50,6 +50,7 @@ def reference(area, symbols):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tool-area',type=pathlib.Path,default=ROOT/'build/context-tools-patched')
+    parser.add_argument('--optimization',choices=('0','1','2'),default='1')
     args=parser.parse_args();tool_area=args.tool_area.resolve()
     tool=tool_area/'cmake/xbe_recomp_resumable';sdk=ROOT/'vendor/runtime';patched=tool_area/'sdk'
     receipt=json.loads((tool_area/'receipt.json').read_text())
@@ -78,7 +79,7 @@ def main():
         command([compiler,cfg,area/'synthetic.xbe',output],area/f'{mode}-generate.log')
         if mode in ('resumable-repeat','patched-default'):continue
         headers=patched/'runtime' if enabled else sdk/'runtime'
-        argv=['c++','-std=c++20','-O1','-g0','-march=x86-64-v2','-fsigned-char','-fno-strict-aliasing','-I'+str(headers),'-I'+str(sdk/'runtime'),'-I'+str(output)]
+        argv=['c++','-std=c++20','-O'+args.optimization,'-g0','-march=x86-64-v2','-fsigned-char','-fno-strict-aliasing','-I'+str(headers),'-I'+str(sdk/'runtime'),'-I'+str(output)]
         if enabled:argv+=['-DXBE_RESUMABLE_GUEST=1']
         argv += [str(ROOT/'host/context-tests/main.cpp'),str(headers/'cpu/dispatch.cpp'),str(sdk/'runtime/kernel/memory.cpp'),str(sdk/'runtime/kernel/ordinals.cpp'),str(sdk/'runtime/core/log.cpp'),*map(str,output.glob('x86_recomp.*.cpp')),str(output/'x86_func_mapping.cpp'),'-pthread','-o',str(area/f'run-{mode}')]
         command(argv,area/f'{mode}-build.log')
@@ -94,7 +95,7 @@ def main():
     assert hashes(area/'resumable')==hashes(area/'resumable-repeat'),'Nondeterministic continuation generation'
     for name in ('x86_recomp.0.cpp','x86_func_mapping.cpp'):
         assert (area/'legacy'/name).read_bytes()==(area/'patched-default'/name).read_bytes(),'Default code generation changed'
-    report={'scope':'synthetic context switching only; no game data','reference':oracle,'results':results,'deterministic':True,'default_cpp_unchanged':True,'sdk':receipt['sdk'],'patches':receipt['patches']}
+    report={'scope':'synthetic context switching only; no game data','optimization':args.optimization,'reference':oracle,'results':results,'deterministic':True,'default_cpp_unchanged':True,'sdk':receipt['sdk'],'patches':receipt['patches']}
     (ROOT/'build/context-regression-result.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-if [[ $# -lt 2 || $# -gt 4 ]]; then
- echo 'Usage: compile_private_generated.sh <ignored-generated-dir> <ignored-build-dir> [linux|android-arm64] [patched-runtime-headers]' >&2
+if [[ $# -lt 2 || $# -gt 5 ]]; then
+ echo 'Usage: compile_private_generated.sh <ignored-generated-dir> <ignored-build-dir> [linux|android-arm64] [patched-runtime-headers] [0|1|2 optimization]' >&2
  exit 2
 fi
 python3 - "$PWD" "$1" "$2" <<'PY'
@@ -16,19 +16,24 @@ TASK_CMAKE="$PWD/.toolchain/cmake/cmake-3.31.6-linux-x86_64/bin/cmake"
 TASK_GENERATED=$(realpath "$1")
 TASK_MODE="${3:-linux}"
 TASK_ARGS=()
+TASK_OPTIMIZATION="${5:-0}"
+case "$TASK_OPTIMIZATION" in
+ 0|1|2) TASK_ARGS+=("-DURBAN_GUEST_OPTIMIZATION=$TASK_OPTIMIZATION") ;;
+ *) echo 'Guest optimization must be 0, 1 or 2' >&2; exit 2 ;;
+esac
 case "$TASK_MODE" in
  linux) ;;
  android-arm64)
   TASK_SDK="${ANDROID_HOME:-$PWD/.toolchain/android-sdk}"
   TASK_CMAKE="$TASK_SDK/cmake/3.31.6/bin/cmake"
   TASK_NDK="$TASK_SDK/ndk/28.2.13676358"
-  TASK_ARGS=(-G Ninja "-DCMAKE_MAKE_PROGRAM=$TASK_SDK/cmake/3.31.6/bin/ninja"
+  TASK_ARGS+=(-G Ninja "-DCMAKE_MAKE_PROGRAM=$TASK_SDK/cmake/3.31.6/bin/ninja"
    "-DCMAKE_TOOLCHAIN_FILE=$TASK_NDK/build/cmake/android.toolchain.cmake"
    -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-29)
   ;;
  *) echo 'Unsupported target; use linux or android-arm64' >&2; exit 2 ;;
 esac
-if [[ $# -eq 4 ]]; then
+if [[ $# -ge 4 ]]; then
  TASK_HEADERS=$(realpath "$4")
  python3 - "$PWD" "$TASK_HEADERS" <<'PYHEADERS'
 import pathlib,sys

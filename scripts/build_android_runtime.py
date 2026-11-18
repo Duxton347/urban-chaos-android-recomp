@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import subprocess
 import sys
 from prepare_runtime_overlay import prepare, ROOT, PIN
@@ -26,6 +27,10 @@ def main():
     parser.add_argument('--rebuild',action='store_true',help='Replace a superseded linked library while preserving receipts and source overlays')
     args=parser.parse_args()
     xbe,generated,archive,output=map(private_path,(args.xbe,args.generated,args.archive,args.out))
+    cache=(archive.parent/'CMakeCache.txt').read_text()
+    optimized=re.search(r'^URBAN_GUEST_OPTIMIZATION:STRING=([12])$',cache,re.M)
+    if not optimized:
+        raise ValueError('Actual Android runtime requires a guest built explicitly with optimization 1 or 2; compile probes use 0')
     if args.resume and args.rebuild:raise ValueError('Choose resume or rebuild')
     if (output.exists() and not (args.resume or args.rebuild)) or any(output in p.parents or p in output.parents for p in (xbe,generated,archive)):
         raise ValueError('Output must be new, private and separate from all inputs')
@@ -61,6 +66,7 @@ def main():
         if args.rebuild:(output/'cmake/libmain.so').unlink()
     output.mkdir(parents=True,exist_ok=True)
     receipt={'status':'BUILDING','sdk':PIN,'xbe_sha256':info['sha256'],'profile_sha256':sha(args.profile),
+             'guest_optimization':int(optimized.group(1)),'guest_build_cache_sha256':sha(archive.parent/'CMakeCache.txt'),
              'guest_archive_sha256':sha(archive),'guest_objects':len(machines),'apk_created':False,
              'android_device_tested':False,'game_boot_tested':False,'g1_qualified':False}
     try:
