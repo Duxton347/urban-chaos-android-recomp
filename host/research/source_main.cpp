@@ -3,6 +3,7 @@
 #include "core/log.h"
 #include "game/source.h"
 #include "diagnostics/journal.h"
+#include "diagnostics/progress.h"
 #ifdef URBAN_SDL_OUTPUT
 #include "audio/sdl_output.h"
 #include "headless_audio_policy.h"
@@ -71,12 +72,14 @@ int main(int argc,char** argv) {
             report.Emit(urban::diagnostics::Code::BootFailed);report.Finish();return 1;
         }
         report.Emit(urban::diagnostics::Code::BootAccepted);
+        uint32_t progress_ticks=0;
         for(;;){
             std::this_thread::sleep_for(std::chrono::seconds(1));
 #ifdef URBAN_SDL_OUTPUT
             audio::PollOutputDiagnostics();
 #endif
             logx::Flush();
+            if(++progress_ticks%10==0)urban::progress::Poll(report);
         }
     } catch(const urban::game::SourceError& error) {
         report.Emit(urban::diagnostics::SourceCode(error.code));

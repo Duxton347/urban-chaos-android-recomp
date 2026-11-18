@@ -14,6 +14,7 @@ struct Stats {
  State state; Fault fault;
  uint64_t callbacks, rendered, submitted, active, nonfinite, limited;
  uint32_t peak_ppm;
+ uint64_t render_us, max_render_us, slow_blocks;
 };
 // Requests are bytes in the stream's stereo/F32/48-kHz input format.
 uint32_t FramesForDemand(int bytes);
@@ -28,6 +29,7 @@ class Output {
  std::atomic<Fault> fault_{Fault::None};
  std::atomic<uint64_t> callbacks_{0},rendered_{0},submitted_{0},active_{0},nonfinite_{0},limited_{0};
  std::atomic<uint32_t> peak_ppm_{0};
+ std::atomic<uint64_t> render_us_{0},max_render_us_{0},slow_blocks_{0};
  static void SDLCALL Feed(void*,SDL_AudioStream*,int,int);
  void Fail(Fault) noexcept;
  void StopLocked();

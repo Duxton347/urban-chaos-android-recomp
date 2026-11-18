@@ -6,6 +6,7 @@
 #include "core/input.h"
 #include "audio/sdl_output.h"
 #include "diagnostics/journal.h"
+#include "diagnostics/progress.h"
 #include "game/source.h"
 #include "image_symbols.h"
 #include "build_source_profile.h"
@@ -76,7 +77,7 @@ int main(int argc,char** argv){
   report.Emit(urban::diagnostics::Code::BootStart);
   if(!kernel::Boot(std::move(source.xbe),IMAGE_XBE,source.game_directory.string(),(root/"saves").string()))throw std::runtime_error("Kernel boot rejected");
   report.Emit(urban::diagnostics::Code::BootAccepted);
-  uint64_t last_audio=0;
+  uint64_t last_audio=0,last_progress=0;
   for(;;){
    SDL_Event event{};
    if(SDL_WaitEventTimeout(&event,50))do {
@@ -91,6 +92,7 @@ int main(int argc,char** argv){
     host::PadEvent(event);
    }while(SDL_PollEvent(&event));
    if(SDL_GetTicks()-last_audio>=1000){audio::PollOutputDiagnostics();last_audio=SDL_GetTicks();logx::Flush();}
+   if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);last_progress=SDL_GetTicks();}
   }
  }catch(const urban::game::SourceError& error){report.Emit(urban::diagnostics::SourceCode(error.code));}
  catch(const std::exception&){report.Emit(urban::diagnostics::Code::BootFailed);}

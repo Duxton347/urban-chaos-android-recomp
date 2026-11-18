@@ -21,7 +21,8 @@ enum class Code {
  SourceInvalid, SourceMissing, SourceIntegrity, SourceTitle, SourceEntry, SourcePs2,
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
- AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure, Trace
+ AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure,
+ ThreadProgress, IoProgress, AudioTiming, GpuTiming, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -56,6 +57,10 @@ inline Definition Describe(Code c) {
  case Code::AudioStats:return {"UC-AUDIO-001","info","Mixer counters; this does not prove audible output",true};
  case Code::AudioOutputFailure:return {"UC-AUDIO-002","error","SDL output operation failed; underlying driver cause requires analysis",false};
  case Code::AudioOutputState:return {"UC-AUDIO-003","info","SDL output state changed; this does not suspend guest execution",true};
+ case Code::ThreadProgress:return {"UC-CPU-003","info","Thread progress snapshot; kind 0 idle, 1 guest, 2 kernel ordinal, 3 HLE name hash, 4 Vulkan operation",true};
+ case Code::IoProgress:return {"UC-DISC-002","info","Cumulative IO and empty active stream counters; short reads can include normal EOF",true};
+ case Code::AudioTiming:return {"UC-AUDIO-004","info","Cumulative callback timing; slow blocks are measured, not a driver fault diagnosis",true};
+ case Code::GpuTiming:return {"UC-GPU-005","info","Cumulative host Vulkan API time; operation 0 wait, 1 acquire, 2 shader module",true};
  case Code::Trace:return {"UC-TRACE-001","debug","Runtime format template; argument values intentionally omitted",false};
  }
  return {"UC-RUNTIME-002","error","Unclassified diagnostic event",false};

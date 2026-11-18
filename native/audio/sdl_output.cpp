@@ -1,6 +1,7 @@
 #include "audio/sdl_output.h"
 #include "audio/audio.h"
 #include "core/log.h"
+#include "diagnostics/progress.h"
 #include <SDL3/SDL_init.h>
 #include <algorithm>
 #include <cmath>
@@ -23,8 +24,12 @@ void SDLCALL Output::Feed(void* data,SDL_AudioStream* stream,int additional,int)
  while(frames&&out.state_==State::Running) {
   uint32_t count=std::min(frames,kBlock);
   std::fill(out.block_.begin(),out.block_.end(),0.0f);
+  auto started=std::chrono::steady_clock::now();
   try {out.render_(out.block_.data(),count);}
   catch(...) {out.Fail(Fault::Render);return;}
+  auto elapsed=uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now()-started).count());
+  out.render_us_+=elapsed;urban::progress::Maximum(out.max_render_us_,elapsed);
+  if(elapsed>uint64_t(count)*1000000/kRate)++out.slow_blocks_;
   out.rendered_+=count;
   uint64_t invalid=0,active=0;float peak=0;
   for(uint32_t n=0;n<count*kChannels;n++) {
@@ -49,6 +54,7 @@ bool Output::Start(Renderer renderer) {
  std::lock_guard lock(control_);
  if(stream_||!renderer)return false;
  fault_=Fault::None;callbacks_=0;rendered_=0;submitted_=0;active_=0;nonfinite_=0;limited_=0;peak_ppm_=0;
+ render_us_=0;max_render_us_=0;slow_blocks_=0;
  if(!SDL_InitSubSystem(SDL_INIT_AUDIO)){Fail(Fault::Init);return false;}
  owns_audio_=true;render_=std::move(renderer);
  SDL_AudioSpec spec{SDL_AUDIO_F32,int(kChannels),int(kRate)};
@@ -92,7 +98,7 @@ SDL_AudioDeviceID Output::Device() {
 }
 Stats Output::Snapshot() const {
  return {state_.load(),fault_.load(),callbacks_.load(),rendered_.load(),submitted_.load(),active_.load(),
-         nonfinite_.load(),limited_.load(),peak_ppm_.load()};
+         nonfinite_.load(),limited_.load(),peak_ppm_.load(),render_us_.load(),max_render_us_.load(),slow_blocks_.load()};
 }
 Output& ProcessOutput(){static auto* output=new Output;return *output;}
 }
@@ -118,5 +124,13 @@ void PollOutputDiagnostics() {
  LOGI("audio-metrics: frames %llu active-samples %llu peak %.6g nonfinite %llu",
       (unsigned long long)stats.submitted,(unsigned long long)stats.active,
       double(stats.peak_ppm)/1000000,(unsigned long long)stats.nonfinite);
+ static auto last=std::chrono::steady_clock::time_point{};
+ auto now=std::chrono::steady_clock::now();
+ if(now-last>=std::chrono::seconds(10)) {
+  urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::AudioTiming,
+   {{"callbacks",stats.callbacks},{"render_us",stats.render_us},{"max_render_us",stats.max_render_us},
+    {"slow_blocks",stats.slow_blocks},{"limited",stats.limited}});
+  last=now;
+ }
 }
 }

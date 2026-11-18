@@ -9,7 +9,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 PIN = 'c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7'
 PATHS = ('runtime/xdk/dsound.cpp', 'runtime/xdk/d3d8.cpp', 'runtime/gpu/backend.h',
          'runtime/gpu/render_thread.cpp', 'runtime/gpu/state.h', 'runtime/gpu/vertex.cpp', 'runtime/kernel/xboxkrnl.cpp', 'runtime/gpu/d3d12.cpp',
-         'runtime/core/log.cpp', 'runtime/core/log.h', 'runtime/kernel/disc.cpp', 'runtime/kernel/disc.h', 'harness/reference_renderer.cpp', 'harness/reference_renderer.h', 'harness/null_backend.cpp')
+         'runtime/core/log.cpp', 'runtime/core/log.h', 'runtime/kernel/disc.cpp', 'runtime/kernel/disc.h',
+         'runtime/kernel/files.cpp', 'runtime/cpu/dispatch.cpp', 'runtime/xdk/hle.h',
+         'harness/reference_renderer.cpp', 'harness/reference_renderer.h', 'harness/null_backend.cpp')
 PATCHES = ('directsound-device-lifetime.patch', 'd3d-device-initialization.patch', 'io-apc-dispatch.patch', 'reference-visibility.patch', 'surface-ownership.patch', 'directional-audio.patch', 'bounded-disc-reader.patch', 'diagnostic-observer.patch')
 
 
@@ -38,6 +40,8 @@ def prepare(destination, context=False, tools_only=False, android=False):
         if tools_only:
             raise ValueError('Android host patches do not apply to host recompilation tools')
         selected += ('android-host-portability.patch',)
+    if not tools_only:
+        selected += ('progress-metadata.patch',)
     for name in selected:
         patch = ROOT/'patches/runtime'/name
         hashes[name] = hashlib.sha256(patch.read_bytes()).hexdigest()

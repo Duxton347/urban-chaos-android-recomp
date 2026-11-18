@@ -1,0 +1,18 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -8,2 +8,3 @@
+ #include "gpu/vulkan_visibility.h"
++#include "diagnostics/progress.h"
+ #include "gpu/visibility_report.h"
+@@ -1828,2 +1829,3 @@
+ void VulkanBackend::WaitValue(uint64_t v) {
++    urban::progress::GpuOperation progress(0);
+     if (!v || Completed() >= v) return;
+@@ -2137,2 +2139,3 @@
+ VkShaderModule VulkanBackend::Module(const std::string& src, const char* entry, vkshader::Stage stage, uint64_t& hash) {
++    urban::progress::GpuOperation progress(2);
+     uint64_t seed = Hash(entry, std::strlen(entry), stage == vkshader::Stage::Vertex ? 1 : 2);
+@@ -3132,2 +3135,3 @@
+ bool VulkanBackend::AcquireImage(uint32_t& index) {
++    urban::progress::GpuOperation progress(1);
+     if (!host::Foreground()) return false;
