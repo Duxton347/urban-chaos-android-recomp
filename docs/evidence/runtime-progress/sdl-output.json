@@ -27,7 +27,7 @@
     }
   },
   "existing_python_tests_passed": 46,
-  "diagnostic_java_checks_passed": 324,
+  "diagnostic_java_checks_passed": 326,
   "diagnostic_jni_passed": true,
   "arm64_output_compiled": true,
   "android_report_menu_compiled_sdk": 34,
@@ -127,5 +127,6 @@
     "forced_sigkill": false
   },
   "final_host_receipt_sha256": "51b0b125572023affa3c7a3467be5839b05bceb127116bfc67ffe2c39ce8c64a",
-  "final_host_sha256": "6ee7d3401d63c85555efc8ce13a8c6af9fd46273755401648d0d16ce958d8a0b"
+  "final_host_sha256": "6ee7d3401d63c85555efc8ce13a8c6af9fd46273755401648d0d16ce958d8a0b",
+  "export_outcome_failure_recorded_test_passed": true
 }

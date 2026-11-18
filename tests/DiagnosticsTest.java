@@ -86,6 +86,8 @@ public class DiagnosticsTest {
    check(all.contains("\"native_unclean\":true"));
    Files.write(root.resolve("report-fixture.zip"),archive.toByteArray());
    rejects(IOException.class,()->s.exportZip(new OutputStream(){public void write(int b) throws IOException{throw new IOException("destination full");}}));
+   String failed=text(Files.readAllBytes(s.directory().toPath().resolve("launcher.0.jsonl")));
+   check(failed.contains("UC-EXPORT-002"));check(failed.contains("zip_io_unclassified"));
   }
   try(ReportSession s=session("symlink",4096)){
    Path outside=root.resolve("outside");Files.writeString(outside,"SENTINEL_GAME_BYTES");

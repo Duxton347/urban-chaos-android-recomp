@@ -43,6 +43,7 @@ public final class ReportExportController implements AutoCloseable {
         busy=true;enabled();
         try{activity.startActivityForResult(reports.createExportDocument(),REQUEST);}
         catch(ActivityNotFoundException|SecurityException error){
+            reports.session().event(ReportSession.Event.EXPORT_PICKER_UNAVAILABLE,java.util.Collections.emptyMap());
             busy=false;enabled();show("Seletor de arquivos indisponível (UC-EXPORT-003)");
         }
     }
@@ -51,6 +52,7 @@ public final class ReportExportController implements AutoCloseable {
         if(request!=REQUEST)return false;
         if(closed)return true;
         if(result!=Activity.RESULT_OK||data==null||data.getData()==null){
+            reports.session().event(ReportSession.Event.EXPORT_CANCELLED,java.util.Collections.emptyMap());
             busy=false;enabled();show("Exportação cancelada");return true;
         }
         busy=true;enabled();

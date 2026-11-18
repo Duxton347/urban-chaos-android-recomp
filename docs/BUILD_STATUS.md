@@ -22,7 +22,7 @@ Implementados journal nativo, observer opcional no logger SDK, sessão Java, exp
 
 ## Mixer original ligado ao SDL3
 
-A saída própria estéreo F32/48 kHz substitui o sink de medição quando selecionada explicitamente; não usa o fold de seis canais do Black. Passaram os testes autorais de canal/lifecycle, seis probes HLE, 46 testes Python e 324 checks de relatório/JNI. O mesmo backend compilou para AArch64. [Contrato e receita](SDL_AUDIO.md).
+A saída própria estéreo F32/48 kHz substitui o sink de medição quando selecionada explicitamente; não usa o fold de seis canais do Black. Passaram os testes autorais de canal/lifecycle, seis probes HLE, 46 testes Python e 326 checks de relatório/JNI. O mesmo backend compilou para AArch64. [Contrato e receita](SDL_AUDIO.md).
 
 No ensaio privado de 180 s com recursos originais verificados em pasta, renderer de referência a partir do frame 1720 e driver SDL dummy, o jogo apresentou o frame 1800 da abertura de Hope Street, inspecionado a 640×480. Foram concluídos oito reports de visibilidade; o SDL recebeu mais de 8,6 milhões de frames estéreo, sem valores não finitos e sem exceção nova registrada. Persistem defeitos visuais e APIs DirectSound a qualificar. Não é áudio ouvido, missão jogável, boot pela ISO completa ou execução Android.
 

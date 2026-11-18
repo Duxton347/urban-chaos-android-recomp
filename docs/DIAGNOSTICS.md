@@ -63,3 +63,7 @@ O teste JNI carrega uma biblioteca de fixture no JVM, emite eventos pelo mesmo l
 ReportExportController oferece a entrada de menu e o botão Exportar relatório. A Activity real recebe a instância de AndroidReports do aplicativo, chama addTo(menu) ou createButton(), encaminha onActivityResult para handleResult e fecha apenas o controller em onDestroy. Rotação da Activity não fecha a sessão global nem o runtime. Seleção usa SAF; geração/cópia ocorre em executor de fundo, com resultado e código no UI thread. Cancelamento e ausência do seletor são resultados distintos. O componente compilou contra SDK34; não se anexou um launcher fictício ao módulo diagnóstico histórico. A Activity definitiva e o teste manual permanecem pendentes.
 
 UC-AUDIO-002/003 identificam falhas de operação e estado da saída SDL; [contrato e valores](SDL_AUDIO.md). O host com relatórios voltou a ser compilado e executado nesta sessão; consultar BUILD_STATUS.md para os ensaios reais. A indisponibilidade de ambiente relatada acima pertence à revisão anterior.
+
+## Resultado da exportação
+
+A preparação do ZIP e a entrega ao destino são etapas distintas. UC-EXPORT-005 confirma somente a preparação. UC-EXPORT-000 confirma cópia concluída no destino; UC-EXPORT-002 registra falha com motivo tipado, UC-EXPORT-003 ausência/recusa do seletor e UC-EXPORT-CANCELLED cancelamento. Mensagens arbitrárias do provedor não são copiadas. Eventos conhecidos somente após fechar o ZIP aparecem nos relatórios seguintes, não são inseridos retroativamente no arquivo já entregue.

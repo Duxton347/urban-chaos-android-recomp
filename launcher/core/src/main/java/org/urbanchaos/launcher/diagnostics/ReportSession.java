@@ -25,6 +25,11 @@ public final class ReportSession implements AutoCloseable {
         INPUT_PROFILE("UC-INPUT-001","info","Input profile changed; individual touches are omitted",true),
         SAVE_RESULT("UC-SAVE-001","info","Save operation status; save contents omitted",false),
         NATIVE_LOG_FAILURE("UC-LOG-005","error","Native collector unavailable; inspect reason token",false),
+        EXPORT_SUCCESS("UC-EXPORT-000","info","Report was written to the selected destination",true),
+        EXPORT_FAILURE("UC-EXPORT-002","error","Report export failed; underlying cause may require analysis",false),
+        EXPORT_PICKER_UNAVAILABLE("UC-EXPORT-003","error","Document picker is unavailable or access was refused",false),
+        EXPORT_PACKED("UC-EXPORT-005","info","Diagnostic ZIP prepared; destination delivery not yet confirmed",true),
+        EXPORT_CANCELLED("UC-EXPORT-CANCELLED","info","Report export was cancelled",true),
         EXPORT("UC-EXPORT-001","info","Diagnostic export requested",true);
         final String code, level, reason; final boolean known;
         Event(String c,String l,String r,boolean k){code=c;level=l;reason=r;known=k;}
@@ -209,7 +214,14 @@ public final class ReportSession implements AutoCloseable {
                 if(Files.isSymbolicLink(nativePath))throw new IOException("UC-LOG-002");
                 if(Files.isDirectory(nativePath,LinkOption.NOFOLLOW_LINKS))copyAllowed(zip,nativePath,prefix+"native/");
             }
+        } catch(IOException error){
+            String reason="zip_io_unclassified";
+            if("UC-LOG-002".equals(error.getMessage()))reason="UC-LOG-002";
+            if("UC-LOG-003".equals(error.getMessage()))reason="UC-LOG-003";
+            event(Event.EXPORT_FAILURE,detail("reason",reason));
+            throw error;
         }
+        event(Event.EXPORT_PACKED,Collections.emptyMap());
     }
     private static void copyAllowed(ZipOutputStream zip,Path source,String prefix) throws IOException {
         for(String name:names()){

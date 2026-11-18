@@ -48,7 +48,10 @@ public final class AndroidReports {
     }
     /** work must be a background executor; ui must post to the Android UI thread. */
     public void exportTo(Uri destination,Executor work,Executor ui,Result result){
-        if(destination==null){ui.execute(()->result.completed(false,"UC-EXPORT-CANCELLED"));return;}
+        if(destination==null){
+            session.event(ReportSession.Event.EXPORT_CANCELLED,Collections.emptyMap());
+            ui.execute(()->result.completed(false,"UC-EXPORT-CANCELLED"));return;
+        }
         work.execute(()->{
             File temporary=null;String code="UC-EXPORT-002";boolean success=false,opened=false;
             try {
@@ -70,6 +73,8 @@ public final class AndroidReports {
                 if(temporary!=null)temporary.delete();
             }
             boolean done=success;String finalCode=code;
+            session.event(success?ReportSession.Event.EXPORT_SUCCESS:ReportSession.Event.EXPORT_FAILURE,
+                detail("reason",success?"destination_written":"destination_or_preparation_failed"));
             ui.execute(()->result.completed(done,finalCode));
         });
     }
