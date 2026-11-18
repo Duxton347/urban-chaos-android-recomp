@@ -77,3 +77,5 @@ UC-GPU-003 guarda vendor/device/API/driver e precisão Vulkan (phase0: suportado
 # Telemetria adicional após o primeiro teste no tablet
 
 A versão 0.2 acrescenta `UC-CPU-003` (escopos/chamadas de threads), `UC-DISC-002` (leituras e stream ativo sem packets), `UC-AUDIO-004` (tempo do mixer) e `UC-GPU-005` (tempo host nas APIs Vulkan). [Campos, limites e interpretação](TABLET_LOADING_INVESTIGATION.md). A coleta é periódica; não copia conteúdo do disco ou logs brutos. Esses contadores não qualificam automaticamente gameplay, deadlock ou fidelidade sonora.
+
+A versão 0.3 usa o evento Java existente `UC-INPUT-001` para perfil/modo/enquadramento, e o novo evento nativo `UC-INPUT-002` para tempo de entrega do toque ao poll guest. São códigos distintos: a métrica não inclui toda a latência até o frame visível. [HUD e interpretação](TOUCH_HUD.md).

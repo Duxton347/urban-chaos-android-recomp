@@ -1,4 +1,6 @@
-# HUD e ações — especificação, sem implementação de gameplay
+# HUD e ações — implementação de fontes Xbox e especificação de gameplay
+
+**Atualização 0.3:** overlay original em Canvas, navegação/controle Xbox completo, dois analógicos, multitouch, editor de posição/tamanho/opacidade, perfis independentes e persistência implementados, compilados e testados em contratos autorais. Toques curtos preservados para XInputGetState; consulta de conexão não os consome. [Guia e testes](TOUCH_HUD.md). O mapeamento é para fontes Xbox comprovadas em `core/input.h` e `xdk/xapi.cpp`, sem atribuir tiro/escudo/equipe antes de qualificar os consumidores do título. Missão e ergonomia Android ainda requerem teste real. Os itens de especificação abaixo mantêm os gates semânticos originais.
 
 **Não criar botões do jogo antes de verificar os consumidores originais.** Esta entrega documenta o mapeamento público disponível; não adiciona um HUD fictício ao port.
 

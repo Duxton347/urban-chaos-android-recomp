@@ -1,5 +1,7 @@
 # Build privado do launcher Android
 
+A entrega 0.3 inclui HUD editável e patch Android separado de descoberta de conexão, além de viewport ajustar/preencher/esticar. O empacotador exige também as quatro novas entradas JNI de touch/display. [Receita de uso e recibo](TOUCH_HUD.md). Mantém o guest `-O2` e não comprova missão corrigida.
+
 Após o primeiro relato do tablet, a versão 0.2 compila guest/host com `-O2`. Não reutilizar o arquivo `-O0` do compile probe para entrega. O APK anterior iniciou, mas apresentou falhas de áudio, desempenho e loading; a atualização ainda requer teste. [Investigação](TABLET_LOADING_INVESTIGATION.md).
 
 A biblioteca completa `libmain.so` foi ligada para Android ARM64 com o arquivo estático real das 29.049 funções originais. O APK experimental foi montado com ela, SDL3 e libc++, assinado e verificado. **Isso não é instalação ou boot Android comprovado.** [Primeiro teste](FIRST_TABLET_TEST.md).

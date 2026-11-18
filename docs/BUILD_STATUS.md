@@ -1,5 +1,7 @@
 # Build status — nova rota de recompilação
 
+**Atualização 0.3:** HUD sobreposto editável, analógicos e controle Xbox completo, correção de taps perdidos/consulta de conexão e modos de apresentação implementados. Biblioteca real ARM64 ligada; APK privado de 28.202.850 bytes assinado/verificado. Testes de input/multitouch/viewport e contratos Android passaram. **Sem novo teste no tablet ou missão carregada.** [Uso e limitações](TOUCH_HUD.md).
+
 **Atualização do tablet, 2026-11-18:** o proprietário instalou a primeira entrega e confirmou inicialização, mas relatou vídeo/áudio entrecortados e missão presa em loading. O relatório mede cerca de 4,65 apresentações/s no trecho final. Corrigido o build guest sem otimização (`-O0`); versão 0.2 ligada com `-O2`, novos contadores de progresso/IO/mixer/Vulkan e APK privado assinado de 28.178.216 bytes. **Essa atualização ainda não foi testada no dispositivo e não comprova missão corrigida.** [Investigação, testes e próximo ensaio](TABLET_LOADING_INVESTIGATION.md). Declarações de ausência de teste abaixo referem-se à construção anterior ao relato.
 
 Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa, agora também pelo backend Vulkan. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e validação Android. APK experimental privado com runtime real foi gerado e assinado; instalação/boot Android não foram testados.**
