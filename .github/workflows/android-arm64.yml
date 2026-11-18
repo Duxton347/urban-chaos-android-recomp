@@ -40,5 +40,5 @@ jobs:
       - name: Black HLSL translator, Vulkan execution and AArch64 compiler
         run: python3 scripts/build_vulkan_shaders.py --android
       - name: Adapted Vulkan renderer interface builds (no game execution)
-        run: python3 scripts/build_vulkan_renderer.py --android
+        run: python3 scripts/build_vulkan_renderer.py --android --android-window
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"

@@ -70,3 +70,7 @@ O parser também reconhece o formato de apresentação do renderer Vulkan de pes
 ## Resultado da exportação
 
 A preparação do ZIP e a entrega ao destino são etapas distintas. UC-EXPORT-005 confirma somente a preparação. UC-EXPORT-000 confirma cópia concluída no destino; UC-EXPORT-002 registra falha com motivo tipado, UC-EXPORT-003 ausência/recusa do seletor e UC-EXPORT-CANCELLED cancelamento. Mensagens arbitrárias do provedor não são copiadas. Eventos conhecidos somente após fechar o ZIP aparecem nos relatórios seguintes, não são inseridos retroativamente no arquivo já entregue.
+
+## Primeiro host Android experimental
+
+UC-GPU-003 guarda vendor/device/API/driver e precisão Vulkan (phase0: suportado; phase1: habilitado). UC-GPU-004 identifica draw contado recusado (op1 geometria; 2 depth target; 3 target; 4 textura; 5 shader; 6 pipeline). Frames Android usam backend2/headless0. UC-ANDROID-001 guarda páginas host; UC-ANDROID-002 recusa páginas diferentes de 4096 no alocador atual. Campos são numéricos, não conteúdo do título. Activities e ZIP estão ligados no APK experimental, ainda sem teste no tablet.

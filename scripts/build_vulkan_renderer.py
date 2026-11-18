@@ -14,6 +14,7 @@ from build_vulkan_reports import digest
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--android', action='store_true')
+    parser.add_argument('--android-window', action='store_true',help='Also compile the real SDL Android surface adapter')
     args = parser.parse_args()
     sdk = pathlib.Path(os.environ.get('ANDROID_HOME', ROOT/'.toolchain/android-sdk'))
     ndk = sdk/'ndk/28.2.13676358'
@@ -30,17 +31,24 @@ def main():
                'android_device_tested':False,'android_host_integrated':False,'architectures':{}}
     with tempfile.TemporaryDirectory(prefix='renderer-source-',dir=ROOT/'build') as temporary:
         source = pathlib.Path(temporary)
-        receipt['runtime_patches'] = prepare(source/'sdk',context=True)
+        receipt['runtime_patches'] = prepare(source/'sdk',context=True,android=args.android_window)
         renderer = prepare_renderer(source/'vulkan')
         receipt['renderer_source_sha256'] = digest(renderer)
         receipt['renderer_patch_sha256'] = digest(ROOT/'patches/black/vulkan-headless-research.patch')
-        for android in ([False,True] if args.android else [False]):
-            name = 'arm64' if android else 'host'
+        variants=[('host',False,False)]
+        if args.android or args.android_window:variants.append(('arm64',True,False))
+        if args.android_window:variants.append(('android-window',True,True))
+        for name,android,window in variants:
+            selected=renderer
+            if window:
+                selected=prepare_renderer(source/'vulkan-android',android=True)
+                receipt['android_window_source_sha256']=digest(selected)
+                receipt['android_window_patch_sha256']=digest(ROOT/'patches/black/vulkan-android-host.patch')
             build = output/name
             headers = ndk/'toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include' if android else ROOT/'build/vulkan-reports/headers'
             command = [cmake,'-S',ROOT/'host/vulkan-research','-B',build,
-                       '-DURBAN_VULKAN_SOURCE='+str(renderer),'-DURBAN_OVERLAY='+str(source/'sdk'),
-                       '-DURBAN_VULKAN_HEADERS='+str(headers),'-DCMAKE_BUILD_TYPE=Release']
+                       '-DURBAN_VULKAN_SOURCE='+str(selected),'-DURBAN_OVERLAY='+str(source/'sdk'),
+                       '-DURBAN_VULKAN_HEADERS='+str(headers),'-DURBAN_ANDROID_WINDOW='+('ON' if window else 'OFF'),'-DCMAKE_BUILD_TYPE=Release']
             if android:
                 command += ['-DCMAKE_TOOLCHAIN_FILE='+str(ndk/'build/cmake/android.toolchain.cmake'),
                             '-DANDROID_ABI=arm64-v8a','-DANDROID_PLATFORM=android-29']
@@ -54,6 +62,12 @@ def main():
             if len(machines)!=2 or any(machine != ('AArch64' if android else 'Advanced Micro Devices X86-64') for machine in machines):
                 raise RuntimeError('Renderer archive architecture mismatch')
             receipt['architectures'][name] = {'sha256':digest(archive),'objects':len(machines)}
+            if window:
+                host=build/'liburban_android_host_contract.a'
+                headers=subprocess.check_output([str(reader),'-h',str(host)],text=True)
+                values=[line.split(':',1)[1].strip() for line in headers.splitlines() if 'Machine:' in line]
+                if len(values)!=7 or any(value!='AArch64' for value in values):raise RuntimeError('Android host contract architecture mismatch')
+                receipt['architectures']['android-host']={'sha256':digest(host),'objects':len(values),'authored_profile_only':True,'game_linked':False}
             if not android:
                 icd = software_headless_icd()
                 receipt['software_icd_sha256'] = digest(icd)

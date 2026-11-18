@@ -1,6 +1,6 @@
 # Launcher Android com núcleo ARM64
 
-**Código guest baseline e com continuações compilado para ARM64; runtime Android completo e APK ainda não ligados nem executados.** O host Linux já apresenta menu e abertura 3D originais também em Vulkan; [progresso e limites](RUNTIME_PROGRESS.md).
+**Runtime completo ARM64 ligado e APK experimental privado gerado/assinado; instalação e boot Android ainda não testados.** [Primeiro teste](FIRST_TABLET_TEST.md), [receita](ANDROID_BUILD.md) e [recibo](evidence/runtime-progress/android-launcher-apk.json). O host Linux apresenta menu e abertura 3D originais em Vulkan.
 
 O produto é um launcher que importa e monta a ISO original, com o runtime incluído no pacote Android e os recursos do disco externos. O Black também usa esse modelo: sua biblioteca ARM64 é construída antes da instalação. [Fluxo e rastreio do código](LAUNCHER_DESIGN.md).
 
@@ -36,7 +36,7 @@ Saves: planejar volumes Xbox dentro de `files/saves/`, reproduzir caminhos/semâ
 
 ## Saída e relatórios compartilhados implementados
 
-O backend estéreo SDL3 em native/audio/sdl_output.cpp está ligado ao host de pesquisa e compila para AArch64. [Contrato, lifecycle e limites](SDL_AUDIO.md). Isso remove a necessidade de adaptar diretamente o callback 5.1 do Black; não qualifica áudio ouvido ou o runtime Android completo. O controle Android de exportação está pronto para anexar à Activity real: [diagnósticos](DIAGNOSTICS.md). A Activity/loop, a coordenação de threads guest e o backend Vulkan com reports de visibilidade reais continuam pendentes.
+O backend estéreo SDL3 em native/audio/sdl_output.cpp está ligado ao host de pesquisa e compila para AArch64. [Contrato, lifecycle e limites](SDL_AUDIO.md). Isso remove a necessidade de adaptar diretamente o callback 5.1 do Black; não qualifica áudio ouvido ou o runtime Android completo. O controle Android de exportação está pronto para anexar à Activity real: [diagnósticos](DIAGNOSTICS.md). Activity/loop e renderer Android foram ligados no APK experimental; coordenação de threads, lifecycle, renderização e áudio no dispositivo ainda precisam de validação.
 
 ## Queries de visibilidade Vulkan
 

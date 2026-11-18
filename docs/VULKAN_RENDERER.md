@@ -40,7 +40,9 @@ python3 scripts/build_vulkan_renderer.py --android
 
 O build privado existente recebe `--render-backend vulkan-headless`, mantendo `reference` como opção padrão para comparação. O runner privado seleciona explicitamente o ICD de software e converte os parâmetros de captura para o backend Vulkan. As gravações ocorrem apenas na pasta privada de execução; não são exportadas pelo coletor do launcher.
 
-## O que falta para um APK de teste
+## Histórico: caminho até o APK de teste
+
+**Atualização:** os itens de construção abaixo foram implementados no primeiro APK experimental privado. Instalação e execução no tablet permanecem pendentes. [Primeiro teste e limitações](FIRST_TABLET_TEST.md).
 
 1. Ligar o runtime completo ARM64 ao host Android: memória/threads, SDL, janela, áudio e este renderer com a superfície Android real. Implementar coordenação de pausa, perda/recriação de superfície e encerramento; o adaptador headless não fornece esse lifecycle.
 2. Integrar Activity e SAF ao leitor da ISO, controles reais de touch/gamepad, volumes privados e exportação de relatórios já preparada. As classes de diagnóstico existentes não são um launcher completo.

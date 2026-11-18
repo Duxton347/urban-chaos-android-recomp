@@ -17,6 +17,7 @@ public class DiagnosticsJniTest {
    String nativeLog=Files.readString(new File(s.nativeDirectory(),"runtime.0.jsonl").toPath());
    require(nativeLog.contains("UC-GPU-001")&&nativeLog.contains("\"ordinal\":233"));
    require(nativeLog.contains("UC-GPU-002")&&nativeLog.contains("\"frame\":1800")&&nativeLog.contains("\"samples\":64"));
+   require(nativeLog.contains("UC-GPU-003")&&nativeLog.contains("UC-GPU-004")&&nativeLog.contains("\"frame\":2400")&&nativeLog.contains("\"headless\":0"));
    require(!nativeLog.contains("SENTINEL_"));
    try(OutputStream zip=Files.newOutputStream(Paths.get(args[2]))){s.exportZip(zip);}
   }

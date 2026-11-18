@@ -12,6 +12,25 @@ target_compile_options(urban_vulkan_renderer_contract PRIVATE -O1 -g0)
 target_include_directories(urban_vulkan_renderer_contract PRIVATE
  "${CMAKE_CURRENT_SOURCE_DIR}" "${URBAN_OVERLAY}/runtime" "${REPO}/vendor/runtime/runtime"
  "${REPO}/vendor/runtime/harness" "${REPO}/vendor/runtime/harness/compat" "${REPO}/native" "${REPO}/vendor/black-shader/native" "${URBAN_VULKAN_HEADERS}")
+if(URBAN_ANDROID_WINDOW)
+ if(NOT ANDROID)
+  message(FATAL_ERROR "Android SDL window contract requires Android")
+ endif()
+ target_include_directories(urban_vulkan_renderer_contract BEFORE PRIVATE "${REPO}/native/android" "${REPO}/vendor/SDL/include")
+ set(PROFILE "${CMAKE_CURRENT_BINARY_DIR}/authored-profile")
+ file(MAKE_DIRECTORY "${PROFILE}")
+ file(WRITE "${PROFILE}/image_symbols.h" "#pragma once\n#define IMAGE_RESUMABLE_GUEST 1\n#define IMAGE_XBE \"AuthoredNotAGame.xbe\"\n")
+ file(WRITE "${PROFILE}/build_source_profile.h" "#pragma once\n#define URBAN_BUILD_ID \"authored-contract\"\n#define URBAN_BUILD_XBE_SHA256 \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n#define URBAN_BUILD_TITLE_ID 1u\n")
+ add_library(urban_android_host_contract STATIC
+  "${REPO}/native/android/main.cpp" "${REPO}/native/android/input.cpp" "${REPO}/native/android/bridge.cpp"
+  "${REPO}/native/audio/sdl_output.cpp" "${REPO}/native/diagnostics/android_bridge.cpp"
+  "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp" "${URBAN_OVERLAY}/runtime/cpu/dispatch.cpp")
+ target_compile_features(urban_android_host_contract PRIVATE cxx_std_20)
+ target_compile_definitions(urban_android_host_contract PRIVATE XBE_RESUMABLE_GUEST=1 XBE_RAW_VERTICES=0 XBE_RENDER_THREAD=0)
+ target_compile_options(urban_android_host_contract PRIVATE -O1 -g0 -fsigned-char -fno-strict-aliasing -include "${REPO}/native/android/platform_compat.h")
+ target_include_directories(urban_android_host_contract PRIVATE "${PROFILE}" "${REPO}/native/android"
+  "${URBAN_OVERLAY}/runtime" "${REPO}/vendor/runtime/runtime" "${REPO}/vendor/runtime/harness/compat" "${REPO}/native" "${REPO}/vendor/SDL/include")
+endif()
 if(NOT ANDROID)
  set(SDK "${REPO}/vendor/runtime")
  add_executable(vulkan_renderer_fixture fixture_main.cpp "${REPO}/host/runtime-probes/visibility.cpp"

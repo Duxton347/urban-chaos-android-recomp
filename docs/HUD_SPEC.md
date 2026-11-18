@@ -55,3 +55,7 @@ Multitouch simultâneo de mover+mirar+atirar, segurar escudo+atacar, recarregar/
 ## Evidência de execução em 2026-11-17
 
 START (`input::Pad.buttons` máscara `0x0010`, campo digital de XINPUT_STATE em +4) abriu o menu original **PAUSED: HOPE STREET** durante a abertura da missão. A captura do frame 1920 foi inspecionada no host Linux. Isso qualifica essa observação de pausa na variante/profile atuais; não valida todos os contextos, Android ou HUD touch. A e START já navegaram pelos menus anteriores; A não foi classificado como interação em gameplay. Movimento e trigger foram agendados para frames posteriores, mas não foram alcançados pelo teste de 600 s. [Registro](evidence/runtime-progress/mission-progression.json).
+
+## Primeiro APK experimental
+
+A camada inicial implementa somente A/B/START e dpad para navegação, com os bits/índices de input Xbox do SDK e confirmação pelas telas originais observadas no host. Não associa botões a tiro/escudo/equipe sem comprovar seus consumidores. Joysticks/câmera por toque, editor, perfis e persistência de layout seguem pendentes; o gamepad SDL precisa de teste no dispositivo. [Primeiro teste](FIRST_TABLET_TEST.md).

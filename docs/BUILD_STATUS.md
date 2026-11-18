@@ -1,8 +1,12 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa, agora também pelo backend Vulkan. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa, agora também pelo backend Vulkan. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e validação Android. APK experimental privado com runtime real foi gerado e assinado; instalação/boot Android não foram testados.**
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
+
+## APK experimental privado
+
+O runtime completo foi ligado em libmain.so AArch64 com o arquivo real do guest. O APK de 45.446.952 bytes passou assinatura, alinhamento, bibliotecas ELF e permissões. Integra Activities/SDL, seletor ISO SAF, cópia retomável, validação nativa, entradas mínimas de menu e exportação de relatórios. Não inclui ISO/XBE/recursos e não foi publicado no GitHub. **Ainda não instalado ou executado no tablet; não é missão jogável aprovada.** [Primeiro teste](FIRST_TABLET_TEST.md), [receita e falhas corrigidas](ANDROID_BUILD.md), [recibo](evidence/runtime-progress/android-launcher-apk.json).
 
 ## Decisão de entrega: launcher baseado na ISO
 
@@ -18,7 +22,7 @@ A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e execu
 
 ## Coletor de relatórios do launcher
 
-Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O ambiente voltou e o host com observer foi compilado e executado por 130 s: registrou 21 eventos de boot, vídeo, áudio e avisos, sem nova exceção. ReportExportController fornece menu/botão e fluxo SAF para anexar à Activity definitiva; compilou contra SDK34. A ligação à Activity e ao build do jogo Android e o teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
+Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O ambiente voltou e o host com observer foi compilado e executado por 130 s: registrou 21 eventos de boot, vídeo, áudio e avisos, sem nova exceção. ReportExportController fornece menu/botão e fluxo SAF para anexar à Activity definitiva; compilou contra SDK34. A ligação à Activity e ao build Android foi realizada no APK experimental descrito acima; exportação e execução no tablet permanecem sem teste.
 
 ## Compilador HLSL → SPIR-V reaproveitado
 

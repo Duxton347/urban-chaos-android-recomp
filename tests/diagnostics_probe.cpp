@@ -20,6 +20,9 @@ int main(int argc,char**argv){
  LOGI("renderer: frame %u, %u draws, %u empty frames",60u,123u,4u);
  LOGI("renderer: frame %llu (Vulkan headless)",1800ull);
  LOGI("vulkan: visibility report completed, samples=%u",64u);
+ LOGI("renderer: frame %llu (Vulkan Android)",2400ull);
+ LOGI("vulkan-device: vendor %u device %u api %u driver %u precise %u phase %u",0x5143u,650u,4206592u,12345u,1u,1u);
+ LOGE("vulkan-count-failure: operation %u",4u);
  LOGI("audio-metrics: frames %llu active-samples %llu peak %f nonfinite %llu",480000ull,1234ull,0.125,0ull);
  LOGE("audio-output: failure operation %u",5u);
  LOGI("audio-output: state %u",2u);

@@ -1,6 +1,6 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** launcher Android baseado na ISO Xbox original, com núcleo ARM64 recompilado, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street também em Vulkan. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
+**Objetivo:** launcher Android baseado na ISO Xbox original, com núcleo ARM64 recompilado, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street também em Vulkan. Biblioteca ARM64 e APK experimental privados construídos; gameplay, áudio audível, boot Android e qualificação completa pendentes. [Evidências](RUNTIME_PROGRESS.md).**
 
 A experiência final de seleção da ISO, reconhecimento e início do jogo está definida em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O diagrama abaixo descreve a construção do núcleo; o tablet não executa essa recompilação ao importar a imagem.
 
@@ -41,7 +41,7 @@ Importação de assets e recompilação são etapas distintas. O APK final dever
 | Disco | XDVDFS próprio limitado; XboxKit como referência externa de Redump | Imagem fornecida inspecionada; XBE e recursos parciais extraídos/verificados; ISO inteira não validada |
 | HUD | Ações Urban Chaos verificadas, ícones originais, perfis e multitouch | Especificação; mapeamento binário pendente |
 
-`android/` contém o diagnóstico da etapa anterior, preservado como histórico. Ele não é o módulo do jogo, não contém lógica original e não será ampliado para aparentar gameplay. A nova CI Android compila apenas `native/portability`, explicitamente sem APK.
+`android/` contém o diagnóstico da etapa anterior, preservado como histórico. Ele não é o módulo do jogo, não contém lógica original e não será ampliado para aparentar gameplay. A CI pública compila contratos de portabilidade, renderer/host Android com perfil autoral e Java/SDL contra SDK34, sem código comercial. O APK real foi construído privadamente com o arquivo guest e sua [receita](ANDROID_BUILD.md).
 
 ## Contratos obrigatórios
 

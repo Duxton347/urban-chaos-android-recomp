@@ -1,8 +1,12 @@
 # Progresso do runtime — 2026-11-17
 
-**GO para pesquisa: intro, menus e primeira cena da abertura de Hope Street renderizados no Linux. REQUIRES_REVERSE_ENGINEERING para concluir a primeira missão e o runtime Android. Nenhum APK do jogo foi produzido.**
+**GO para pesquisa: intro, menus e primeira cena da abertura de Hope Street renderizados no Linux. REQUIRES_REVERSE_ENGINEERING para concluir a primeira missão e o runtime Android. APK experimental privado gerado; instalação/boot Android ainda não verificados.**
 
 A variante Xbox do usuário (`c6f0c99a…044d1`) permanece privada. Este avanço usa o C++ gerado desse executável e o runtime MIT do SDK pinado. Não usa lógica substituta, hooks de Black ou adaptações Burner sem licença esclarecida. O renderer de teste/referência e o sink de áudio não constituem backend final de produção.
+
+## Primeiro APK experimental — 2026-11-18
+
+Runtime completo AArch64 ligado, APK privado assinado e verificado. As Activities reais ligam ISO SAF, cópia retomável, validação, SDL/Vulkan, entrada mínima de menu e relatórios. Os 14 testes de cópia retomável e 326 checks de diagnóstico/JNI passaram. **Não houve instalação ou boot Android comprovado.** [Primeiro teste](FIRST_TABLET_TEST.md) e [evidências](evidence/runtime-progress/android-launcher-apk.json). Os relatos anteriores de ausência de APK são históricos.
 
 ## Ligação da fonte ISO ao runtime
 
