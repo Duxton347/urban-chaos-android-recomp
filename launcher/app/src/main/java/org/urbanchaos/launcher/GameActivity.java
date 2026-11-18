@@ -1,24 +1,23 @@
 package org.urbanchaos.launcher;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.Gravity;
-import android.widget.*;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import org.libsdl.app.SDLActivity;
 import org.urbanchaos.launcher.diagnostics.*;
-/** Actual SDL runtime Activity; the initial overlay exposes only verified Xbox menu inputs. */
+/** SDL game surface with an independent, editable Xbox-source touch overlay. */
 public final class GameActivity extends SDLActivity {
- private AndroidReports reports;private ReportExportController export;
+ private AndroidReports reports;private ReportExportController export;private TouchHudView hud;
  @Override protected String[] getArguments(){String path=getIntent().getStringExtra("game_path");return path==null?new String[0]:new String[]{path};}
  @Override protected void onCreate(Bundle state){super.onCreate(state);if(mBrokenLibraries)return;
   try{reports=new AndroidReports(this,BuildConfig.BUILD_ID,BuildConfig.XBE_SHA256);NativeReports.attach(reports.session(),BuildConfig.BUILD_ID,BuildConfig.XBE_SHA256,false);export=new ReportExportController(this,reports);}catch(Exception ignored){}
-  LinearLayout buttons=new LinearLayout(this);buttons.setGravity(Gravity.BOTTOM|Gravity.END);
-  int height=(int)(56*getResources().getDisplayMetrics().density);
-  String[] names={"A","B","START","↑","↓","←","→"};
-  for(int n=0;n<names.length;n++){final int key=n;Button button=new Button(this);button.setText(names[n]);button.setAlpha(.7f);button.setOnTouchListener((view,event)->{int action=event.getActionMasked();if(action==MotionEvent.ACTION_DOWN){NativeGame.menuButton(key,true);view.setPressed(true);}else if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL){NativeGame.menuButton(key,false);view.setPressed(false);}return true;});buttons.addView(button,new LinearLayout.LayoutParams(0,height,1));}
-  if(export!=null)buttons.addView(export.createButton(),new LinearLayout.LayoutParams(0,height,2));
-  android.widget.RelativeLayout.LayoutParams params=new android.widget.RelativeLayout.LayoutParams(-1,-2);params.addRule(android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM);mLayout.addView(buttons,params);
+  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+  hud=new TouchHudView(this,()->{if(export!=null)export.selectDestination();},reports==null?null:reports.session());
+  mLayout.addView(hud,new RelativeLayout.LayoutParams(-1,-1));hud.requestApplyInsets();
  }
- @Override protected void onPause(){if(!mBrokenLibraries)for(int n=0;n<7;n++)NativeGame.menuButton(n,false);if(reports!=null)reports.lifecycle("pause");super.onPause();}
+ @Override protected void onPause(){if(hud!=null)hud.releaseAll();if(reports!=null)reports.lifecycle("pause");super.onPause();}
+ @Override public void onWindowFocusChanged(boolean focus){super.onWindowFocusChanged(focus);if(!focus&&hud!=null)hud.releaseAll();}
  @Override protected void onResume(){super.onResume();if(reports!=null)reports.lifecycle("resume");}
  @Override protected void onActivityResult(int request,int result,android.content.Intent data){if(export==null||!export.handleResult(request,result,data))super.onActivityResult(request,result,data);}
  @Override protected void onDestroy(){if(export!=null)export.close();super.onDestroy();}
