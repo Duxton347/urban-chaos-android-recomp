@@ -14,7 +14,7 @@
       "commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
       "tree": "512dacc55297a44cedffeab80e13eb22863013d7",
       "license": "MIT; bundled assets require separate review",
-      "role": "read-only audit"
+      "role": "audit; MIT shader translator and explicit headless research renderer overlay, no Black title hooks or assets"
     },
     "runtime": {
       "url": "https://github.com/TGP482/XboxXBERecomp.git",
@@ -222,5 +222,13 @@
       "native/vk_shader.h": "143f73fc2c3e612940e53001c46252ff2b5b46ab4be537b9161e8491b6239e02",
       "LICENSE": "844e017c30b7d78d1484c91c4babe9906df5d9cd800613284ee1c4b0dbc4f609"
     }
+  },
+  "vulkan_renderer": {
+    "black_commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
+    "files": {
+      "native/vulkan.cpp": "5dd1b2f4542906a96b2b9a13e4fc534c841c3797214e0bcf0e830c21c1d8fe38"
+    },
+    "patch": "patches/black/vulkan-headless-research.patch",
+    "host": "headless Linux research only; game and Android not yet qualified"
   }
 }

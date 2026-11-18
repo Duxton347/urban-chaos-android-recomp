@@ -9,11 +9,14 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
-def prepare():
+def prepare(renderer=False):
     lock = json.loads((ROOT / 'dependencies.lock.json').read_text())
     source = ROOT / 'vendor/black-shader'
     meta = lock['shader_compiler']
-    for name, expected in meta['files'].items():
+    files = dict(meta['files'])
+    if renderer:
+        files.update(lock['vulkan_renderer']['files'])
+    for name, expected in files.items():
         target = source / name
         if not target.exists():
             local = ROOT / 'vendor/black' / name

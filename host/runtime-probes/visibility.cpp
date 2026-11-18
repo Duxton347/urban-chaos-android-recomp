@@ -1,7 +1,6 @@
-// Authored geometry exercises the real SDK software rasterizer and report delivery.
+// Authored geometry exercises the selected real SDK rasterizer and report delivery.
 #include "gpu/backend.h"
 #include "kernel/kernel.h"
-#include "reference_renderer.h"
 #include <cassert>
 #include <cstdio>
 #include <cstring>
@@ -12,7 +11,7 @@ static gpu::Surface Surface(uint32_t format) {
     kernel::W32(header+12,(format<<8)|0x20);kernel::W32(header+16,7|(7<<12));
     return {.header=header,.data=data,.format=kernel::R32(header+12),.size=kernel::R32(header+16)};
 }
-int ReferenceVisibilitySelfTest() {
+int ReferenceVisibilitySelfTest(bool reject_points) {
     if(!mem::Init())return 2;
     kernel::g_base=mem::Base();
     for(bool threaded:{false,true}) {
@@ -60,12 +59,12 @@ int ReferenceVisibilitySelfTest() {
         state.ps.reset();state.rs[gpu::kRsPsTextureModes]=0;state.simple[gpu::kMPsCompareMode>>2]=0;
         triangle(.25f);assert(result()==visible);
         backend->ClearReport();assert(result()==0);
-        if(!threaded) {
+        if(!threaded && reject_points) {
             bool rejected=false;
             try { backend->Draw(state,1,0,3,nullptr); } catch(const std::runtime_error&) { rejected=true; }
             assert(rejected); // unsupported counted topology cannot silently report zero
         }
-        std::printf("REFERENCE_VISIBILITY: %u passing samples; depth occlusion, nearer geometry, count enable/reset, color-write disabled and 16-byte completion report passed (threaded=%d); authored geometry only\n",visible,threaded);
+        std::printf("BACKEND_VISIBILITY: %u passing samples; depth occlusion, nearer geometry, count enable/reset, color-write disabled and 16-byte completion report passed (threaded=%d); authored geometry only\n",visible,threaded);
     }
     return 0;
 }

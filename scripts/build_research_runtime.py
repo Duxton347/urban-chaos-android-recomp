@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from prepare_runtime_overlay import prepare, ROOT, PIN
+from prepare_vulkan_renderer import prepare_renderer
 sys.path.insert(0, str(ROOT/'tools'))
 from inspect_xbe import inspect, Invalid
 
@@ -28,6 +29,7 @@ def main():
     parser.add_argument('--profile', type=pathlib.Path, default=ROOT/'config/research/user-xbe.json')
     parser.add_argument('--audio-output', choices=('measure','sdl'), default='measure')
     parser.add_argument('--sdl-build', type=pathlib.Path)
+    parser.add_argument('--render-backend', choices=('reference','vulkan-headless'), default='reference')
     args = parser.parse_args()
     try:
         xbe, generated, archive, out = map(private_path, (args.xbe, args.generated, args.archive, args.out))
@@ -68,16 +70,25 @@ def main():
         host_sources = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources if path.is_file()}
         receipt = {'host_sources': host_sources, 'sdk': PIN, 'xbe_sha256': report['sha256'], 'g1_qualified': False, 'source_title_id': report['certificate']['title_id'], 'source_entry': report['entry'], 'patches': {}, 'status': 'BUILDING'}
         receipt['audio_output'] = args.audio_output
+        receipt['render_backend'] = args.render_backend
         receipt['sdl_commit'] = sdl_pin if args.audio_output == 'sdl' else None
         try:
             receipt['patches'] = prepare(overlay, context=profile.get('resumable_guest', False))
+            renderer_options = []
+            if args.render_backend == 'vulkan-headless':
+                renderer = prepare_renderer(out/'vulkan-overlay')
+                receipt['vulkan_source_sha256'] = hashlib.sha256(renderer.read_bytes()).hexdigest()
+                renderer_options = ['-DURBAN_VULKAN_SOURCE='+str(renderer),
+                    '-DURBAN_SHADER_BUILD='+str(ROOT/'build/vulkan-shaders'),
+                    '-DURBAN_VULKAN_HEADERS='+str(ROOT/'build/vulkan-reports/headers')]
             with (out/'build.log').open('w') as log:
                 subprocess.run([str(cmake), '-S', str(ROOT/'host/research'), '-B', str(out/'cmake'),
                                 '-DURBAN_GENERATED='+str(generated), '-DURBAN_GUEST_ARCHIVE='+str(archive),
                                 '-DURBAN_OVERLAY='+str(overlay), '-DURBAN_PROFILE='+str(args.profile.resolve()),
                                 '-DURBAN_TITLE_ID='+report['certificate']['title_id'],
                                 '-DURBAN_AUDIO_OUTPUT='+args.audio_output,
-                                '-DURBAN_SDL_BUILD='+(str(args.sdl_build.resolve()) if args.sdl_build else '')],
+                                '-DURBAN_RENDER_BACKEND='+args.render_backend,
+                                '-DURBAN_SDL_BUILD='+(str(args.sdl_build.resolve()) if args.sdl_build else ''), *renderer_options],
                                stdout=log, stderr=subprocess.STDOUT, check=True)
                 subprocess.run([str(cmake), '--build', str(out/'cmake'), '--parallel', '2'], stdout=log, stderr=subprocess.STDOUT, check=True)
             receipt['status'] = 'RESEARCH_HOST_COMPILED'
