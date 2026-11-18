@@ -21,5 +21,5 @@ add_executable(sdl_audio_fixture "${REPO}/tests/sdl_audio_fixture.cpp"
  "${REPO}/native/audio/sdl_output.cpp" "${REPO}/vendor/runtime/runtime/core/log.cpp")
 target_compile_features(sdl_audio_fixture PRIVATE cxx_std_20)
 target_compile_options(sdl_audio_fixture PRIVATE -UNDEBUG)
-target_include_directories(sdl_audio_fixture PRIVATE "${REPO}/native" "${REPO}/vendor/runtime/runtime")
+target_include_directories(sdl_audio_fixture PRIVATE "${REPO}/native" "${REPO}/vendor/runtime/runtime" "${REPO}/host/research")
 target_link_libraries(sdl_audio_fixture PRIVATE SDL3::SDL3-static pthread)

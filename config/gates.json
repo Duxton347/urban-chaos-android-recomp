@@ -61,5 +61,12 @@
   "directional_audio_model_tested": true,
   "spatial_audio_hle_probe_passed": true,
   "original_mission_pause_observed": true,
-  "raw_guest_research_last_present_counter": 1920
+  "raw_guest_research_last_present_counter": 1920,
+  "native_stereo_sdl_output_compiled": true,
+  "native_stereo_sdl_authored_fixture_passed": true,
+  "native_stereo_sdl_original_mixer_observed": true,
+  "sdl_audio_audible_validated": false,
+  "android_report_export_controller_compiled": true,
+  "android_report_export_device_validated": false,
+  "linux_sdl_signal_shutdown_fixed": true
 }

@@ -8,6 +8,10 @@ A variante Xbox do usuário (`c6f0c99a…044d1`) permanece privada. Este avanço
 
 O host usa agora o reconhecimento/montagem compartilhado em `native/game/source.*`, também compilado para AArch64. Passaram 12 testes nativos de autoria própria, 46 testes Python e seis probes HLE. A regressão com recursos reais em pasta apresentou 480 frames em 130 segundos, sem exceção ou recurso solicitado ausente; término controlado. A ISO completa ainda não foi executada neste caminho e a ponte SAF/Android continua pendente. A tentativa inicial com perfil baseline falhou; o modo de continuação agora é verificado nos dois sentidos antes do build. [Resultados, tentativa falha e recibos](evidence/runtime-progress/iso-source-integration.json), [fluxo do launcher](LAUNCHER_DESIGN.md).
 
+## Saída SDL3 e retomada dos relatórios — 2026-11-18
+
+O host com observer voltou a executar o título. A nova saída estéreo do SDK foi ligada ao SDL3 e compilada também para AArch64. O ensaio privado com driver dummy alcançou o frame 1800 da abertura original de Hope Street, com oito reports de visibilidade e amostras não nulas/sem valores não finitos. Defeitos visuais, missão completa e áudio ouvido continuam pendentes. Uma falha de encerramento por captura de SIGTERM pelo SDL foi reproduzida e corrigida no host Linux, com regressão real. [Recibos](evidence/runtime-progress/sdl-output.json), [saída SDL](SDL_AUDIO.md). O menu/botão de exportação compilou contra SDK34 e aguarda a Activity definitiva; não foi criado APK do jogo.
+
 ## Falhas investigadas e mudanças
 
 | Falha real | Correção / evidência |

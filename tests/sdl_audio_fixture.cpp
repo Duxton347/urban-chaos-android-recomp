@@ -1,5 +1,6 @@
 // Authored signals only. No game audio is captured or written to disk.
 #include "audio/sdl_output.h"
+#include "headless_audio_policy.h"
 #include <SDL3/SDL.h>
 #include <atomic>
 #include <chrono>
@@ -33,6 +34,12 @@ static void SDLCALL Postmix(void* userdata,const SDL_AudioSpec* spec,float* buff
  }
 }
 int main(int argc,char** argv) {
+ if(argc==2&&(std::string_view(argv[1])=="--signal-wait"||std::string_view(argv[1])=="--signal-default")) {
+  if(std::string_view(argv[1])=="--signal-wait")Require(KeepHeadlessSignalHandlers());
+  Output output;Require(output.Start([](float* out,uint32_t frames){std::fill(out,out+frames*2,0.0f);}));
+  std::puts("audio ready");std::fflush(stdout);
+  for(;;)std::this_thread::sleep_for(10ms);
+ }
  if(argc==2&&std::string_view(argv[1])=="--invalid-driver") {
   Output output;Require(!output.Start([](float*,uint32_t){}));
   Require(output.Snapshot().state==State::Failed&&output.Snapshot().fault==Fault::Init);

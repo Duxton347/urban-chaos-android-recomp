@@ -1,6 +1,6 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-17. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
 
@@ -18,7 +18,15 @@ A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e execu
 
 ## Coletor de relatórios do launcher
 
-Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O código do host instala o observer; não houve nova execução comercial nesta revisão porque o ambiente privado está indisponível. O CI testa fixtures próprias e compila os contratos; ligação da ponte JNI ao build do jogo, botão na Activity do launcher real e teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
+Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O ambiente voltou e o host com observer foi compilado e executado por 130 s: registrou 21 eventos de boot, vídeo, áudio e avisos, sem nova exceção. ReportExportController fornece menu/botão e fluxo SAF para anexar à Activity definitiva; compilou contra SDK34. A ligação à Activity e ao build do jogo Android e o teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
+
+## Mixer original ligado ao SDL3
+
+A saída própria estéreo F32/48 kHz substitui o sink de medição quando selecionada explicitamente; não usa o fold de seis canais do Black. Passaram os testes autorais de canal/lifecycle, seis probes HLE, 46 testes Python e 324 checks de relatório/JNI. O mesmo backend compilou para AArch64. [Contrato e receita](SDL_AUDIO.md).
+
+No ensaio privado de 180 s com recursos originais verificados em pasta, renderer de referência a partir do frame 1720 e driver SDL dummy, o jogo apresentou o frame 1800 da abertura de Hope Street, inspecionado a 640×480. Foram concluídos oito reports de visibilidade; o SDL recebeu mais de 8,6 milhões de frames estéreo, sem valores não finitos e sem exceção nova registrada. Persistem defeitos visuais e APIs DirectSound a qualificar. Não é áudio ouvido, missão jogável, boot pela ISO completa ou execução Android.
+
+O primeiro ensaio exigiu SIGKILL no encerramento: SDL interceptava SIGTERM sem existir um event pump nesse host de áudio. A política foi corrigida apenas no host Linux. O controle negativo autoral reproduz a falha e o ensaio real posterior de 20 s encerrou com SIGTERM/-15 em 20,018 s, sem kill forçado. [Recibos, falha preservada e limites](evidence/runtime-progress/sdl-output.json). Vulkan e a Activity/loop Android ainda precisam da própria coordenação de lifecycle.
 
 ## Histórico: investigação posterior da falha de áudio
 

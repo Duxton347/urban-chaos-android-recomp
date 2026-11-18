@@ -5,6 +5,7 @@
 #include "diagnostics/journal.h"
 #ifdef URBAN_SDL_OUTPUT
 #include "audio/sdl_output.h"
+#include "headless_audio_policy.h"
 #endif
 #include "image_symbols.h"
 #include "build_source_profile.h"
@@ -44,6 +45,12 @@ int main(int argc,char** argv) {
     }
     logx::Init((app::ExeDir()/"logs").string(),app::kGame.log);
     if(!report.Healthy())LOGW("diagnostics unavailable: UC-LOG-001");
+#ifdef URBAN_SDL_OUTPUT
+    if(!KeepHeadlessSignalHandlers()) {
+        LOGE("headless host could not preserve process signal handling");
+        report.Finish();logx::Flush();return 2;
+    }
+#endif
     app::Load();if(app::kGame.init)app::kGame.init();
     try {
         auto source=urban::game::Source::Open(std::filesystem::absolute(selected),

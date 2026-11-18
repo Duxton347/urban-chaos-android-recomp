@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import pathlib
+import selectors
 import subprocess
 from prepare_runtime_overlay import ROOT, PIN
 
@@ -24,12 +25,33 @@ def main():
     fixture=subprocess.run([str(output/'sdl_audio_fixture')],env=env,check=True,capture_output=True,text=True,timeout=20)
     (output/'fixture.log').write_text(fixture.stdout+fixture.stderr)
     result=json.loads(fixture.stdout.strip().splitlines()[-1])
+    env.pop('SDL_NO_SIGNAL_HANDLERS',None)
+    for mode in ('--signal-default','--signal-wait'):
+        child=subprocess.Popen([str(output/'sdl_audio_fixture'),mode],env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        try:
+            with selectors.DefaultSelector() as selector:
+                selector.register(child.stdout,selectors.EVENT_READ)
+                if not selector.select(5) or child.stdout.readline().strip()!='audio ready':
+                    raise RuntimeError('Signal fixture did not initialize')
+            child.terminate()
+            if mode=='--signal-default':
+                try:
+                    child.wait(timeout=0.2)
+                    raise AssertionError('Negative control did not reproduce swallowed SIGTERM')
+                except subprocess.TimeoutExpired:
+                    result['signal_default_negative_control']=True
+            else:
+                if child.wait(timeout=3)!=-15:raise AssertionError('Host signal policy did not restore SIGTERM')
+                result['sigterm_with_host_policy']=-15
+        finally:
+            if child.poll() is None:child.kill()
+            child.communicate(timeout=3)
     env['SDL_AUDIODRIVER']='urban_nonexistent_audio_driver'
     failure=subprocess.run([str(output/'sdl_audio_fixture'),'--invalid-driver'],env=env,check=True,capture_output=True,text=True,timeout=10)
     (output/'invalid-driver.log').write_text(failure.stdout+failure.stderr)
     result.update(sdl_commit=lock['repositories']['SDL']['commit'],sdk_commit=PIN,driver='dummy',
         invalid_driver_rejected=True,audible_output_verified=False,android_device_tested=False)
-    sources=['native/audio/sdl_output.h','native/audio/sdl_output.cpp','tests/sdl_audio_fixture.cpp','host/sdl-audio/CMakeLists.txt']
+    sources=['native/audio/sdl_output.h','native/audio/sdl_output.cpp','tests/sdl_audio_fixture.cpp','host/sdl-audio/CMakeLists.txt','host/research/headless_audio_policy.h']
     result['sources']={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in sources}
     (output/'receipt.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result));return 0

@@ -10,6 +10,8 @@
     "render_failure": true,
     "nonfinite_silenced": true,
     "game_data_used": false,
+    "signal_default_negative_control": true,
+    "sigterm_with_host_policy": -15,
     "sdl_commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
     "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
     "driver": "dummy",
@@ -19,8 +21,9 @@
     "sources": {
       "native/audio/sdl_output.h": "ea03291c00cdb653626cf1aa4d69d3abe9813394faf58ae004890b8f99734f38",
       "native/audio/sdl_output.cpp": "609ab41173e2e428dacbf49eb93e6cf086f652f8941857f6929122b7ace10907",
-      "tests/sdl_audio_fixture.cpp": "adf72c6e63eff1f6ce3c73bafa0840f889d4c8b7cc83e5c39517ab704d8ecfe5",
-      "host/sdl-audio/CMakeLists.txt": "1f051f5911e60d7351b1502f6936a3cee2419d5b133a316b830a15d2ba669712"
+      "tests/sdl_audio_fixture.cpp": "f1b36a2cce6129e573de2d1725633d46c1e56c06a3e2e339da445b9d6fbf3de6",
+      "host/sdl-audio/CMakeLists.txt": "4349e1096a507f1fbc16b6f22614c9b2b6a1f107b82627b23690da18a6bfa8fa",
+      "host/research/headless_audio_policy.h": "bc96f3fadd8fec97f1e5097e1a3badebaffefcd5071b4d118508741a36f65a9b"
     }
   },
   "existing_python_tests_passed": 46,
@@ -104,12 +107,25 @@
     "forced_sigkill": true,
     "observed": "SIGTERM did not stop the audio-only SDL host within five seconds",
     "diagnosis": "SDL installs quit signal handlers but this research host does not pump SDL events",
-    "fix_pending": true
+    "fix_pending": false,
+    "fix": "Linux research host sets SDL_HINT_NO_SIGNAL_HANDLERS before SDL audio initialization; Android policy unchanged"
   },
   "initial_configure_failure": {
     "reason": "SDL X11/Wayland requirement on an audio-only host",
     "fix": "SDL_UNIX_CONSOLE_BUILD=ON",
     "raw_first_log_preserved": false
   },
-  "no_commercial_payload_published": true
+  "no_commercial_payload_published": true,
+  "shutdown_postfix": {
+    "exit_code": -15,
+    "elapsed_seconds": 20.018,
+    "timed_out": true,
+    "last_present_counter": 60,
+    "exception_recorded": false,
+    "audio_output": "sdl",
+    "sdl_driver": "dummy",
+    "forced_sigkill": false
+  },
+  "final_host_receipt_sha256": "51b0b125572023affa3c7a3467be5839b05bceb127116bfc67ffe2c39ce8c64a",
+  "final_host_sha256": "6ee7d3401d63c85555efc8ce13a8c6af9fd46273755401648d0d16ce958d8a0b"
 }
