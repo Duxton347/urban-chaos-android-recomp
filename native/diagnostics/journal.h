@@ -22,7 +22,7 @@ enum class Code {
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
  AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure,
- ThreadProgress, IoProgress, AudioTiming, GpuTiming, Trace
+ ThreadProgress, IoProgress, AudioTiming, GpuTiming, InputLatency, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -61,6 +61,7 @@ inline Definition Describe(Code c) {
  case Code::IoProgress:return {"UC-DISC-002","info","Cumulative IO and empty active stream counters; short reads can include normal EOF",true};
  case Code::AudioTiming:return {"UC-AUDIO-004","info","Cumulative callback timing; slow blocks are measured, not a driver fault diagnosis",true};
  case Code::GpuTiming:return {"UC-GPU-005","info","Cumulative host Vulkan API time; operation 0 wait, 1 acquire, 2 shader module",true};
+ case Code::InputLatency:return {"UC-INPUT-002","info","Touch press delivery to guest polling; not total display or game response latency",true};
  case Code::Trace:return {"UC-TRACE-001","debug","Runtime format template; argument values intentionally omitted",false};
  }
  return {"UC-RUNTIME-002","error","Unclassified diagnostic event",false};

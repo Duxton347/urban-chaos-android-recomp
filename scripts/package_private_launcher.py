@@ -30,6 +30,7 @@ def main():
     reader=ndk/'toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf'
     elf=subprocess.check_output([str(reader),'-h','--dyn-syms',str(library)],text=True)
     symbols=['SDL_main','Java_org_urbanchaos_launcher_NativeGame_validate','Java_org_urbanchaos_launcher_NativeGame_menuButton','Java_org_urbanchaos_launcher_diagnostics_NativeReports_start']
+    symbols += ['Java_org_urbanchaos_launcher_NativeGame_'+name for name in ('padButton','padStick','clearTouch','displayMode')]
     if 'AArch64' not in elf or any(name not in elf for name in symbols):raise ValueError('Runtime architecture or actual JNI entry missing')
     def sources():
         paths=[]

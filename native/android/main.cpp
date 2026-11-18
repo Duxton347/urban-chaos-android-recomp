@@ -92,7 +92,7 @@ int main(int argc,char** argv){
     host::PadEvent(event);
    }while(SDL_PollEvent(&event));
    if(SDL_GetTicks()-last_audio>=1000){audio::PollOutputDiagnostics();last_audio=SDL_GetTicks();logx::Flush();}
-   if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);last_progress=SDL_GetTicks();}
+   if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);host::PollInputDiagnostics();last_progress=SDL_GetTicks();}
   }
  }catch(const urban::game::SourceError& error){report.Emit(urban::diagnostics::SourceCode(error.code));}
  catch(const std::exception&){report.Emit(urban::diagnostics::Code::BootFailed);}

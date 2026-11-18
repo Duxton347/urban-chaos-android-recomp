@@ -1,0 +1,35 @@
+import org.urbanchaos.launcher.controls.TouchLayout;
+import org.urbanchaos.launcher.controls.TouchLayout.Control;
+import java.util.*;
+public final class TouchLayoutTest {
+ static int checks;
+ static void check(boolean ok){checks++;if(!ok)throw new AssertionError("HUD check "+checks);}
+ public static void main(String[] args){
+  List<String> events=new ArrayList<>();float[] axes=new float[4];
+  TouchLayout.Router router=new TouchLayout.Router(new TouchLayout.Router.Sink(){
+   public void button(int b,boolean d){events.add(b+":"+d);}
+   public void stick(int s,float x,float y,boolean a){axes[s*2]=x;axes[s*2+1]=y;events.add("s"+s+":"+a);}
+  });
+  TouchLayout menu=TouchLayout.defaults(true,false),xbox=TouchLayout.defaults(true,true);
+  check(menu.find("a").button==0&&menu.find("up").button==8&&menu.find("start").button==12);
+  check(xbox.find("rt").button==7&&xbox.find("look").stick==1);
+  Control a=menu.find("a"),b=menu.find("b");
+  router.down(21,a,0,0,1280,800);router.down(37,b,0,0,1280,800);
+  check(events.equals(Arrays.asList("0:true","1:true")));
+  router.up(21);check(!router.pressed(a)&&router.pressed(b));
+  router.down(49,b,0,0,1280,800);router.up(37);check(router.pressed(b));router.up(49);check(!router.pressed(b));
+  Control left=xbox.find("move"),right=xbox.find("look");
+  check(router.down(8,left,left.x*1280,left.y*800,1280,800));
+  check(!router.down(9,left,left.x*1280,left.y*800,1280,800));
+  router.down(19,right,right.x*1280,right.y*800,1280,800);router.down(23,xbox.find("rt"),0,0,1280,800);
+  router.move(8,left.x*1280+10000,left.y*800,1280,800);check(Math.abs(axes[0]-1)<.0001&&axes[1]==0);
+  router.move(19,right.x*1280,right.y*800-10000,1280,800);check(Math.abs(axes[3]-1)<.0001);
+  router.up(8);check(!router.pressed(left)&&router.pressed(right)&&router.pressed(xbox.find("rt")));
+  router.clear();check(!router.pressed(right)&&!router.pressed(xbox.find("rt"))&&axes[3]==0);
+  check(menu.hit(a.x*1280,a.y*800,1280,800)==a);
+  TouchLayout saved=menu.copy();a.configure(.6f,.7f,.08f,.8f);check(saved.find("a").x!=a.x);
+  try{a.configure(Float.NaN,.5f,.1f,.5f);throw new AssertionError();}catch(IllegalArgumentException good){checks++;}
+  check(TouchLayout.defaults(false,false).find("a").radius>saved.find("a").radius);
+  System.out.println("HUD layout/multitouch checks passed: "+checks+"; no game execution");
+ }
+}

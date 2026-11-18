@@ -27,6 +27,8 @@ def prepare_renderer(destination, android=False):
     if android:
         patch = ROOT / 'patches/black/vulkan-android-host.patch'
         subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
+        patch = ROOT / 'patches/black/vulkan-android-display.patch'
+        subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     patch = ROOT / 'patches/black/vulkan-progress-metadata.patch'
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     return destination / 'vulkan.cpp'

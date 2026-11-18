@@ -35,6 +35,16 @@ def main():
             str(ROOT/'tests/progress_fixture.cpp'),'-o',str(progress_binary)],check=True)
         subprocess.run([str(progress_binary),str(out/'progress')],check=True)
         progress_records=records(out/'progress')
+        touch_binary=out/'touch_probe'
+        subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-I'+str(ROOT/'native'),'-I'+str(ROOT/'vendor/runtime/runtime'),
+            str(ROOT/'tests/touch_input_fixture.cpp'),'-o',str(touch_binary)],check=True)
+        subprocess.run([str(touch_binary)],check=True)
+        jdk=pathlib.Path(javac).resolve().parent.parent
+        touch_host=out/'touch_host'
+        subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-pthread',
+            '-I'+str(ROOT/'native'),'-I'+str(ROOT/'native/android'),'-I'+str(ROOT/'vendor/runtime/runtime'),'-I'+str(ROOT/'vendor/SDL/include'),
+            '-I'+str(jdk/'include'),'-I'+str(jdk/'include/linux'),str(ROOT/'tests/android_touch_host_fixture.cpp'),str(ROOT/'native/android/input.cpp'),'-o',str(touch_host)],check=True)
+        subprocess.run([str(touch_host)],check=True)
         assert sum(item['code']=='UC-CPU-003' for item in progress_records)==64
         io=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-002')
         assert io['bytes']==19 and io['short_reads']==1 and io['inflight']==0 and io['thread_slots_dropped']==7
@@ -69,6 +79,8 @@ def main():
         assert result.returncode==17 and (abrupt/'session.open').is_file()
         assert records(abrupt)[-1]['code']=='UC-CPU-002'
         classes=out/'classes';classes.mkdir()
+        subprocess.run([javac,'-d',str(classes),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/controls/TouchLayout.java'),str(ROOT/'tests/TouchLayoutTest.java')],check=True)
+        subprocess.run([java,'-cp',str(classes),'TouchLayoutTest'],check=True)
         core=ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/ReportSession.java'
         subprocess.run([javac,'-d',str(classes),str(core),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/NativeReports.java'),str(ROOT/'tests/DiagnosticsTest.java'),str(ROOT/'tests/DiagnosticsJniTest.java')],check=True)
         subprocess.run([java,'-cp',str(classes),'DiagnosticsTest',str(out/'java'),str(native)],check=True)
