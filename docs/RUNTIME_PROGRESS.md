@@ -16,6 +16,10 @@ O host com observer voltou a executar o título. A nova saída estéreo do SDK f
 
 O novo módulo de oclusão passou 21 reports com rasterização Vulkan real em software e compilou para AArch64. Counts não são constantes: houve 64 amostras visíveis, zero ocluído/descartado e testes de readback/fences, pool reutilizado, duas submissões, clear e limites de memória. A integração ao renderer do título continua pendente; o jogo não foi executado via Vulkan nesta etapa. [Prova e limitações](VULKAN_VISIBILITY.md).
 
+## Renderer Vulkan ligado ao título — 2026-11-18
+
+O backend MIT do Black foi adaptado em overlay explícito para superfície headless na nuvem, com o componente próprio de reports ligado aos draws/submit/fences. O menu original e a abertura 3D de Hope Street foram inspecionados em Vulkan no Linux. Há defeitos visuais; não é missão jogável nem Android. Foi corrigido o contador de apresentações usado pelo input automatizado, e seu teste público agora usa apresentação real. O contrato do renderer também compila para AArch64. [Receita, regressões e requisitos até o APK](VULKAN_RENDERER.md).
+
 ## Falhas investigadas e mudanças
 
 | Falha real | Correção / evidência |

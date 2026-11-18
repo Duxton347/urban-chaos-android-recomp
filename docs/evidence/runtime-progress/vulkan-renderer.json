@@ -1,0 +1,190 @@
+{
+  "date_utc": "2026-11-18",
+  "renderer": "Black MIT Vulkan backend with explicit headless research overlay and own visibility queries",
+  "backend_contract": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host": {
+        "sha256": "22400ce5a2c34728bd4382df4929dd0930a196fb88d83b712bbb6d48bb1eb93d",
+        "objects": 2
+      },
+      "arm64": {
+        "sha256": "5523e47e28effbaaaca14ef7797fad1ab502cd783d48d96047475bdd78c32134",
+        "objects": 2
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd"
+    },
+    "renderer_source_sha256": "2be53d64d2fcf09917afd190f20eb157fc58f9841755ed14f7d12f62e4501885",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "authored_renderer_fixture_passed": true,
+    "fixture_executable_sha256": "a81c025ebfc60b016cceacdb757efbb6173e646919a6e85d94d6ef60e3f1ede9"
+  },
+  "original_title_runs": [
+    {
+      "timeout_seconds": 30,
+      "status": "TIMED_OUT",
+      "exit_code": -15,
+      "timed_out": true,
+      "interrupted": false,
+      "elapsed_seconds": 30.034,
+      "last_present_counter": 480,
+      "missing_disc_requests": 0,
+      "completed_visibility_reports": 0,
+      "exception_recorded": false,
+      "audible_output_verified": false,
+      "gameplay_validated": false,
+      "android_validated": false,
+      "host_sha256": "a92be11be10581371eb6ded1bdbb2214ad06696a9df16b7680149658dcc3b07a",
+      "build_receipt_sha256": "582d92f5c501b0ffe86245405d1ac105b84b4f03f6d44114866b8d62b954c6f0",
+      "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+      "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+      "pad_script_sha256": null,
+      "description": "First original video via Vulkan; no scripted input",
+      "report_count_is_logged_events": true,
+      "raw_logs_public": false,
+      "renderer_source_sha256": "e6652bce82e209177d58300b0092e59cb55641b95cbfe1b6f274fa7723fb3e25"
+    },
+    {
+      "timeout_seconds": 180,
+      "status": "INTERRUPTED",
+      "exit_code": -15,
+      "timed_out": false,
+      "interrupted": true,
+      "elapsed_seconds": 136.09,
+      "last_present_counter": 3120,
+      "missing_disc_requests": 0,
+      "completed_visibility_reports": 0,
+      "exception_recorded": false,
+      "audible_output_verified": false,
+      "gameplay_validated": false,
+      "android_validated": false,
+      "host_sha256": "a92be11be10581371eb6ded1bdbb2214ad06696a9df16b7680149658dcc3b07a",
+      "build_receipt_sha256": "582d92f5c501b0ffe86245405d1ac105b84b4f03f6d44114866b8d62b954c6f0",
+      "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+      "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+      "pad_script_sha256": "06029c1f6712378b535d95e686523a3643ea494d126ab9e667d4522bde7a3890",
+      "description": "Input clock integration absent; interrupted for correction",
+      "report_count_is_logged_events": true,
+      "raw_logs_public": false,
+      "renderer_source_sha256": "e6652bce82e209177d58300b0092e59cb55641b95cbfe1b6f274fa7723fb3e25"
+    },
+    {
+      "timeout_seconds": 180,
+      "status": "TIMED_OUT",
+      "exit_code": -15,
+      "timed_out": true,
+      "interrupted": false,
+      "elapsed_seconds": 180.071,
+      "last_present_counter": 1860,
+      "missing_disc_requests": 0,
+      "completed_visibility_reports": 16,
+      "exception_recorded": false,
+      "audible_output_verified": false,
+      "gameplay_validated": false,
+      "android_validated": false,
+      "host_sha256": "7f986609f7c82751c6fb7dcc874a36ca74404b5102bf4efbdb8b5931d4ff3dde",
+      "build_receipt_sha256": "126bf671b897f9f29f00b1faa336d0fcd445fc7a6c9e1f3d76b8927df553fc30",
+      "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+      "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+      "pad_script_sha256": "06029c1f6712378b535d95e686523a3643ea494d126ab9e667d4522bde7a3890",
+      "description": "Corrected input clock; original main menu and Hope Street opening inspected",
+      "report_count_is_logged_events": true,
+      "raw_logs_public": false,
+      "inspected_captures": {
+        "1440": {
+          "sha256": "32de61cdb3f25c18345b094711a0d7e330bc55e3b1d04e1f6ba3ce6cbb526f26",
+          "width": 640,
+          "height": 480,
+          "content": "Original main menu"
+        },
+        "1680": {
+          "sha256": "fdeed7057a59864b61d19ca874fcb272a851e34292c004cfbcf573496cc9bf20",
+          "width": 640,
+          "height": 480,
+          "content": "Original cinematic video"
+        },
+        "1800": {
+          "sha256": "7b9e28332173d6eadfc371fcd20813cfa924dc49bcb510da3b5c8e166ed86e89",
+          "width": 640,
+          "height": 480,
+          "content": "Original 3D Hope Street opening, visual defects remain"
+        }
+      },
+      "sdl_dummy_last_frames": 8005632,
+      "sdl_dummy_nonfinite_max": 0,
+      "renderer_source_sha256": "68a8dbf08491a9b145d4ec67209fda9831823db285584ea5bb70cb3d1ebf6223"
+    },
+    {
+      "timeout_seconds": 180,
+      "status": "TIMED_OUT",
+      "exit_code": -15,
+      "timed_out": true,
+      "interrupted": false,
+      "elapsed_seconds": 180.039,
+      "last_present_counter": 1860,
+      "missing_disc_requests": 0,
+      "completed_visibility_reports": 16,
+      "exception_recorded": false,
+      "audible_output_verified": false,
+      "gameplay_validated": false,
+      "android_validated": false,
+      "host_sha256": "782742700748d350cb6244ec55c689fdc6938d001143c449fa0e39f8c223d867",
+      "build_receipt_sha256": "006aab6e58907c3714c04c61fd916f7d3b49cb3f5e3ed4f0ed1b633269b381e9",
+      "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+      "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+      "pad_script_sha256": "06029c1f6712378b535d95e686523a3643ea494d126ab9e667d4522bde7a3890",
+      "description": "Final renderer with fail-closed counted draws; original Hope Street 3D opening inspected again",
+      "renderer_source_sha256": "2be53d64d2fcf09917afd190f20eb157fc58f9841755ed14f7d12f62e4501885",
+      "report_count_is_logged_events": true,
+      "raw_logs_public": false,
+      "inspected_captures": {
+        "1800": {
+          "sha256": "b54412615fc218570f0a34660a861c1b4672e78cc7084c3537ee96cef5a63ad0",
+          "width": 640,
+          "height": 480,
+          "content": "Original 3D Hope Street opening; fidelity not qualified"
+        }
+      },
+      "sdl_dummy_last_frames": 8239104,
+      "sdl_dummy_nonfinite_max": 0
+    }
+  ],
+  "driver": "SwiftShader Device (Subzero), software Vulkan 1.3.0",
+  "validation_layers_enabled": false,
+  "validation_errors": null,
+  "android_game_linked": false,
+  "apk_created": false,
+  "gameplay_validated": false,
+  "visual_fidelity_validated": false,
+  "known_remaining_work": [
+    "Visual defects in original 3D scene",
+    "Fence/resource-busy semantics and unsupported pipeline behavior require qualification",
+    "Android host/window lifecycle and complete runtime link",
+    "SAF ISO import, touch/gamepad integration and saves",
+    "Real Adreno/device tests"
+  ],
+  "public_data": "Only metadata and hashes; no title code, images, audio or assets",
+  "local_regressions": {
+    "python_tests": 46,
+    "ctests": 8,
+    "passed": true,
+    "initial_python_disk_space_failure": "Preserved logs; freed only regenerable public compiler intermediates and obsolete research build products, then all tests passed",
+    "initial_fixture_compile_failure": "Missing x86 SSE4.1 target flag in public fixture; fixed with the same x86-64-v2 baseline as the SDK host and rebuilt successfully"
+  },
+  "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+  "public_fixture_log_sha256": "4b8f2737a025e13652cbcab5a0a0309d1b1c553740a14e42c77782a6be58191f"
+}

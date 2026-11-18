@@ -1,6 +1,6 @@
 # Arquitetura — Urban Chaos Android Recomp
 
-**Objetivo:** launcher Android baseado na ISO Xbox original, com núcleo ARM64 recompilado, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
+**Objetivo:** launcher Android baseado na ISO Xbox original, com núcleo ARM64 recompilado, preservando lógica, missões, IA, física, gráficos, áudio e progressão. Prioridade: Xiaomi Pad 6 com HyperOS 2.0.16.0. **Estado atual: geração determinística e código compilado; host Linux apresenta menus e a abertura de Hope Street também em Vulkan. Gameplay, áudio audível, integração Android e qualificação G1 pendentes. [Evidências](RUNTIME_PROGRESS.md).**
 
 A experiência final de seleção da ISO, reconhecimento e início do jogo está definida em [LAUNCHER_DESIGN.md](LAUNCHER_DESIGN.md). O diagrama abaixo descreve a construção do núcleo; o tablet não executa essa recompilação ao importar a imagem.
 

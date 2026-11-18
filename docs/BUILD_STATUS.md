@@ -1,6 +1,6 @@
 # Build status — nova rota de recompilação
 
-Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
+Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa, agora também pelo backend Vulkan. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e integração Android. Nenhum APK do jogo foi criado.**
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
 
@@ -28,7 +28,7 @@ O tradutor MIT do Black com glslang 16 fixado compilou dez shaders autorais/gera
 
 Implementada contagem com queries de oclusão precisas, snapshots preservados entre clears, fences/timeline como condição de entrega e reutilização segura de pools após readback. Foram validados 21 reports na API Vulkan real pelo driver de software SwiftShader: cobertura 8×8 = 64, oclusão/descarte = zero, dois command buffers em voo, limites e ABI de 16 bytes. O componente compilou para AArch64. [Contrato, teste e ligação pendente](VULKAN_VISIBILITY.md).
 
-O componente ainda não está ligado ao renderer do jogo. Não houve novo boot do título via Vulkan, criação de APK ou teste no Pad 6. O renderer Black continua referência não modificada; não se declarou suporte por herdar seus métodos vazios. O jogo Linux permanece no renderer de referência, com a evidência de Hope Street abaixo.
+O componente já está ligado ao backend Vulkan de pesquisa reaproveitado do Black, com queries nos draws e entrega após conclusão GPU. Menu original e abertura 3D de Hope Street foram inspecionados em SwiftShader; persistem defeitos visuais. O backend adaptado também compila como contrato AArch64, mas não há host/jogo Android completo ligado nem teste no Pad 6. [Receita, falhas encontradas e caminho para APK](VULKAN_RENDERER.md).
 
 ## Mixer original ligado ao SDL3
 

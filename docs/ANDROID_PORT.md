@@ -1,6 +1,6 @@
 # Launcher Android com núcleo ARM64
 
-**Código guest baseline e com continuações compilado para ARM64; runtime Android completo e APK ainda não ligados nem executados.** O host Linux já executa menu original; [progresso e limites](RUNTIME_PROGRESS.md).
+**Código guest baseline e com continuações compilado para ARM64; runtime Android completo e APK ainda não ligados nem executados.** O host Linux já apresenta menu e abertura 3D originais também em Vulkan; [progresso e limites](RUNTIME_PROGRESS.md).
 
 O produto é um launcher que importa e monta a ISO original, com o runtime incluído no pacote Android e os recursos do disco externos. O Black também usa esse modelo: sua biblioteca ARM64 é construída antes da instalação. [Fluxo e rastreio do código](LAUNCHER_DESIGN.md).
 
@@ -40,4 +40,4 @@ O backend estéreo SDL3 em native/audio/sdl_output.cpp está ligado ao host de p
 
 ## Queries de visibilidade Vulkan
 
-O componente próprio de queries precisas e entrega após fences foi testado na API Vulkan por software e compilado para AArch64. [Sequência obrigatória de integração](VULKAN_VISIBILITY.md). Ele ainda precisa ser ligado ao renderer completo, a seus draws/targets e ao Flush do SDK; não valida swapchain, shaders Xbox ou o jogo no Android. Não presumir suporte preciso a partir do nome Adreno: consultar e habilitar o recurso no dispositivo real.
+O componente próprio de queries precisas e entrega após fences foi testado na API Vulkan por software e compilado para AArch64. [Sequência obrigatória de integração](VULKAN_VISIBILITY.md). Ele já está ligado aos draws/targets, fences e Flush do backend de pesquisa, que apresentou menu e abertura 3D original. [Resultado e etapas restantes até o APK](VULKAN_RENDERER.md). Essa execução Linux não valida o jogo no Android. Não presumir suporte preciso a partir do nome Adreno: consultar e habilitar o recurso no dispositivo real.

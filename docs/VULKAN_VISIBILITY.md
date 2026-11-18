@@ -1,6 +1,6 @@
 # Reports Vulkan — componente de queries reais
 
-**GO para o componente: contagem validada na API Vulkan por software e código compilado para AArch64. O renderer Vulkan do jogo e sua ligação ao Android continuam pendentes.** O jogo Linux continua usando o renderer de referência. Não se substituiu a lógica do título nem se apresentou a fixture como execução de Urban Chaos.
+**GO para o componente e sua ligação ao renderer de pesquisa: queries validadas na API Vulkan por software, código compilado para AArch64 e menu/abertura original apresentados em Linux. Integração ao Android e missão jogável pendentes.** [Ligação executada, evidências e limites](VULKAN_RENDERER.md). Os detalhes seguintes documentam o contrato do componente, sem qualificá-lo como runtime Android.
 
 ## Contrato auditado
 
