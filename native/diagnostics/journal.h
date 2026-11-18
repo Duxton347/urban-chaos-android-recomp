@@ -21,7 +21,7 @@ enum class Code {
  SourceInvalid, SourceMissing, SourceIntegrity, SourceTitle, SourceEntry, SourcePs2,
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
- AudioOutputFailure, AudioOutputState, VisibilityReport, Trace
+ AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -49,6 +49,10 @@ inline Definition Describe(Code c) {
  case Code::GuestTrap:return {"UC-CPU-002","error","Guest trap recorded; root cause requires analysis",false};
  case Code::FrameStats:return {"UC-GPU-001","info","Renderer presentation counters",true};
  case Code::VisibilityReport:return {"UC-GPU-002","info","GPU visibility report completed after readback",true};
+ case Code::AndroidHost:return {"UC-ANDROID-001","info","Android host characteristics",true};
+ case Code::UnsupportedPageSize:return {"UC-ANDROID-002","error","Current guest memory mapping requires 4096-byte host pages",true};
+ case Code::GpuDevice:return {"UC-GPU-003","info","Selected Vulkan device capabilities; phase 0 supported, phase 1 enabled",true};
+ case Code::GpuCountFailure:return {"UC-GPU-004","error","Counted draw cannot be implemented; visibility result was not fabricated",true};
  case Code::AudioStats:return {"UC-AUDIO-001","info","Mixer counters; this does not prove audible output",true};
  case Code::AudioOutputFailure:return {"UC-AUDIO-002","error","SDL output operation failed; underlying driver cause requires analysis",false};
  case Code::AudioOutputState:return {"UC-AUDIO-003","info","SDL output state changed; this does not suspend guest execution",true};
@@ -182,9 +186,17 @@ public:
    }
    unsigned long long samples=0,active=0,bad=0;double peak=0;
    unsigned long long vulkan_frame=0;unsigned visible_samples=0;
-   if(std::string_view(format)=="renderer: frame %llu (Vulkan headless)" &&
-      std::sscanf(expanded,"renderer: frame %llu (Vulkan headless)",&vulkan_frame)==1) {
-    Emit(Code::FrameStats,{{"frame",vulkan_frame},{"backend",2},{"headless",1}});return;
+   unsigned vendor=0,device=0,api=0,driver=0,precise=0,phase=0;
+   if(std::string_view(format)=="vulkan-device: vendor %u device %u api %u driver %u precise %u phase %u" &&
+      std::sscanf(expanded,"vulkan-device: vendor %u device %u api %u driver %u precise %u phase %u",&vendor,&device,&api,&driver,&precise,&phase)==6) {
+    Emit(Code::GpuDevice,{{"vendor",vendor},{"device",device},{"api",api},{"driver",driver},{"precise",precise},{"phase",phase}});return;
+   }
+   if(std::string_view(format)=="vulkan-count-failure: operation %u" && std::sscanf(expanded,"vulkan-count-failure: operation %u",&operation)==1) {
+    Emit(Code::GpuCountFailure,{{"operation",operation}});return;
+   }
+   if((std::string_view(format)=="renderer: frame %llu (Vulkan headless)" || std::string_view(format)=="renderer: frame %llu (Vulkan Android)") &&
+      std::sscanf(expanded,"renderer: frame %llu",&vulkan_frame)==1) {
+    Emit(Code::FrameStats,{{"frame",vulkan_frame},{"backend",2},{"headless",std::string_view(format).find("headless")!=std::string_view::npos?1u:0u}});return;
    }
    if(std::string_view(format)=="vulkan: visibility report completed, samples=%u" &&
       std::sscanf(expanded,"vulkan: visibility report completed, samples=%u",&visible_samples)==1) {

@@ -25,3 +25,6 @@ __pycache__/
 
 # Raw research-host logs may contain title data.
 /logs/
+/launcher/.gradle/
+/launcher/**/build/
+/launcher/local.properties

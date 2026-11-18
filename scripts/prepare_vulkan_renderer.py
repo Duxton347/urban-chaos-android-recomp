@@ -15,7 +15,7 @@ def software_headless_icd():
     raise RuntimeError('No explicitly supported software headless Vulkan ICD found')
 
 
-def prepare_renderer(destination):
+def prepare_renderer(destination, android=False):
     source = prepare(renderer=True)
     destination = pathlib.Path(destination).resolve()
     if destination.exists() or not any((ROOT / part) in destination.parents for part in ('build', 'private')):
@@ -24,4 +24,7 @@ def prepare_renderer(destination):
     shutil.copyfile(source / 'vulkan.cpp', destination / 'vulkan.cpp')
     patch = ROOT / 'patches/black/vulkan-headless-research.patch'
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
+    if android:
+        patch = ROOT / 'patches/black/vulkan-android-host.patch'
+        subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     return destination / 'vulkan.cpp'

@@ -13,7 +13,7 @@ PATHS = ('runtime/xdk/dsound.cpp', 'runtime/xdk/d3d8.cpp', 'runtime/gpu/backend.
 PATCHES = ('directsound-device-lifetime.patch', 'd3d-device-initialization.patch', 'io-apc-dispatch.patch', 'reference-visibility.patch', 'surface-ownership.patch', 'directional-audio.patch', 'bounded-disc-reader.patch', 'diagnostic-observer.patch')
 
 
-def prepare(destination, context=False, tools_only=False):
+def prepare(destination, context=False, tools_only=False, android=False):
     if tools_only and not context:
         raise ValueError("Tool-only overlays require continuation support")
     destination = pathlib.Path(destination).resolve()
@@ -34,6 +34,10 @@ def prepare(destination, context=False, tools_only=False):
         shutil.copyfile(sdk/relative, path)
     hashes = {}
     selected = (() if tools_only else PATCHES) + (("resumable-context.patch",) if context else ())
+    if android:
+        if tools_only:
+            raise ValueError('Android host patches do not apply to host recompilation tools')
+        selected += ('android-host-portability.patch',)
     for name in selected:
         patch = ROOT/'patches/runtime'/name
         hashes[name] = hashlib.sha256(patch.read_bytes()).hexdigest()

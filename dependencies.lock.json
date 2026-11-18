@@ -230,5 +230,28 @@
     },
     "patch": "patches/black/vulkan-headless-research.patch",
     "host": "headless Linux research only; game and Android not yet qualified"
+  },
+  "launcher_gradle_verification": {
+    "path": "launcher/gradle/verification-metadata.xml",
+    "sha256": "026f16a8fa0c6a17587a801926ef793f602efa4ab3fdeaf04256dd6aec2e31ff",
+    "additional_metadata": {
+      "5.9.2": {
+        "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.9.2/junit-bom-5.9.2.module",
+        "sha256": "ab137ba5a8e32c9b066bf9126a1c76dd5614b724ba5c0b02549772b5e9f4cf1f",
+        "verified_with": "Maven Central artifact and its published SHA-256; matches Gradle cache"
+      },
+      "5.9.3": {
+        "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.9.3/junit-bom-5.9.3.module",
+        "sha256": "b401fd25901e582a524aa5343c4b39e28bc56e24961c1069bf2b4bbfcee46b93",
+        "verified_with": "Maven Central artifact and its published SHA-256; matches Gradle cache"
+      }
+    }
+  },
+  "android_runtime_adaptation": {
+    "renderer_patch": "patches/black/vulkan-android-host.patch",
+    "renderer_patch_sha256": "302422fdb6e5cb619ff80ed3e14545d2ea297dae9cec92124ae358fee0086f12",
+    "runtime_patch": "patches/runtime/android-host-portability.patch",
+    "runtime_patch_sha256": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+    "role": "real SDL Android window and private complete runtime build; on-device behavior unverified"
   }
 }
