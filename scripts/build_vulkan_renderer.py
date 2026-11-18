@@ -7,7 +7,7 @@ import pathlib
 import subprocess
 import tempfile
 from prepare_runtime_overlay import prepare, ROOT
-from prepare_vulkan_renderer import prepare_renderer
+from prepare_vulkan_renderer import prepare_renderer, software_headless_icd
 from build_vulkan_reports import digest
 
 
@@ -55,9 +55,8 @@ def main():
                 raise RuntimeError('Renderer archive architecture mismatch')
             receipt['architectures'][name] = {'sha256':digest(archive),'objects':len(machines)}
             if not android:
-                icd = pathlib.Path('/usr/lib/chromium/vk_swiftshader_icd.json')
-                if not icd.is_file():
-                    raise RuntimeError('The selected software headless Vulkan ICD is unavailable')
+                icd = software_headless_icd()
+                receipt['software_icd_sha256'] = digest(icd)
                 env = dict(os.environ,VK_ICD_FILENAMES=str(icd),VK_DRIVER_FILES=str(icd))
                 for key in ('VK_INSTANCE_LAYERS','URBAN_VK_CAPTURE_EVERY','URBAN_VK_CAPTURE_FROM'):
                     env.pop(key,None)

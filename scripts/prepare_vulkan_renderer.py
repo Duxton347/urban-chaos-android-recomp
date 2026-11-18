@@ -6,6 +6,15 @@ import subprocess
 from bootstrap_vulkan_shaders import prepare, ROOT
 
 
+def software_headless_icd():
+    for candidate in ('/usr/lib/chromium/vk_swiftshader_icd.json',
+                      '/opt/google/chrome/vk_swiftshader_icd.json'):
+        path = pathlib.Path(candidate)
+        if path.is_file():
+            return path
+    raise RuntimeError('No explicitly supported software headless Vulkan ICD found')
+
+
 def prepare_renderer(destination):
     source = prepare(renderer=True)
     destination = pathlib.Path(destination).resolve()

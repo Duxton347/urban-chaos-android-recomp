@@ -12,6 +12,7 @@ import subprocess
 import sys
 import time
 import resource
+from prepare_vulkan_renderer import software_headless_icd
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'tools'))
@@ -71,9 +72,7 @@ def main():
         env = {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8', 'REF_ALL': '1',
                'REF_FROM_FRAME': str(args.reference_from), 'REF': str(args.capture_every)}
         if build.get('render_backend') == 'vulkan-headless':
-            icd = pathlib.Path('/usr/lib/chromium/vk_swiftshader_icd.json')
-            if not icd.is_file():
-                raise Invalid('The explicitly selected cloud software Vulkan ICD is unavailable')
+            icd = software_headless_icd()
             env.update(VK_ICD_FILENAMES=str(icd), VK_DRIVER_FILES=str(icd),
                        URBAN_VK_CAPTURE_FROM=str(args.reference_from), URBAN_VK_CAPTURE_EVERY=str(args.capture_every))
         if script:
