@@ -20,6 +20,10 @@ A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e execu
 
 Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O ambiente voltou e o host com observer foi compilado e executado por 130 s: registrou 21 eventos de boot, vídeo, áudio e avisos, sem nova exceção. ReportExportController fornece menu/botão e fluxo SAF para anexar à Activity definitiva; compilou contra SDK34. A ligação à Activity e ao build do jogo Android e o teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
 
+## Compilador HLSL → SPIR-V reaproveitado
+
+O tradutor MIT do Black com glslang 16 fixado compilou dez shaders autorais/gerados pelo SDK. O par autoral passou os 21 reports na API Vulkan real em SwiftShader. Tradutor e dependências também compilaram para Android em 51 objetos AArch64 verificados. A receita está na CI; não é execução do renderer do jogo nem teste no tablet. [Receita, evidências e ligação pendente](VULKAN_SHADERS.md).
+
 ## Componente de reports Vulkan
 
 Implementada contagem com queries de oclusão precisas, snapshots preservados entre clears, fences/timeline como condição de entrega e reutilização segura de pools após readback. Foram validados 21 reports na API Vulkan real pelo driver de software SwiftShader: cobertura 8×8 = 64, oclusão/descarte = zero, dois command buffers em voo, limites e ABI de 16 bytes. O componente compilou para AArch64. [Contrato, teste e ligação pendente](VULKAN_VISIBILITY.md).

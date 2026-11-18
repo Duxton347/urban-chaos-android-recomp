@@ -37,4 +37,6 @@ jobs:
       - run: bash scripts/compile_android_reports.sh
       - name: Real Vulkan visibility queries with authored geometry
         run: python3 scripts/build_vulkan_reports.py
+      - name: Black HLSL translator, Vulkan execution and AArch64 compiler
+        run: python3 scripts/build_vulkan_shaders.py --android
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"
