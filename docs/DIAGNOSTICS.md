@@ -74,3 +74,6 @@ A preparação do ZIP e a entrega ao destino são etapas distintas. UC-EXPORT-00
 ## Primeiro host Android experimental
 
 UC-GPU-003 guarda vendor/device/API/driver e precisão Vulkan (phase0: suportado; phase1: habilitado). UC-GPU-004 identifica draw contado recusado (op1 geometria; 2 depth target; 3 target; 4 textura; 5 shader; 6 pipeline). Frames Android usam backend2/headless0. UC-ANDROID-001 guarda páginas host; UC-ANDROID-002 recusa páginas diferentes de 4096 no alocador atual. Campos são numéricos, não conteúdo do título. Activities e ZIP estão ligados no APK experimental, ainda sem teste no tablet.
+# Telemetria adicional após o primeiro teste no tablet
+
+A versão 0.2 acrescenta `UC-CPU-003` (escopos/chamadas de threads), `UC-DISC-002` (leituras e stream ativo sem packets), `UC-AUDIO-004` (tempo do mixer) e `UC-GPU-005` (tempo host nas APIs Vulkan). [Campos, limites e interpretação](TABLET_LOADING_INVESTIGATION.md). A coleta é periódica; não copia conteúdo do disco ou logs brutos. Esses contadores não qualificam automaticamente gameplay, deadlock ou fidelidade sonora.

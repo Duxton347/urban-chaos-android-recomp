@@ -1,5 +1,7 @@
 # Primeiro APK experimental — teste no tablet
 
+**Atualização:** a primeira entrega foi instalada e iniciou, mas a missão permaneceu em loading e vídeo/áudio apresentaram travamentos. Usar agora a **versão 0.2**, build `experimental-16fce2d9b3011686`, APK 28.178.216 bytes, SHA-256 `991c26e2c94a17895a146c4ca9f0cccb0e9c11256822fa83ceabad428a2611e9`. Instalar por cima, sem desinstalar/limpar dados ou repetir a importação. Guest/host otimizados e novas medições; correção da missão e ganho de FPS ainda não comprovados. Se continuar no loading, aguardar 60 s e exportar novamente. [Análise do relato e testes](TABLET_LOADING_INVESTIGATION.md). Os dados da primeira entrega abaixo são históricos.
+
 Build privado de 2026-11-18: `experimental-3ef6e0e968626f62`.
 
 - APK: `UrbanChaos-experimental-arm64.apk`, 45.446.952 bytes (43,3 MiB).

@@ -1,5 +1,7 @@
 # Build privado do launcher Android
 
+Após o primeiro relato do tablet, a versão 0.2 compila guest/host com `-O2`. Não reutilizar o arquivo `-O0` do compile probe para entrega. O APK anterior iniciou, mas apresentou falhas de áudio, desempenho e loading; a atualização ainda requer teste. [Investigação](TABLET_LOADING_INVESTIGATION.md).
+
 A biblioteca completa `libmain.so` foi ligada para Android ARM64 com o arquivo estático real das 29.049 funções originais. O APK experimental foi montado com ela, SDL3 e libc++, assinado e verificado. **Isso não é instalação ou boot Android comprovado.** [Primeiro teste](FIRST_TABLET_TEST.md).
 
 ## Entradas e receita
@@ -16,10 +18,15 @@ python3 scripts/build_vulkan_shaders.py --android
 Com os cabeçalhos e arquivo AArch64 privados já gerados:
 
 ```sh
+scripts/compile_private_generated.sh \
+ build/urban-chaos-user-image/resumable-pass1 \
+ build/urban-chaos-user-image/optimized-arm64 \
+ android-arm64 build/context-tools-v6/sdk/runtime 2
+
 python3 scripts/build_android_runtime.py \
  --xbe private/disc-check/game/Default.xbe \
  --generated build/urban-chaos-user-image/resumable-pass1 \
- --archive build/urban-chaos-user-image/resumable-arm64/liburban_generated_compile_probe.a \
+ --archive build/urban-chaos-user-image/optimized-arm64/liburban_generated_compile_probe.a \
  --profile config/research/user-xbe-resumable.json \
  --out build/android-runtime
 

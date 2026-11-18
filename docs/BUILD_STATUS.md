@@ -1,5 +1,7 @@
 # Build status — nova rota de recompilação
 
+**Atualização do tablet, 2026-11-18:** o proprietário instalou a primeira entrega e confirmou inicialização, mas relatou vídeo/áudio entrecortados e missão presa em loading. O relatório mede cerca de 4,65 apresentações/s no trecho final. Corrigido o build guest sem otimização (`-O0`); versão 0.2 ligada com `-O2`, novos contadores de progresso/IO/mixer/Vulkan e APK privado assinado de 28.178.216 bytes. **Essa atualização ainda não foi testada no dispositivo e não comprova missão corrigida.** [Investigação, testes e próximo ensaio](TABLET_LOADING_INVESTIGATION.md). Declarações de ausência de teste abaixo referem-se à construção anterior ao relato.
+
 Atualizado em 2026-11-18. **GO: geração determinística, compilação Linux e baseline ARM64; intro, menus e primeira cena da abertura de Hope Street renderizados no host Linux de pesquisa, agora também pelo backend Vulkan. REQUIRES_REVERSE_ENGINEERING: gameplay, fidelidade gráfica/sonora, saves, APIs restantes e validação Android. APK experimental privado com runtime real foi gerado e assinado; instalação/boot Android não foram testados.**
 
 [Estado atual e regressões](RUNTIME_PROGRESS.md) · [Trailer XDK](GPU_LINKAGE.md) · [Reports de visibilidade e novo bloqueio](REFERENCE_VISIBILITY.md) · [Correção de contexto/callbacks](CONTEXT_SWITCHING.md). Os relatos abaixo de falhas anteriores são históricos e mostram a progressão, não o ponto atual.
@@ -106,7 +108,8 @@ XboxKit reduz incerteza sobre formatos de disco e offsets; não resolve a integr
 | Diagnóstico histórico | Build anterior registrado | Tablet não testado | Não é jogo | Não é jogo | Não é jogo |
 | Urban Chaos Linux de pesquisa | Sim: código + host de teste | Intro/título; depuração da carga da missão | Principal e dificuldade observados | Ainda não jogável | Não verificada |
 | Código guest baseline Android ARM64 | Sim: 129 objetos AArch64 | Não ligado a host Android | Não testado em Android | Não testada | Não verificada |
-| Urban Chaos Windows/Android | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
+| Urban Chaos Android experimental | Biblioteca completa e APK privados | Primeiro build confirmado pelo usuário/relatório; versão 0.2 sem novo teste | Acesso à tentativa de missão relatado; fidelidade não aprovada | Loading sem concluir no primeiro teste | Não verificada |
+| Urban Chaos Windows | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
 
 ## CI inicial
 
