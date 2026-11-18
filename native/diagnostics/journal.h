@@ -21,7 +21,7 @@ enum class Code {
  SourceInvalid, SourceMissing, SourceIntegrity, SourceTitle, SourceEntry, SourcePs2,
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
- AudioOutputFailure, AudioOutputState, Trace
+ AudioOutputFailure, AudioOutputState, VisibilityReport, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -48,6 +48,7 @@ inline Definition Describe(Code c) {
  case Code::MissingKernel:return {"UC-KERNEL-001","error","Requested kernel export is not implemented",true};
  case Code::GuestTrap:return {"UC-CPU-002","error","Guest trap recorded; root cause requires analysis",false};
  case Code::FrameStats:return {"UC-GPU-001","info","Renderer presentation counters",true};
+ case Code::VisibilityReport:return {"UC-GPU-002","info","GPU visibility report completed after readback",true};
  case Code::AudioStats:return {"UC-AUDIO-001","info","Mixer counters; this does not prove audible output",true};
  case Code::AudioOutputFailure:return {"UC-AUDIO-002","error","SDL output operation failed; underlying driver cause requires analysis",false};
  case Code::AudioOutputState:return {"UC-AUDIO-003","info","SDL output state changed; this does not suspend guest execution",true};
@@ -180,6 +181,15 @@ public:
     Emit(Code::AudioOutputState,{{"state",state}});return;
    }
    unsigned long long samples=0,active=0,bad=0;double peak=0;
+   unsigned long long vulkan_frame=0;unsigned visible_samples=0;
+   if(std::string_view(format)=="renderer: frame %llu (Vulkan headless)" &&
+      std::sscanf(expanded,"renderer: frame %llu (Vulkan headless)",&vulkan_frame)==1) {
+    Emit(Code::FrameStats,{{"frame",vulkan_frame},{"backend",2},{"headless",1}});return;
+   }
+   if(std::string_view(format)=="vulkan: visibility report completed, samples=%u" &&
+      std::sscanf(expanded,"vulkan: visibility report completed, samples=%u",&visible_samples)==1) {
+    Emit(Code::VisibilityReport,{{"samples",visible_samples}});return;
+   }
    if(std::sscanf(expanded,"renderer: frame %u, %u draws, %u empty frames",&frame,&draws,&empty)==3) {
     Emit(Code::FrameStats,{{"frame",frame},{"draws",draws},{"empty",empty}});return;
    }

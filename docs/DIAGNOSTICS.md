@@ -44,6 +44,7 @@ Após reproduzir um erro no launcher integrado: usar Exportar relatório, salvar
 | UC-DISC-001 | Recurso solicitado ausente; pode ser probe opcional |
 | UC-RUNTIME-001 / 002 | Aviso / erro do runtime; consultar template |
 | UC-GPU-001 / UC-AUDIO-001 | Métricas de apresentação / mixer |
+| UC-GPU-002 | Report de visibilidade Vulkan concluído após readback; contagem de amostras |
 | UC-APP-003 | Sessão anterior sem fechamento confirmado |
 | UC-JAVA-001 / 002 | Exceção Java / posição de pilha |
 | UC-NATIVE-001 | Encerramento anterior observado pelo Android; não prova crash nativo |
@@ -63,6 +64,8 @@ O teste JNI carrega uma biblioteca de fixture no JVM, emite eventos pelo mesmo l
 ReportExportController oferece a entrada de menu e o botão Exportar relatório. A Activity real recebe a instância de AndroidReports do aplicativo, chama addTo(menu) ou createButton(), encaminha onActivityResult para handleResult e fecha apenas o controller em onDestroy. Rotação da Activity não fecha a sessão global nem o runtime. Seleção usa SAF; geração/cópia ocorre em executor de fundo, com resultado e código no UI thread. Cancelamento e ausência do seletor são resultados distintos. O componente compilou contra SDK34; não se anexou um launcher fictício ao módulo diagnóstico histórico. A Activity definitiva e o teste manual permanecem pendentes.
 
 UC-AUDIO-002/003 identificam falhas de operação e estado da saída SDL; [contrato e valores](SDL_AUDIO.md). O host com relatórios voltou a ser compilado e executado nesta sessão; consultar BUILD_STATUS.md para os ensaios reais. A indisponibilidade de ambiente relatada acima pertence à revisão anterior.
+
+O parser também reconhece o formato de apresentação do renderer Vulkan de pesquisa. Exporta frame, backend numérico e indicação de headless, sem inventar contagens de draws ou frames vazios. Os reports de visibilidade exportam somente amostras numéricas. Fixtures autorais verificam esses eventos no journal e pelo caminho JNI/ZIP; não são relatórios coletados de um APK no tablet.
 
 ## Resultado da exportação
 

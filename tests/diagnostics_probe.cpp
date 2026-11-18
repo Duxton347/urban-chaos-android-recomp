@@ -18,6 +18,8 @@ int main(int argc,char**argv){
  logx::SetObserver([](logx::Level lv,const char* format,const char* expanded){ProcessJournal().Observe(int(lv),format,expanded);});
  Require(j.Emit(Code::SessionBegin));
  LOGI("renderer: frame %u, %u draws, %u empty frames",60u,123u,4u);
+ LOGI("renderer: frame %llu (Vulkan headless)",1800ull);
+ LOGI("vulkan: visibility report completed, samples=%u",64u);
  LOGI("audio-metrics: frames %llu active-samples %llu peak %f nonfinite %llu",480000ull,1234ull,0.125,0ull);
  LOGE("audio-output: failure operation %u",5u);
  LOGI("audio-output: state %u",2u);

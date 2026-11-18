@@ -183,7 +183,15 @@
     "ctests": 8,
     "passed": true,
     "initial_python_disk_space_failure": "Preserved logs; freed only regenerable public compiler intermediates and obsolete research build products, then all tests passed",
-    "initial_fixture_compile_failure": "Missing x86 SSE4.1 target flag in public fixture; fixed with the same x86-64-v2 baseline as the SDK host and rebuilt successfully"
+    "initial_fixture_compile_failure": "Missing x86 SSE4.1 target flag in public fixture; fixed with the same x86-64-v2 baseline as the SDK host and rebuilt successfully",
+    "diagnostics": {
+      "passed": true,
+      "java_checks": 326,
+      "jni_zip_path_tested": true,
+      "vulkan_frame_and_visibility_events_verified": true,
+      "authored_fixtures_only": true,
+      "tablet_tested": false
+    }
   },
   "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
   "public_fixture_log_sha256": "4b8f2737a025e13652cbcab5a0a0309d1b1c553740a14e42c77782a6be58191f"

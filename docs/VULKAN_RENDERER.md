@@ -28,6 +28,8 @@ Passaram também os 46 testes Python e oito CTests de regressão. A primeira com
 
 O driver é SwiftShader por software, não a GPU Adreno do tablet. Não foram usadas camadas Khronos de validação. Capturas, logs brutos, código gerado e assets continuam privados. O contrato autoral passa a integrar a CI sem dados do título.
 
+O coletor exportável também reconhece frames Vulkan (`UC-GPU-001`) e reports concluídos (`UC-GPU-002`), com campos numéricos. Foram exercitados por fixtures de journal/JNI/ZIP e 326 checks Java. Essa ligação será incluída no próximo build do runtime; os ensaios originais acima demonstram o renderer e seus logs privados, sem afirmar que esses novos eventos já foram coletados no tablet.
+
 ## Receita
 
 ```sh
