@@ -60,7 +60,7 @@
       "url": "https://github.com/KhronosGroup/glslang.git",
       "commit": "a57276bf558f5cf94d3a9854ebdf5a2236849a5a",
       "tree": "cfec6b90899c2a0c0df59c9aded51669db1a1cac",
-      "license": "BSD-3-Clause, BSD-2-Clause, MIT and preserved source notices; see LICENSE.txt",
+      "license": "Multiple licenses: BSD-3-Clause, BSD-2-Clause, MIT, Apache-2.0, NVIDIA notices and generated Bison parser GPL-3.0-or-later WITH Bison-exception-2.2; preserve full LICENSE.txt and per-file notices",
       "role": "Black-compatible HLSL to SPIR-V compiler; optional tools and external dependencies disabled"
     }
   },

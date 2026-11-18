@@ -4,6 +4,8 @@ Estado em 2026-11-18: **GO para o componente HLSL → SPIR-V em Linux e sua comp
 
 O teste usa diretamente `native/vk_shader.cpp` e `.h` do Black `8e9c6fc7d570503ea68d039cff16c09339ee6d30`, sob MIT, e glslang 16.0.0 `a57276bf558f5cf94d3a9854ebdf5a2236849a5a`. Não copia hooks, endereços, executável nem recursos de Black. A origem dos arquivos e seus SHA-256 estão em `dependencies.lock.json`; as licenças completas estão em `licenses/`. O bootstrap baixa somente esses dois fontes e a licença do Black, além do repositório público glslang. Os checkouts originais permanecem preservados.
 
+Glslang tem múltiplas licenças, incluindo BSD, MIT, Apache, avisos NVIDIA e o parser gerado `glslang_tab.cpp` sob GPL com exceção Bison. A exceção permite incorporar o parser em uma obra maior nas condições descritas; não se classificou toda a dependência como MIT. O texto completo foi preservado, inclusive a exceção, e nenhum parser foi modificado.
+
 ## Executado
 
 Com SDK/NDK e runtime público já preparados:
