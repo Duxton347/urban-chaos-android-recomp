@@ -20,6 +20,12 @@ A reconstrução com `user-xbe-resumable.json` passou os seis probes HLE e execu
 
 Implementados journal nativo, observer opcional no logger SDK, sessão Java, exportação ZIP com allowlist e adaptador Android SAF. [Formato, códigos e limites](DIAGNOSTICS.md). O ambiente voltou e o host com observer foi compilado e executado por 130 s: registrou 21 eventos de boot, vídeo, áudio e avisos, sem nova exceção. ReportExportController fornece menu/botão e fluxo SAF para anexar à Activity definitiva; compilou contra SDK34. A ligação à Activity e ao build do jogo Android e o teste de exportação no tablet permanecem pendentes. Não há novo APK do jogo.
 
+## Componente de reports Vulkan
+
+Implementada contagem com queries de oclusão precisas, snapshots preservados entre clears, fences/timeline como condição de entrega e reutilização segura de pools após readback. Foram validados 21 reports na API Vulkan real pelo driver de software SwiftShader: cobertura 8×8 = 64, oclusão/descarte = zero, dois command buffers em voo, limites e ABI de 16 bytes. O componente compilou para AArch64. [Contrato, teste e ligação pendente](VULKAN_VISIBILITY.md).
+
+O componente ainda não está ligado ao renderer do jogo. Não houve novo boot do título via Vulkan, criação de APK ou teste no Pad 6. O renderer Black continua referência não modificada; não se declarou suporte por herdar seus métodos vazios. O jogo Linux permanece no renderer de referência, com a evidência de Hope Street abaixo.
+
 ## Mixer original ligado ao SDL3
 
 A saída própria estéreo F32/48 kHz substitui o sink de medição quando selecionada explicitamente; não usa o fold de seis canais do Black. Passaram os testes autorais de canal/lifecycle, seis probes HLE, 46 testes Python e 326 checks de relatório/JNI. O mesmo backend compilou para AArch64. [Contrato e receita](SDL_AUDIO.md).

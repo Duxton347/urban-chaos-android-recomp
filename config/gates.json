@@ -68,5 +68,10 @@
   "sdl_audio_audible_validated": false,
   "android_report_export_controller_compiled": true,
   "android_report_export_device_validated": false,
-  "linux_sdl_signal_shutdown_fixed": true
+  "linux_sdl_signal_shutdown_fixed": true,
+  "vulkan_visibility_component_implemented": true,
+  "vulkan_visibility_software_queries_tested": true,
+  "vulkan_visibility_component_arm64_compiled": true,
+  "vulkan_visibility_connected_to_game": false,
+  "game_vulkan_backend_validated": false
 }

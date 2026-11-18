@@ -30,3 +30,5 @@ PYTHON
 "$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_game_source_contract.a
 
 "$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_diagnostics_contract.a
+
+"$TASK_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf" -h build/android-portability/liburban_vulkan_visibility_contract.a

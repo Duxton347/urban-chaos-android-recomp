@@ -12,6 +12,10 @@ O host usa agora o reconhecimento/montagem compartilhado em `native/game/source.
 
 O host com observer voltou a executar o título. A nova saída estéreo do SDK foi ligada ao SDL3 e compilada também para AArch64. O ensaio privado com driver dummy alcançou o frame 1800 da abertura original de Hope Street, com oito reports de visibilidade e amostras não nulas/sem valores não finitos. Defeitos visuais, missão completa e áudio ouvido continuam pendentes. Uma falha de encerramento por captura de SIGTERM pelo SDL foi reproduzida e corrigida no host Linux, com regressão real. [Recibos](evidence/runtime-progress/sdl-output.json), [saída SDL](SDL_AUDIO.md). O menu/botão de exportação compilou contra SDK34 e aguarda a Activity definitiva; não foi criado APK do jogo.
 
+## Componente de reports Vulkan — 2026-11-18
+
+O novo módulo de oclusão passou 21 reports com rasterização Vulkan real em software e compilou para AArch64. Counts não são constantes: houve 64 amostras visíveis, zero ocluído/descartado e testes de readback/fences, pool reutilizado, duas submissões, clear e limites de memória. A integração ao renderer do título continua pendente; o jogo não foi executado via Vulkan nesta etapa. [Prova e limitações](VULKAN_VISIBILITY.md).
+
 ## Falhas investigadas e mudanças
 
 | Falha real | Correção / evidência |

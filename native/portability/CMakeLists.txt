@@ -47,3 +47,8 @@ target_include_directories(urban_android_report_bridge PRIVATE .. "${URBAN_SOURC
 add_library(urban_sdl_output_contract STATIC ../audio/sdl_output.cpp)
 target_compile_features(urban_sdl_output_contract PRIVATE cxx_std_20)
 target_include_directories(urban_sdl_output_contract PRIVATE .. ../../vendor/runtime/runtime ../../vendor/SDL/include)
+
+add_library(urban_vulkan_visibility_contract STATIC ../gpu/vulkan_visibility.cpp ../gpu/vulkan_visibility_contract.cpp)
+target_compile_features(urban_vulkan_visibility_contract PRIVATE cxx_std_20)
+target_include_directories(urban_vulkan_visibility_contract PRIVATE ..)
+target_link_libraries(urban_vulkan_visibility_contract PRIVATE vulkan)

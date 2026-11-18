@@ -37,3 +37,7 @@ Saves: planejar volumes Xbox dentro de `files/saves/`, reproduzir caminhos/semâ
 ## Saída e relatórios compartilhados implementados
 
 O backend estéreo SDL3 em native/audio/sdl_output.cpp está ligado ao host de pesquisa e compila para AArch64. [Contrato, lifecycle e limites](SDL_AUDIO.md). Isso remove a necessidade de adaptar diretamente o callback 5.1 do Black; não qualifica áudio ouvido ou o runtime Android completo. O controle Android de exportação está pronto para anexar à Activity real: [diagnósticos](DIAGNOSTICS.md). A Activity/loop, a coordenação de threads guest e o backend Vulkan com reports de visibilidade reais continuam pendentes.
+
+## Queries de visibilidade Vulkan
+
+O componente próprio de queries precisas e entrega após fences foi testado na API Vulkan por software e compilado para AArch64. [Sequência obrigatória de integração](VULKAN_VISIBILITY.md). Ele ainda precisa ser ligado ao renderer completo, a seus draws/targets e ao Flush do SDK; não valida swapchain, shaders Xbox ou o jogo no Android. Não presumir suporte preciso a partir do nome Adreno: consultar e habilitar o recurso no dispositivo real.
