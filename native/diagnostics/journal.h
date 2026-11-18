@@ -20,7 +20,8 @@ enum class Code {
  SessionBegin, SessionEnd, BootStart, BootAccepted, BootFailed, RevisionChoice,
  SourceInvalid, SourceMissing, SourceIntegrity, SourceTitle, SourceEntry, SourcePs2,
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
- MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats, Trace
+ MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
+ AudioOutputFailure, AudioOutputState, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -48,6 +49,8 @@ inline Definition Describe(Code c) {
  case Code::GuestTrap:return {"UC-CPU-002","error","Guest trap recorded; root cause requires analysis",false};
  case Code::FrameStats:return {"UC-GPU-001","info","Renderer presentation counters",true};
  case Code::AudioStats:return {"UC-AUDIO-001","info","Mixer counters; this does not prove audible output",true};
+ case Code::AudioOutputFailure:return {"UC-AUDIO-002","error","SDL output operation failed; underlying driver cause requires analysis",false};
+ case Code::AudioOutputState:return {"UC-AUDIO-003","info","SDL output state changed; this does not suspend guest execution",true};
  case Code::Trace:return {"UC-TRACE-001","debug","Runtime format template; argument values intentionally omitted",false};
  }
  return {"UC-RUNTIME-002","error","Unclassified diagnostic event",false};
@@ -169,6 +172,13 @@ public:
   try {
    if(!format||!expanded)return;
    unsigned frame=0,draws=0,empty=0,target=0,ret=0,sp=0,ordinal=0;
+   unsigned operation=0,state=0;
+   if(std::sscanf(expanded,"audio-output: failure operation %u",&operation)==1) {
+    Emit(Code::AudioOutputFailure,{{"operation",operation}});return;
+   }
+   if(std::sscanf(expanded,"audio-output: state %u",&state)==1) {
+    Emit(Code::AudioOutputState,{{"state",state}});return;
+   }
    unsigned long long samples=0,active=0,bad=0;double peak=0;
    if(std::sscanf(expanded,"renderer: frame %u, %u draws, %u empty frames",&frame,&draws,&empty)==3) {
     Emit(Code::FrameStats,{{"frame",frame},{"draws",draws},{"empty",empty}});return;

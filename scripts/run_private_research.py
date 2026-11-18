@@ -44,6 +44,7 @@ def main():
     parser.add_argument('--seconds', type=int, default=120)
     parser.add_argument('--reference-from', type=int, default=0)
     parser.add_argument('--capture-every', type=int, default=0)
+    parser.add_argument('--audio-driver', choices=('dummy',), help='Explicit headless SDL transport test; never audible evidence')
     args = parser.parse_args()
     try:
         host, game, out = map(private_path, (args.host, args.game, args.out))
@@ -71,6 +72,10 @@ def main():
                'REF_FROM_FRAME': str(args.reference_from), 'REF': str(args.capture_every)}
         if script:
             env['SCRIPT'] = str(script)
+        if args.audio_driver:
+            if build.get('audio_output') != 'sdl':
+                raise Invalid('An SDL driver requires an actual SDL-output host')
+            env['SDL_AUDIODRIVER'] = args.audio_driver
         report = {'schema': 1, 'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   'host_sha256': digest(host), 'build_receipt_sha256': digest(build_receipt),
                   'xbe_sha256': info['sha256'], 'profile_sha256': digest(args.profile),
@@ -78,6 +83,9 @@ def main():
                   'arguments': [str(host), str(game)], 'environment': env,
                   'timeout_seconds': args.seconds, 'status': 'STARTING', 'gameplay_validated': False,
                   'android_validated': False}
+        report['audio_output'] = build.get('audio_output','measure')
+        report['sdl_driver'] = args.audio_driver
+        report['audible_output_verified'] = False
         (out/'run.json').write_text(json.dumps(report, indent=2)+'\n')
         started = time.monotonic()
         with (out/'runtime.log').open('w') as log:

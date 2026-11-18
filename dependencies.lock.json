@@ -28,7 +28,7 @@
       "commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
       "tree": "63fb5d2d9284bec19789d10d5820c99405a15e45",
       "license": "zlib + preserved bundled notices",
-      "role": "diagnostic"
+      "role": "shared stereo SDL output and historical diagnostic"
     },
     "zydis": {
       "url": "https://github.com/zyantific/zydis.git",

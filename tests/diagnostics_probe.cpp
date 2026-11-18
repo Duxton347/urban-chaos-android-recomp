@@ -19,6 +19,8 @@ int main(int argc,char**argv){
  Require(j.Emit(Code::SessionBegin));
  LOGI("renderer: frame %u, %u draws, %u empty frames",60u,123u,4u);
  LOGI("audio-metrics: frames %llu active-samples %llu peak %f nonfinite %llu",480000ull,1234ull,0.125,0ull);
+ LOGE("audio-output: failure operation %u",5u);
+ LOGI("audio-output: state %u",2u);
  LOGE("indirect call to %08X has no recompiled function (return address %08X, esp %08X)",0x11111,0x22222,0x33333);
  LOGE("kernel export %u (%s) is not implemented, return address %08X",232u,"SENTINEL_PROPRIETARY_NAME",0x44444);
  LOGI("missing %s","D:\\SENTINEL_PRIVATE_FOLDER\\SENTINEL_GAME_BYTES");

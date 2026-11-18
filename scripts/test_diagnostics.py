@@ -37,7 +37,7 @@ def main():
         subprocess.run([str(binary),str(native)],check=True,capture_output=True,text=True)
         standard=records(native/'standard')
         codes={item['code'] for item in standard}
-        assert {'UC-GPU-001','UC-AUDIO-001','UC-CPU-001','UC-KERNEL-001','UC-DISC-001','UC-RUNTIME-002'}<=codes
+        assert {'UC-GPU-001','UC-AUDIO-001','UC-AUDIO-002','UC-AUDIO-003','UC-CPU-001','UC-KERNEL-001','UC-DISC-001','UC-RUNTIME-002'}<=codes
         assert 'UC-TRACE-001' not in codes
         assert any(item['code']=='UC-KERNEL-001' and item['detail']['ordinal']==232 for item in standard)
         assert all('SENTINEL_' not in json.dumps(item) for item in standard)

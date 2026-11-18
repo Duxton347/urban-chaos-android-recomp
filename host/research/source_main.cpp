@@ -3,6 +3,9 @@
 #include "core/log.h"
 #include "game/source.h"
 #include "diagnostics/journal.h"
+#ifdef URBAN_SDL_OUTPUT
+#include "audio/sdl_output.h"
+#endif
 #include "image_symbols.h"
 #include "build_source_profile.h"
 #if IMAGE_RESUMABLE_GUEST && !defined(XBE_RESUMABLE_GUEST)
@@ -61,7 +64,13 @@ int main(int argc,char** argv) {
             report.Emit(urban::diagnostics::Code::BootFailed);report.Finish();return 1;
         }
         report.Emit(urban::diagnostics::Code::BootAccepted);
-        for(;;){std::this_thread::sleep_for(std::chrono::seconds(1));logx::Flush();}
+        for(;;){
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+#ifdef URBAN_SDL_OUTPUT
+            audio::PollOutputDiagnostics();
+#endif
+            logx::Flush();
+        }
     } catch(const urban::game::SourceError& error) {
         report.Emit(urban::diagnostics::SourceCode(error.code));
         LOGE("source: rejected (%s): %s",error.code.c_str(),error.what());report.Finish();logx::Flush();return 2;

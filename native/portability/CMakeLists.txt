@@ -43,3 +43,7 @@ target_include_directories(urban_diagnostics_contract PRIVATE ..)
 add_library(urban_android_report_bridge STATIC ../diagnostics/android_bridge.cpp)
 target_compile_features(urban_android_report_bridge PRIVATE cxx_std_20)
 target_include_directories(urban_android_report_bridge PRIVATE .. "${URBAN_SOURCE_OVERLAY}/runtime" ../../vendor/runtime/runtime)
+
+add_library(urban_sdl_output_contract STATIC ../audio/sdl_output.cpp)
+target_compile_features(urban_sdl_output_contract PRIVATE cxx_std_20)
+target_include_directories(urban_sdl_output_contract PRIVATE .. ../../vendor/runtime/runtime ../../vendor/SDL/include)

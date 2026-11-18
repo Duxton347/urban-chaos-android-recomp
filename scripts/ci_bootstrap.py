@@ -3,7 +3,7 @@
 import argparse,hashlib,json,pathlib,subprocess,tarfile,urllib.request,zipfile
 R=pathlib.Path(__file__).resolve().parents[1];lock=json.loads((R/'dependencies.lock.json').read_text())
 p=argparse.ArgumentParser();p.add_argument('--component',choices=['host','audit','android'],required=True);a=p.parse_args()
-names=['runtime','zydis','tomlplusplus'] if a.component=='host' else (['runtime'] if a.component=='android' else ['burner','black','runtime','xboxkit'])
+names=['runtime','zydis','tomlplusplus','SDL'] if a.component=='host' else (['runtime','SDL'] if a.component=='android' else ['burner','black','runtime','xboxkit'])
 for name in names:
  meta=lock['repositories'][name];dest=R/'vendor'/name
  if not dest.exists():

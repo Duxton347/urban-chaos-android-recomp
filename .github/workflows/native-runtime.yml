@@ -32,6 +32,7 @@ jobs:
       - run: scripts/build_pc_runtime_core.sh
       - run: python3 scripts/build_runtime_probes.py
       - run: python3 scripts/build_source_probes.py
+      - run: python3 scripts/build_sdl_audio.py
       - run: python3 scripts/build_context_tools.py
       - run: python3 scripts/context_smoke.py
       - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"

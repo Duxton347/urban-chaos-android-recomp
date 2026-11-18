@@ -33,3 +33,7 @@ A CI `android-arm64.yml` compila esse contrato e registra G1 bloqueado. O job co
 Saves: planejar volumes Xbox dentro de `files/saves/`, reproduzir caminhos/semântica originais, escrita atômica quando compatível e isolamento por versão/perfil. Validar checkpoint, morte, load após fechar processo e update preservando dados. `config/hud.json` do diagnóstico é configuração de interface, **não progresso do jogo**.
 
 [Testes manuais históricos](DEVICE_TESTS.md) continuam úteis para infraestrutura, mas o novo relatório do jogo deve separar boot/menu/missão/áudio/save/transições/lifecycle. No Android, todos permanecem pendentes; o menu observado pertence ao host Linux de pesquisa.
+
+## Saída e relatórios compartilhados implementados
+
+O backend estéreo SDL3 em native/audio/sdl_output.cpp está ligado ao host de pesquisa e compila para AArch64. [Contrato, lifecycle e limites](SDL_AUDIO.md). Isso remove a necessidade de adaptar diretamente o callback 5.1 do Black; não qualifica áudio ouvido ou o runtime Android completo. O controle Android de exportação está pronto para anexar à Activity real: [diagnósticos](DIAGNOSTICS.md). A Activity/loop, a coordenação de threads guest e o backend Vulkan com reports de visibilidade reais continuam pendentes.
