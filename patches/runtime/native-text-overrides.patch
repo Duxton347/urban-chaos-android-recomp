@@ -1,0 +1,59 @@
+--- a/runtime/kernel/disc.h
++++ b/runtime/kernel/disc.h
+@@ -18,6 +18,7 @@
+         uint32_t size = 0;
+         bool dir = false;
+         std::vector<Entry> children;  // folders, sorted by name
++        std::shared_ptr<const std::vector<uint8_t>> replacement;
+     };
+     Disc() = default;
+     Disc(const Disc&) = delete;
+@@ -31,6 +32,8 @@
+     // at a position in the file, from any thread; the count read, short at the file's end
+     uint32_t Read(const Entry& file, uint64_t pos, void* out, uint32_t len) const;
+     bool Load(std::string_view path, std::vector<uint8_t>& out) const;
++    // Install before activation/guest threads. ISO remains read-only. Root text archives only.
++    bool ReplaceTextArchive(std::string_view name, std::vector<uint8_t> bytes);
+     uint64_t Time() const { return time_; }  // the volume's FILETIME, the only time the disc keeps
+     const std::filesystem::path& Path() const { return path_; }
+ 
+@@ -46,6 +49,7 @@
+     uint64_t base_ = 0;  // the game partition
+     uint64_t time_ = 0;
+     Entry root_;
++    uint64_t replacement_bytes_ = 0;
+ };
+ 
+ // D: from a disc image instead of a folder, set before Boot
+--- a/runtime/kernel/disc.cpp
++++ b/runtime/kernel/disc.cpp
+@@ -197,7 +197,9 @@
+ 
+ uint32_t Disc::Read(const Entry& file, uint64_t pos, void* out, uint32_t len) const {
+     if (file.dir || pos >= file.size) return 0;
+-    return ReadAt(file.offset + pos, out, uint32_t(std::min<uint64_t>(len, file.size - pos)));
++    uint32_t amount = uint32_t(std::min<uint64_t>(len, file.size - pos));
++    if (file.replacement) { std::memcpy(out, file.replacement->data() + pos, amount); return amount; }
++    return ReadAt(file.offset + pos, out, amount);
+ }
+ 
+ bool Disc::Load(std::string_view path, std::vector<uint8_t>& out) const {
+@@ -207,6 +209,18 @@
+     return Read(*e, 0, out.data(), e->size) == e->size;
+ }
+ 
++bool Disc::ReplaceTextArchive(std::string_view name, std::vector<uint8_t> bytes) {
++    // No executable, paths, new entries or mutation of an already replaced entry.
++    if (name.empty() || name.find_first_of("/\\:") != std::string_view::npos ||
++        !(name.ends_with(".ent") || name.ends_with(".lst")) || bytes.empty() ||
++        bytes.size() > (64u << 20) || replacement_bytes_ + bytes.size() > (64u << 20)) return false;
++    auto it = std::find_if(root_.children.begin(), root_.children.end(), [&](const Entry& e) { return SameName(e.name, name); });
++    if (it == root_.children.end() || it->dir || it->replacement) return false;
++    auto data = std::make_shared<const std::vector<uint8_t>>(std::move(bytes));
++    it->size = uint32_t(data->size()); replacement_bytes_ += data->size(); it->replacement = std::move(data);
++    return true;
++}
++
+ void MountDisc(std::unique_ptr<Disc> disc) { g_mounted = std::move(disc); }
+ 
+ const Disc* MountedDisc() { return g_mounted.get(); }

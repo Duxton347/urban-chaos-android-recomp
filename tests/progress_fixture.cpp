@@ -8,16 +8,19 @@ int main(int argc,char** argv) {
  auto* slot=Local();
  {
   Scope guest(Kind::Guest,0x11000);
-  try {Scope kernel(Kind::Kernel,219);Check(slot->current==Packed(Kind::Kernel,219));throw 1;}
+  try {Scope kernel(Kind::Kernel,219,CodeCaller(0x11024,0x11000,0x12000));Check(slot->current==Packed(Kind::Kernel,219));throw 1;}
   catch(int){}
   Check(slot->current==Packed(Kind::Guest,0x11000));
  }
  Check(slot->current==0&&slot->calls==2);
+ Check(slot->last_kernel==((uint64_t(219)<<32)|0x11024));
+ Check(CodeCaller(42,0x11000,0x12000)==0&&CodeCaller(0x12000,0x11000,0x12000)==0);
+ Check(ResourceId("D:\\SENTINEL_PATH")==ResourceId("d:\\sentinel_path"));
  {GpuOperation shader(2);Check(slot->current==Packed(Kind::Vulkan,2));}
  Check(slot->current==0&&gpu[2].calls==1&&gpu[2].max_us<=gpu[2].us);
  // A live read is observable without examining the worker's non-atomic state.
  {Read read(16);Check(inflight==1);read.Complete(16);}
- {Read read(8);read.Complete(3);}
+ {Read read(8);read.Identify(ResourceId("D:\\SENTINEL_PATH"),1024);read.Complete(3);}
  Check(reads==2&&bytes==19&&short_reads==1&&inflight==0);
  std::vector<std::thread> workers;
  for(unsigned n=0;n<70;n++)workers.emplace_back([]{

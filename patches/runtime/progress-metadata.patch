@@ -12,7 +12,7 @@
  }
  
  void x86_kernel(X86Context& ctx, uint8_t* base, uint32_t ordinal) {
-+    urban::progress::Scope progress(urban::progress::Kind::Kernel, ordinal);
++    urban::progress::Scope progress(urban::progress::Kind::Kernel, ordinal, urban::progress::CodeCaller(kernel::R32(ctx.esp), X86CodeBase, X86CodeEnd));
      if (ordinal < 400 && g_exports[ordinal].fn) {
          g_exports[ordinal].fn(ctx, base);
          return;
@@ -35,7 +35,7 @@
  #include "kernel/exports.h"
  
  namespace fs = std::filesystem;
-@@ -474,6 +476,9 @@
+@@ -474,8 +476,12 @@
      if (!f || (!f->fp && !f->entry)) return kInvalidHandle;
      if (write && f->entry) return kAccessDenied;
      ResetEvent(*f);
@@ -44,8 +44,11 @@
 +    if (!write) progress.emplace(len);
      std::lock_guard<std::mutex> lock(f->io);
      uint64_t pos = Offset(*f, off);
++    if (progress) progress->Identify(urban::progress::ResourceId(f->xbox), pos);
      if (f->fp) Seek(f->fp, pos);
-@@ -487,6 +492,7 @@
+     uint32_t n = 0;
+     while (n < len) {
+@@ -487,6 +493,7 @@
          n += uint32_t(done);
          if (done < chunk) break;
      }
@@ -67,7 +70,7 @@
      static uint32_t fn(X86Context& ctx, const A& a);     \
      X86_FUNC(guest) {                                    \
          (void)base;                                      \
-+        ::urban::progress::Scope progress(::urban::progress::Kind::Hle, ::urban::progress::HleId(#fn)); \
++        ::urban::progress::Scope progress(::urban::progress::Kind::Hle, ::urban::progress::HleId(#fn), ::urban::progress::CodeCaller(::kernel::R32(ctx.esp), X86CodeBase, X86CodeEnd)); \
          A args{ctx};                                     \
          uint32_t r = fn(ctx, args);                      \
          ::kernel::Return(ctx, r, pops);                  \
@@ -89,3 +92,29 @@
                      v.pos = 0;
                      if (v.ending) Deactivate(v);
                      break;
+--- a/runtime/kernel/threads.cpp
++++ b/runtime/kernel/threads.cpp
+@@ -5,6 +5,7 @@
+ #include <memory>
+ 
+ #include "kernel/kernel.h"
++#include "diagnostics/progress.h"
+ 
+ #ifdef _WIN32
+ #define WIN32_LEAN_AND_MEAN
+@@ -236,6 +237,7 @@
+ void QueueApc(Thread& t, uint32_t routine, uint32_t a1, uint32_t a2, uint32_t a3) {
+     std::lock_guard<std::mutex> lock(t.apc_lock);
+     t.apcs.push_back({routine, a1, a2, a3});
++    ++urban::progress::apcs_queued;
+     SignalChanged();
+ }
+ 
+@@ -250,6 +252,7 @@
+             t.apcs.pop_front();
+         }
+         CallGuest(*t.ctx, a[0], {a[1], a[2], a[3]});
++        ++urban::progress::apcs_delivered;
+         ran = true;
+     }
+     return ran;

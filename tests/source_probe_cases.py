@@ -19,6 +19,10 @@ class NativeSource(unittest.TestCase):
         p=subprocess.run([str(BINARY),str(path),sha or self.sha,title,entry,*flags],capture_output=True,text=True,timeout=10)
         self.assertEqual(p.stderr,'');return p.returncode,json.loads(p.stdout)
     def image(self,data=None):return xiso(payload=self.xbe if data is None else data)
+    def test_text_override_size_parallel_reads_and_original_image_unchanged(self):
+        iso=self.write('text.iso',xiso(name=b'12-01.ent',payload=b'authored caption archive'));before=iso.read_bytes()
+        subprocess.run([str(BINARY),'--text-override',str(iso)],check=True,capture_output=True)
+        self.assertEqual(iso.read_bytes(),before)
     def test_sha256_vectors_and_padding_boundaries(self):
         for size in [0,1,3,55,56,63,64,65,127,128,129,1000000]:
             data=b'a'*size;p=self.write('hash.bin',data)

@@ -12,6 +12,20 @@ int main(int argc,char** argv) {
             std::vector<uint8_t> data((std::istreambuf_iterator<char>(f)),{});
             std::puts(urban::game::Sha256(data).c_str());return 0;
         }
+        if(argc==3 && std::string(argv[1])=="--text-override") {
+            kernel::Disc disc;std::string error;if(!disc.Open(argv[2],error))return 10;
+            std::vector<uint8_t> original;if(!disc.Load("12-01.ent",original))return 11;
+            if(disc.ReplaceTextArchive("default.xbe",{1})||disc.ReplaceTextArchive("../12-01.ent",{1})||disc.ReplaceTextArchive("absent.ent",{1}))return 12;
+            std::vector<uint8_t> changed(3000,42);
+            if(!disc.ReplaceTextArchive("12-01.ent",changed)||disc.ReplaceTextArchive("12-01.ent",{1}))return 13;
+            const auto* entry=disc.Find("12-01.ent");if(!entry||entry->size!=3000)return 14;
+            std::vector<uint8_t> a,b;
+            std::thread first([&]{disc.Load("12-01.ent",a);}),second([&]{disc.Load("12-01.ent",b);});first.join();second.join();
+            if(a!=changed||b!=changed)return 15;
+            uint8_t tail[8];if(disc.Read(*entry,2999,tail,8)!=1||disc.Read(*entry,3000,tail,8)!=0)return 16;
+            kernel::Disc fresh;if(!fresh.Open(argv[2],error)||!fresh.Load("12-01.ent",a)||a!=original)return 17;
+            std::puts("Read-only text override checks passed");return 0;
+        }
         if(argc<5||argc>10)return 2;
         urban::game::Profile profile{argv[2],uint32_t(std::stoul(argv[3],nullptr,16)),uint32_t(std::stoul(argv[4],nullptr,16))};
         auto source=urban::game::Source::Open(argv[1],profile);

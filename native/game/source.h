@@ -28,6 +28,8 @@ public:
     // Before Boot, with no guest threads from a previous installation still using D:.
     // Refusal leaves the mounted disc unchanged. Acceptance is not a gameplay qualification.
     void Activate(bool allow_other_revision=false);
+    std::vector<uint8_t> ReadTextArchive(std::string_view name) const;
+    void ReplaceTextArchive(std::string_view name,std::vector<uint8_t> bytes);
 };
 Metadata InspectXbe(const std::vector<uint8_t>&);
 }

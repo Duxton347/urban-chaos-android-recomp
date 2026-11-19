@@ -22,7 +22,7 @@ enum class Code {
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
  AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure,
- ThreadProgress, IoProgress, AudioTiming, GpuTiming, InputLatency, Trace
+ ThreadProgress, IoProgress, IoCompletion, AudioTiming, GpuTiming, InputLatency, LocaleReady, LocaleRejected, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -59,9 +59,12 @@ inline Definition Describe(Code c) {
  case Code::AudioOutputState:return {"UC-AUDIO-003","info","SDL output state changed; this does not suspend guest execution",true};
  case Code::ThreadProgress:return {"UC-CPU-003","info","Thread progress snapshot; kind 0 idle, 1 guest, 2 kernel ordinal, 3 HLE name hash, 4 Vulkan operation",true};
  case Code::IoProgress:return {"UC-DISC-002","info","Cumulative IO and empty active stream counters; short reads can include normal EOF",true};
+ case Code::IoCompletion:return {"UC-DISC-003","info","APC delivery and last completed read metadata; resource ID is a path hash, no name or data",true};
  case Code::AudioTiming:return {"UC-AUDIO-004","info","Cumulative callback timing; slow blocks are measured, not a driver fault diagnosis",true};
- case Code::GpuTiming:return {"UC-GPU-005","info","Cumulative host Vulkan API time; operation 0 wait, 1 acquire, 2 shader module",true};
+ case Code::GpuTiming:return {"UC-GPU-005","info","Cumulative host Vulkan API time; operation 0 wait, 1 acquire, 2 module, 3 draw, 4 assembly, 5 textures, 6 pipeline, 7 submit, 8 readback; nested times overlap",true};
  case Code::InputLatency:return {"UC-INPUT-002","info","Touch press delivery to guest polling; not total display or game response latency",true};
+ case Code::LocaleReady:return {"UC-LOCALE-003","info","Verified optional native text archives installed read-only before boot",true};
+ case Code::LocaleRejected:return {"UC-LOCALE-002","error","Optional native caption cache rejected; no game boot attempted",true};
  case Code::Trace:return {"UC-TRACE-001","debug","Runtime format template; argument values intentionally omitted",false};
  }
  return {"UC-RUNTIME-002","error","Unclassified diagnostic event",false};

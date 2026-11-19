@@ -92,6 +92,19 @@ Source Source::Open(const std::filesystem::path& path,const Profile& profile) {
     out.metadata.exact_revision=out.metadata.sha256==profile.xbe_sha256;
     return out;
 }
+std::vector<uint8_t> Source::ReadTextArchive(std::string_view name) const {
+    if(activated_ || !metadata.exact_revision || !disc_ ||
+       (name!="globallanguage.lst" && name!="99-01.ent" && name!="12-01.ent"))Fail("locale_resource","Unsupported caption archive");
+    const auto* entry=disc_->Find(name);
+    if(!entry || entry->dir || entry->size>(64u<<20))Fail("locale_resource","Caption archive unavailable");
+    std::vector<uint8_t> bytes;
+    if(!disc_->Load(name,bytes))Fail("locale_resource","Caption archive read failed");return bytes;
+}
+void Source::ReplaceTextArchive(std::string_view name,std::vector<uint8_t> bytes) {
+    if(activated_ || !metadata.exact_revision || !disc_ ||
+       (name!="globallanguage.lst" && name!="99-01.ent" && name!="12-01.ent") ||
+       !disc_->ReplaceTextArchive(name,std::move(bytes)))Fail("locale_resource","Caption override rejected");
+}
 void Source::Activate(bool allow_other_revision) {
     if(activated_)Fail("already_activated","Source was already activated");
     if(!metadata.exact_revision&&!allow_other_revision)Fail("revision_confirmation","Another revision requires an explicit experimental choice");

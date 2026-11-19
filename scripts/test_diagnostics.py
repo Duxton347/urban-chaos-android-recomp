@@ -49,6 +49,9 @@ def main():
         io=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-002')
         assert io['bytes']==19 and io['short_reads']==1 and io['inflight']==0 and io['thread_slots_dropped']==7
         assert any(item['code']=='UC-GPU-005' and item['detail']['operation']==2 and item['detail']['calls']==1 for item in progress_records)
+        completion=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-003')
+        assert completion['offset']==1024 and completion['requested']==8 and completion['completed']==3
+        assert 'SENTINEL_' not in json.dumps(progress_records)
         subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-pthread',
             '-I'+str(ROOT/'native'),'-I'+str(overlay/'runtime'),'-I'+str(ROOT/'vendor/runtime/runtime'),
             str(ROOT/'tests/diagnostics_probe.cpp'),str(overlay/'runtime/core/log.cpp'),'-o',str(binary)],check=True)

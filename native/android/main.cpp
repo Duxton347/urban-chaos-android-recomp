@@ -8,6 +8,10 @@
 #include "diagnostics/journal.h"
 #include "diagnostics/progress.h"
 #include "game/source.h"
+#include "game/sha256.h"
+#include <fstream>
+#include <sstream>
+#include <set>
 #include "image_symbols.h"
 #include "build_source_profile.h"
 #include "kernel/kernel.h"
@@ -54,7 +58,7 @@ void Pace(){}
 const GameInfo kGame={.title=L"Urban Chaos",.short_title=L"Urban Chaos",.name=L"UrbanChaos",.log="UrbanChaos",.settings="runtime.toml"};
 }
 int main(int argc,char** argv){
- if(argc!=2){LOGE("android: launch source missing");return 2;}
+ if(argc!=2&&argc!=3){LOGE("android: launch source missing");return 2;}
  const char* storage=SDL_GetAndroidInternalStoragePath();if(!storage)return 2;root=storage;
  std::filesystem::create_directories(root/"game");std::filesystem::create_directories(root/"saves");
  std::filesystem::create_directories(root/"config");std::filesystem::create_directories(root/"cache/shaders");
@@ -72,6 +76,23 @@ int main(int argc,char** argv){
   window=SDL_CreateWindow("Urban Chaos",640,480,SDL_WINDOW_FULLSCREEN|SDL_WINDOW_VULKAN|SDL_WINDOW_HIGH_PIXEL_DENSITY);
   if(!window)throw std::runtime_error("SDL Vulkan window creation failed");
   auto source=urban::game::Source::Open(argv[1],{URBAN_BUILD_XBE_SHA256,URBAN_BUILD_TITLE_ID,X86EntryPoint});
+  if(argc==3){
+   // Trusted cache is within app-private config. Reject symlinks, partial manifests and unexpected files.
+   auto base=std::filesystem::weakly_canonical(root/"config/localization"),locale=std::filesystem::weakly_canonical(argv[2]);
+   if(locale.parent_path()!=base||locale.filename().string().size()!=64)throw std::runtime_error("UC-LOCALE-002");
+   std::ifstream manifest(locale/"verified.txt");std::string name,sha;std::set<std::string> seen;
+   std::string line;while(std::getline(manifest,line)){
+    std::istringstream row(line);std::string extra;if(!(row>>name>>sha)||(row>>extra))throw std::runtime_error("UC-LOCALE-002");
+    if(!seen.insert(name).second||seen.size()>3||(name!="globallanguage.lst"&&name!="99-01.ent"&&name!="12-01.ent"))throw std::runtime_error("UC-LOCALE-002");
+    auto path=locale/name;if(std::filesystem::is_symlink(path)||!std::filesystem::is_regular_file(path))throw std::runtime_error("UC-LOCALE-002");
+    auto length=std::filesystem::file_size(path);if(!length||length>(64u<<20))throw std::runtime_error("UC-LOCALE-002");
+    std::vector<uint8_t> bytes(length);std::ifstream file(path,std::ios::binary);
+    if(!file.read(reinterpret_cast<char*>(bytes.data()),length)||urban::game::Sha256(bytes)!=sha)throw std::runtime_error("UC-LOCALE-002");
+    source.ReplaceTextArchive(name,std::move(bytes));
+   }
+   if(!manifest.eof()||seen.empty())throw std::runtime_error("UC-LOCALE-002");
+   report.Emit(urban::diagnostics::Code::LocaleReady,{{"archives",seen.size()}});
+  }
   source.Activate(false); // Only the exact compiled revision is accepted in this first Android integration.
   input::Init();
   report.Emit(urban::diagnostics::Code::BootStart);
@@ -95,6 +116,6 @@ int main(int argc,char** argv){
    if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);host::PollInputDiagnostics();last_progress=SDL_GetTicks();}
   }
  }catch(const urban::game::SourceError& error){report.Emit(urban::diagnostics::SourceCode(error.code));}
- catch(const std::exception&){report.Emit(urban::diagnostics::Code::BootFailed);}
+ catch(const std::exception& error){report.Emit(std::string_view(error.what())=="UC-LOCALE-002"?urban::diagnostics::Code::LocaleRejected:urban::diagnostics::Code::BootFailed);}
  report.Finish();logx::Flush();return 1;
 }

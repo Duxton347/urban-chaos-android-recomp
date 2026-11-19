@@ -1,0 +1,7 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -2837,3 +2845,3 @@
+     Assembled& a = asm_;
+-    if (!Assemble(s, prim, start, count, indices, a)) { if(counted) CountedFailure(1); return; }
++    if (![&]{ urban::progress::GpuOperation assembly(4); return Assemble(s, prim, start, count, indices, a); }()) { if(counted) CountedFailure(1); return; }
+ 
