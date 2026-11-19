@@ -79,3 +79,12 @@ UC-GPU-003 guarda vendor/device/API/driver e precisão Vulkan (phase0: suportado
 A versão 0.2 acrescenta `UC-CPU-003` (escopos/chamadas de threads), `UC-DISC-002` (leituras e stream ativo sem packets), `UC-AUDIO-004` (tempo do mixer) e `UC-GPU-005` (tempo host nas APIs Vulkan). [Campos, limites e interpretação](TABLET_LOADING_INVESTIGATION.md). A coleta é periódica; não copia conteúdo do disco ou logs brutos. Esses contadores não qualificam automaticamente gameplay, deadlock ou fidelidade sonora.
 
 A versão 0.3 usa o evento Java existente `UC-INPUT-001` para perfil/modo/enquadramento, e o novo evento nativo `UC-INPUT-002` para tempo de entrega do toque ao poll guest. São códigos distintos: a métrica não inclui toda a latência até o frame visível. [HUD e interpretação](TOUCH_HUD.md).
+
+
+## Investigação da missão após entrada no tablet (0.4)
+
+`UC-GPU-005` acrescenta operações: 3 draw completo, 4 montagem de geometria (Android), 5 texturas, 6 consulta/criação de pipeline, 7 submissão e 8 readback. 0 espera, 1 aquisição e 2 módulo de shader permanecem. Tempos são host, cumulativos e inclusivos: operações aninhadas se sobrepõem, não somar para estimar tempo total ou FPS. Não são timestamps GPU.
+
+`UC-CPU-003` inclui último ordinal kernel/caller e hash do nome público HLE/caller, filtrando endereços fora da seção de código. `UC-DISC-003` registra APCs enfileiradas/concluídas e última leitura: ID de recurso por hash, offset, quantidade pedida/concluída; não inclui nomes ou conteúdo. São snapshots independentes entre threads; não representam transação atômica da última leitura. Permitem procurar ausência de progresso sem confundi-la com fim de arquivo.
+
+`UC-LOCALE-003`: substituições nativas de texto conferidas e instaladas antes do boot, com contagem de arquivos; não prova legendas visíveis/sincronizadas. `UC-LOCALE-002`: cache rejeitado antes do boot. `UC-LOCALE-001`: preparação Java não concluída, mensagem no launcher e classe da exceção no journal Java. `UC-LOCALE-004`: cache preparado, com duração em milissegundos; não prova exibição de legendas. O exportador não inclui cache, dicionários ou bancos de texto.

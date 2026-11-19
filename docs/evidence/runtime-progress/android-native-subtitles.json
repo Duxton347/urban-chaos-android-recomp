@@ -1,0 +1,38 @@
+{
+  "build_id": "experimental-05bb54fce75d0b35",
+  "apk_sha256": "62d05739c6f20e36c53c46a79939fa7598f1615e062e46ae60508c3df3a34ead",
+  "apk_bytes": 28247992,
+  "native_library_sha256": "17f1327c8df90170f28ef5b5a1faa1a694bac3b9f2cf2d975cc54393354da546",
+  "private_locale_pack_sha256": "6a8546e009f8aeb20ba173c08c48a7678cef59a594ccc6695df48ea54124861b",
+  "version_name": "0.4-experimental",
+  "version_code": 4,
+  "android_device_tested": false,
+  "mission_playable_verified": false,
+  "subtitle_scene_sync_verified": false,
+  "native_menu_translation_observed_on_linux": true,
+  "native_sensitivity_menu_observed_on_linux": true,
+  "prior_03_mission_entry": "reported_by_owner_not_playability_qualification",
+  "original_disc_assets_bundled": false,
+  "private_derived_game_code": true,
+  "public_upload_authorized": false,
+  "translation_changed_entries": {
+    "hope_street": 422,
+    "global": 50,
+    "frontend": 90
+  },
+  "runtime_patches": {
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+    "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+    "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+    "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+    "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+    "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+    "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+    "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+    "android-input-sampling.patch": "910238473233766f1e4c4349a07d67309cc7df7376279f5dd1b4824475c62bdf",
+    "progress-metadata.patch": "dc23e91842ead27700756315b8d7cea653ca1b52e278d04e5e5fd696413cce33",
+    "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d"
+  }
+}

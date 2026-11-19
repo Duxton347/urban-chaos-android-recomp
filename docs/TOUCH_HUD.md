@@ -40,3 +40,11 @@ Esses resultados não substituem instalação e toque no dispositivo. Próximo e
 ## Artefato privado
 
 Versão 0.3, `experimental-40f8853d42ba3884`, pacote `org.urbanchaos.launcher`, versionCode 3, mesma assinatura debug da primeira instalação. APK: 28.202.850 bytes; SHA-256 `4340ecd6205b63cce6005936b50be4d1c2737d75f79b0b971232ef45c8db4411`. Sem ISO/XBE/recursos e sem distribuição pública do código derivado. [Recibo sanitizado](evidence/runtime-progress/android-touch-hud.json). Não desinstalar ou limpar dados para atualizar.
+
+## Atualização 0.4
+
+O proprietário entrou na missão com a versão 0.3; ela continua lenta e com defeitos. A hipótese histórica de loading permanente acima não descreve mais o último teste. O HUD original e a missão completa ainda precisam de validação.
+
+No modo **Navegação de menus**, as quatro setas foram substituídas pelo joystick esquerdo, testado no menu original Linux. Layouts antigos preservam A/B/X/START/BACK e recebem o joystick padrão; o modo **Controle Xbox completo** mantém o D-pad além dos dois analógicos. A sensibilidade da mira se ajusta dentro de **Options → Controller → Horizontal/Vertical Sensitivity**, sem outro menu no launcher.
+
+A versão 0.4 também permite selecionar o dicionário privado de português parcial antes de iniciar. Habilitar **Options → General → Subtitles/Legendas** no jogo para mostrar as legendas nativas. A tradução das cenas e a resposta touch no tablet ainda precisam de teste. [Escopo e limitações](NATIVE_SUBTITLES.md).

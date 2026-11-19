@@ -1,5 +1,7 @@
 # Build status — nova rota de recompilação
 
+**Atualização 0.4, 2026-11-19:** o novo relato do proprietário confirma entrada na missão no tablet com a versão 0.3, ainda muito lenta e com defeitos visuais. A hipótese de loading permanente deixou de descrever esse teste. Navegação por analógico e sensibilidade no menu original verificadas no Linux; tradução nativa parcial de Hope Street e cache opcional de textos implementados. Runtime real ARM64 ligado e APK 0.4 privado compilado/assinado, com tradução opcional e três partes verificadas para transporte. Novo APK ainda não testado no dispositivo; não há ganho de FPS ou missão jogável comprovados. [Legendas, controles e limites](NATIVE_SUBTITLES.md).
+
 **Atualização 0.3:** HUD sobreposto editável, analógicos e controle Xbox completo, correção de taps perdidos/consulta de conexão e modos de apresentação implementados. Biblioteca real ARM64 ligada; APK privado de 28.202.850 bytes assinado/verificado. Testes de input/multitouch/viewport e contratos Android passaram. **Sem novo teste no tablet ou missão carregada.** [Uso e limitações](TOUCH_HUD.md).
 
 **Atualização do tablet, 2026-11-18:** o proprietário instalou a primeira entrega e confirmou inicialização, mas relatou vídeo/áudio entrecortados e missão presa em loading. O relatório mede cerca de 4,65 apresentações/s no trecho final. Corrigido o build guest sem otimização (`-O0`); versão 0.2 ligada com `-O2`, novos contadores de progresso/IO/mixer/Vulkan e APK privado assinado de 28.178.216 bytes. **Essa atualização ainda não foi testada no dispositivo e não comprova missão corrigida.** [Investigação, testes e próximo ensaio](TABLET_LOADING_INVESTIGATION.md). Declarações de ausência de teste abaixo referem-se à construção anterior ao relato.
@@ -110,7 +112,7 @@ XboxKit reduz incerteza sobre formatos de disco e offsets; não resolve a integr
 | Diagnóstico histórico | Build anterior registrado | Tablet não testado | Não é jogo | Não é jogo | Não é jogo |
 | Urban Chaos Linux de pesquisa | Sim: código + host de teste | Intro/título; depuração da carga da missão | Principal e dificuldade observados | Ainda não jogável | Não verificada |
 | Código guest baseline Android ARM64 | Sim: 129 objetos AArch64 | Não ligado a host Android | Não testado em Android | Não testada | Não verificada |
-| Urban Chaos Android experimental | Biblioteca completa e APK privados | Primeiro build confirmado pelo usuário/relatório; versão 0.2 sem novo teste | Acesso à tentativa de missão relatado; fidelidade não aprovada | Loading sem concluir no primeiro teste | Não verificada |
+| Urban Chaos Android experimental | Biblioteca completa e APK privados | Primeiro build confirmado pelo usuário/relatório; versão 0.2 sem novo teste | Acesso à tentativa de missão relatado; fidelidade não aprovada | Entrou na missão no relato mais recente; lenta e com defeitos, não qualificada como jogável | Não verificada |
 | Urban Chaos Windows | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
 
 ## CI inicial

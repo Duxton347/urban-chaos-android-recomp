@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+Atualização 0.4: o proprietário entrou na missão no tablet com 0.3, mas relatou lentidão/defeitos. O HUD de navegação passa a usar analógico; o jogo já oferece sensibilidade dentro de Options → Controller. Tradução parcial utiliza bancos nativos e substituições imutáveis no disco, sem modificar a ISO. [Contrato e limites](NATIVE_SUBTITLES.md).
+
 Na versão 0.3, a Activity usa overlay touch de tela inteira, fontes Xbox com preservação de taps e descoberta de conexão separada da leitura guest; o Vulkan oferece ajustar/preencher/esticar. O layout é privado e separado dos saves. Essas mudanças não alteram a lógica do título nem qualificam o loading da missão. [Contrato e validação](TOUCH_HUD.md).
 
 Atualização após o primeiro teste Android: o APK inicia no Pad 6, com desempenho baixo, áudio entrecortado e missão presa em loading. O novo build otimiza guest/host e acrescenta telemetria; ainda requer novo teste. [Evidência e limites atuais](TABLET_LOADING_INVESTIGATION.md). As qualificações Linux e os relatos de ausência de teste a seguir são históricos.
