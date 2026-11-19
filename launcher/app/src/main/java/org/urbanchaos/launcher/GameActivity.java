@@ -8,7 +8,7 @@ import org.urbanchaos.launcher.diagnostics.*;
 /** SDL game surface with an independent, editable Xbox-source touch overlay. */
 public final class GameActivity extends SDLActivity {
  private AndroidReports reports;private ReportExportController export;private TouchHudView hud;
- @Override protected String[] getArguments(){String path=getIntent().getStringExtra("game_path");return path==null?new String[0]:new String[]{path};}
+ @Override protected String[] getArguments(){String path=getIntent().getStringExtra("game_path");String locale=getIntent().getStringExtra("locale_path");return path==null?new String[0]:locale==null?new String[]{path}:new String[]{path,locale};}
  @Override protected void onCreate(Bundle state){super.onCreate(state);if(mBrokenLibraries)return;
   try{reports=new AndroidReports(this,BuildConfig.BUILD_ID,BuildConfig.XBE_SHA256);NativeReports.attach(reports.session(),BuildConfig.BUILD_ID,BuildConfig.XBE_SHA256,false);export=new ReportExportController(this,reports);}catch(Exception ignored){}
   getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

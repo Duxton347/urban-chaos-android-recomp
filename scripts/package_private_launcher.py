@@ -19,7 +19,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--native-build',required=True)
     parser.add_argument('--out',required=True)
+    parser.add_argument('--locale-pack',help='Private translated dictionary, no source archive payloads')
     args=parser.parse_args()
+    locale=private_path(args.locale_pack) if args.locale_pack else None
+    if locale and (locale.stat().st_size>2*1024*1024 or not locale.read_bytes().startswith(b'UCPTBR01')):raise ValueError('Invalid private locale dictionary')
     native,output=map(private_path,(args.native_build,args.out))
     if output.exists() or output in native.parents or native in output.parents:raise ValueError('New private output required')
     receipt=json.loads((native/'receipt.json').read_text())
@@ -30,7 +33,7 @@ def main():
     reader=ndk/'toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf'
     elf=subprocess.check_output([str(reader),'-h','--dyn-syms',str(library)],text=True)
     symbols=['SDL_main','Java_org_urbanchaos_launcher_NativeGame_validate','Java_org_urbanchaos_launcher_NativeGame_menuButton','Java_org_urbanchaos_launcher_diagnostics_NativeReports_start']
-    symbols += ['Java_org_urbanchaos_launcher_NativeGame_'+name for name in ('padButton','padStick','clearTouch','displayMode')]
+    symbols += ['Java_org_urbanchaos_launcher_NativeGame_'+name for name in ('padButton','padStick','clearTouch','displayMode','readTextArchive')]
     if 'AArch64' not in elf or any(name not in elf for name in symbols):raise ValueError('Runtime architecture or actual JNI entry missing')
     def sources():
         paths=[]
@@ -39,11 +42,14 @@ def main():
         paths.extend(ROOT/name for name in ('launcher/settings.gradle','launcher/build.gradle','launcher/gradle.properties','launcher/app/build.gradle','launcher/gradle/verification-metadata.xml'))
         return {str(p.relative_to(ROOT)):sha(p) for p in sorted(paths)}
     app_sources=sources()
+    if locale:app_sources['private-locale-pack']=sha(locale)
     build='experimental-'+hashlib.sha256(json.dumps({'native':receipt['library_sha256'],'sources':app_sources},sort_keys=True).encode()).hexdigest()[:16]
     output.mkdir(parents=True)
     with (output/'build.log').open('w') as log:
         subprocess.run(['bash',str(ROOT/'scripts/build_launcher_base.sh'),'-PurbanNativeBuild='+str(native),'-PurbanBuildId='+build,'assembleDebug'],cwd=ROOT,check=True,stdout=log,stderr=subprocess.STDOUT)
-    if sources()!=app_sources:raise ValueError('Application sources changed during Gradle build; rebuild the private APK')
+    after=sources()
+    if locale:after['private-locale-pack']=sha(locale)
+    if after!=app_sources:raise ValueError('Application sources changed during Gradle build; rebuild the private APK')
     base=ROOT/'launcher/app/build/outputs/apk/debug/app-debug.apk'
     libraries={'libmain.so':library,'libSDL3.so':native/'cmake/SDL/libSDL3.so','libc++_shared.so':ndk/'toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so'}
     lock=json.loads((ROOT/'dependencies.lock.json').read_text())
@@ -53,6 +59,7 @@ def main():
             if item.filename.startswith(('lib/','META-INF/')):continue
             if pathlib.PurePosixPath(item.filename).suffix.lower() in ('.iso','.xbe','.xmv','.saf','.enc'):raise ValueError('Title asset in base APK')
             target.writestr(item,source.read(item.filename))
+        if locale:target.write(locale,'assets/localization/hope-street-ptbr.bin')
         for name,path in libraries.items():target.write(path,'lib/arm64-v8a/'+name)
         for name,expected in lock['licenses'].items():
             path=ROOT/name
@@ -71,7 +78,7 @@ def main():
                 if hashlib.file_digest(source,'sha256').hexdigest()!=sha(path):raise ValueError('Packaged library mismatch')
     result={'status':'PRIVATE_EXPERIMENTAL_APK_BUILT','build_id':build,'app_sources':app_sources,'apk_sha256':sha(final),'apk_bytes':final.stat().st_size,
             'native_library_sha256':receipt['library_sha256'],'xbe_sha256':receipt['xbe_sha256'],'libraries':{name:sha(path) for name,path in libraries.items()},
-            'device_tested':False,'game_android_boot_verified':False,'mission_playable_verified':False,'assets_bundled':False,'public_upload_authorized':False}
+            'device_tested':False,'game_android_boot_verified':False,'mission_playable_verified':False,'assets_bundled':False,'public_upload_authorized':False,'private_locale_pack_sha256':sha(locale) if locale else None}
     (output/'receipt.json').write_text(json.dumps(result,indent=2)+'\n')
     (output/'SHA256SUMS').write_text(result['apk_sha256']+'  '+final.name+'\n')
     unsigned.unlink();aligned.unlink()

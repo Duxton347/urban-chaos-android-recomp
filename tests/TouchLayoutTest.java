@@ -11,8 +11,9 @@ public final class TouchLayoutTest {
    public void stick(int s,float x,float y,boolean a){axes[s*2]=x;axes[s*2+1]=y;events.add("s"+s+":"+a);}
   });
   TouchLayout menu=TouchLayout.defaults(true,false),xbox=TouchLayout.defaults(true,true);
-  check(menu.find("a").button==0&&menu.find("up").button==8&&menu.find("start").button==12);
+  check(menu.find("a").button==0&&menu.find("move").stick==0&&menu.find("up")==null&&menu.controls.size()==6&&menu.find("start").button==12);
   check(xbox.find("rt").button==7&&xbox.find("look").stick==1);
+  check(xbox.find("up").button==8&&xbox.find("move").stick==0);
   Control a=menu.find("a"),b=menu.find("b");
   router.down(21,a,0,0,1280,800);router.down(37,b,0,0,1280,800);
   check(events.equals(Arrays.asList("0:true","1:true")));

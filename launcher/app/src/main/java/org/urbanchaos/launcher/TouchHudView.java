@@ -64,12 +64,16 @@ final class TouchHudView extends View {
   layout=TouchLayout.defaults(tablet,full);JSONObject data=read(filename());if(data==null){confine();return;}
   try{
    TouchLayout parsed=layout.copy();JSONArray controls=data.getJSONArray("controls");java.util.HashSet<String> ids=new java.util.HashSet<>();
-   if(controls.length()!=parsed.controls.size())throw new JSONException("HUD count");
+   boolean legacy=!full&&controls.length()==9;
+   if(!legacy&&controls.length()!=parsed.controls.size())throw new JSONException("HUD count");
    for(int n=0;n<controls.length();n++){
     JSONObject item=controls.getJSONObject(n);String id=item.getString("id");Control c=parsed.find(id);
-    if(c==null||!ids.add(id))throw new JSONException("HUD id");
+    if(!ids.add(id))throw new JSONException("HUD id");
+    if(c==null&&legacy&&java.util.Arrays.asList("up","down","left","right").contains(id))continue;
+    if(c==null)throw new JSONException("HUD id");
     c.configure((float)item.getDouble("x"),(float)item.getDouble("y"),(float)item.getDouble("radius"),(float)item.getDouble("alpha"));
    }
+   if(legacy&&!ids.equals(new java.util.HashSet<>(java.util.Arrays.asList("a","b","x","start","back","up","down","left","right"))))throw new JSONException("HUD legacy ids");
    layout=parsed;
   }catch(Exception invalid){notice("Layout inválido; posições padrão restauradas.");}
   confine();
@@ -137,7 +141,7 @@ final class TouchHudView extends View {
   invalidate();return true;
  }
  private void notice(String message){Toast.makeText(activity,message,Toast.LENGTH_SHORT).show();}
- private void help(){new AlertDialog.Builder(activity).setTitle("Como usar").setMessage("Menus: direcionais navegam, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nControle Xbox completo: L/R são os analógicos; LT/RT são gatilhos; L3/R3 pressionam os analógicos. Os nomes seguem o controle original. O esquema escolhido dentro do jogo determina cada ação.\n\nUse vários dedos e mantenha pressionado para segurar uma ação. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA missão ainda permanece em investigação; estes controles não desbloqueiam o loading.").setPositiveButton("Entendi",null).show();}
+ private void help(){new AlertDialog.Builder(activity).setTitle("Como usar").setMessage("Menus: o joystick esquerdo navega, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nControle Xbox completo: L/R são os analógicos; LT/RT são gatilhos; L3/R3 pressionam os analógicos. Os nomes seguem o controle original. O esquema escolhido dentro do jogo determina cada ação.\n\nUse vários dedos e mantenha pressionado para segurar uma ação. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA sensibilidade e a inversão da mira ficam no próprio jogo: Options → Controller → Horizontal/Vertical Sensitivity. O desempenho e os defeitos gráficos da missão continuam em investigação.").setPositiveButton("Entendi",null).show();}
  private void showMenu(){
   String[] items=editing?new String[]{"Salvar layout","Cancelar edição","Tamanho do controle selecionado","Opacidade do controle selecionado","Restaurar posições padrão"}:
    new String[]{"Enquadramento da tela","Modo de controle","Editar HUD","Perfil: "+(tablet?"tablet":"celular"),hidden?"Mostrar controles":"Ocultar controles","Como usar","Exportar relatório"};

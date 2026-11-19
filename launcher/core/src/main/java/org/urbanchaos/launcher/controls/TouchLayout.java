@@ -21,10 +21,11 @@ public final class TouchLayout {
   layout.add("x","X",2,-1,.80f,.61f,r);
   layout.add("start","START",12,-1,.56f,.91f,r*.8f);
   layout.add("back","BACK",13,-1,.44f,.91f,r*.8f);
-  float cx=full?.39f:.14f,cy=full?.77f:.72f;
+  if(!full)layout.add("move","L",-1,0,.14f,.73f,.11f);
+  if(full){
+  float cx=.39f,cy=.77f;
   layout.add("up","UP",8,-1,cx,cy-.12f,r);layout.add("down","DOWN",9,-1,cx,cy+.12f,r);
   layout.add("left","LEFT",10,-1,cx-.075f,cy,r);layout.add("right","RIGHT",11,-1,cx+.075f,cy,r);
-  if(full){
    layout.add("y","Y",3,-1,.88f,.42f,r);
    layout.add("black","BLACK",4,-1,.72f,.39f,r*.85f);layout.add("white","WHITE",5,-1,.26f,.39f,r*.85f);
    layout.add("lt","LT",6,-1,.12f,.23f,r);layout.add("rt","RT",7,-1,.88f,.23f,r);
