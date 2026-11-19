@@ -1,4 +1,8 @@
 # Preserve third-party notices and raw build evidence exactly as obtained.
 licenses/** -whitespace
 android/app/src/main/assets/licenses/** -whitespace
-docs/evidence/*.log -whitespace
+docs/evidence/** -whitespace
+
+# Unified diffs require a context prefix on otherwise empty lines.
+patches/runtime/*.patch whitespace=-blank-at-eol
+patches/black/*.patch whitespace=-blank-at-eol,-blank-at-eof

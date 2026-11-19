@@ -1,0 +1,36 @@
+{
+  "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "patches": {
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+    "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+    "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+    "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126"
+  },
+  "synthetic_gpu_probes_passed": 2,
+  "recorded_packet_parser_passed": true,
+  "reference_visibility_passed": true,
+  "surface_parent_ownership_passed": true,
+  "legacy_missing_parent_negative_control_observed": true,
+  "directional_audio_cone_passed": true,
+  "spatial_audio_factors_passed": true,
+  "game_data_used": false,
+  "test_count": 8,
+  "tests": [
+    "threaded_backend_busy",
+    "immediate_vertex_mode",
+    "recorded_index_packets",
+    "real_reference_visibility",
+    "surface_parent_ownership",
+    "legacy_missing_parent_negative_control",
+    "directional_audio_cone",
+    "spatial_audio_factors"
+  ],
+  "authored_fixture_sha256": {
+    "host/runtime-probes/surface_references.cpp": "334f5ca10ac95858b42adabc44de8f07c28faf8562997dc20603a51320208a85",
+    "host/runtime-probes/audio_cone.cpp": "9340c5f943eb09657859866c7117998ce9145e72245c1c16c89845e9e705ae61",
+    "host/runtime-probes/audio_spatial.cpp": "71bdcb54ec83593b196ce2adffbd2b0f8090aa08ed9e5d821e8e7378118fc2a0"
+  },
+  "android_compilation": "Audio cone and spatial fixtures compiled using NDK 28.2.13676358, CMake 3.31.6, arm64-v8a API29; no Android execution"
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "source": "user_exported_report",
+  "report_sha256": "56ea71379c6b076ab0e41c3cfc917ca7792bda41daed6864da80ea515d8e6b1f",
+  "tested_build": "experimental-3ef6e0e968626f62",
+  "manual_user_observations": {
+    "starts": true,
+    "video_stutters": true,
+    "audio_stutters": true,
+    "first_mission_stays_loading": true
+  },
+  "device": {
+    "model": "23043RP34G",
+    "api": 34,
+    "abi": "arm64-v8a",
+    "page_size": 4096,
+    "vulkan_vendor": 20803,
+    "vulkan_device": 100990978,
+    "vulkan_api": 4198528,
+    "driver": 2149539840,
+    "precise_queries_enabled": true
+  },
+  "measured": {
+    "frames_window": [
+      1980,
+      2400
+    ],
+    "window_ms": [
+      183211,
+      273507
+    ],
+    "presentation_rate": 4.651,
+    "last_presentation_counter": 2460,
+    "audio_active_counter_stopped_increasing": true,
+    "native_error_events": 0,
+    "missing_resource_warnings": 1
+  },
+  "limits": [
+    "Presentation counters are not GPU timestamps or proof of correct images.",
+    "Unclean session markers do not establish a crash.",
+    "Old report lacks thread, IO and callback timing, so loading root cause is unresolved."
+  ],
+  "response": {
+    "guest_optimization_before": 0,
+    "guest_optimization_after": 2,
+    "native_optimization_after": 2,
+    "new_build_device_tested": false,
+    "mission_fixed_verified": false
+  }
+}

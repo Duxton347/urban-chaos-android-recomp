@@ -1,0 +1,52 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/runtime-probes-ub6jll6r/cmake
+[ 11%] Building CXX object CMakeFiles/runtime_gpu_probes.dir/gpu_probes.cpp.o
+[ 22%] Building CXX object CMakeFiles/runtime_gpu_probes.dir/main.cpp.o
+[ 33%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/kernel/memory.cpp.o
+[ 44%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/core/log.cpp.o
+[ 55%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/runtime/gpu/texture.cpp.o
+[ 66%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/vendor/runtime/harness/app_headless.cpp.o
+[ 77%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/build/runtime-probes-ub6jll6r/overlay/runtime/gpu/vertex.cpp.o
+[ 88%] Building CXX object CMakeFiles/runtime_gpu_probes.dir<workspace>/build/runtime-probes-ub6jll6r/overlay/runtime/gpu/render_thread.cpp.o
+[100%] Linking CXX executable runtime_gpu_probes
+[100%] Built target runtime_gpu_probes
+Internal ctest changing into directory: <workspace>/build/runtime-probes-ub6jll6r/cmake
+UpdateCTestConfiguration  from :<workspace>/build/runtime-probes-ub6jll6r/cmake/DartConfiguration.tcl
+UpdateCTestConfiguration  from :<workspace>/build/runtime-probes-ub6jll6r/cmake/DartConfiguration.tcl
+Test project <workspace>/build/runtime-probes-ub6jll6r/cmake
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: threaded_backend_busy
+
+1: Test command: <workspace>/build/runtime-probes-ub6jll6r/cmake/runtime_gpu_probes "busy"
+1: Working Directory: <workspace>/build/runtime-probes-ub6jll6r/cmake
+1: Test timeout computed to be: 10
+1: [    0.000] [info] [t73b1] memory: guest space at 0x100000000
+1: BACKEND_BUSY_SELFTEST: empty queue idle, queued draw pending without blocking, completed draw idle; actual SDK worker, no title instructions
+1/2 Test #1: threaded_backend_busy ............   Passed    0.00 sec
+test 2
+    Start 2: immediate_vertex_mode
+
+2: Test command: <workspace>/build/runtime-probes-ub6jll6r/cmake/runtime_gpu_probes "vertex"
+2: Working Directory: <workspace>/build/runtime-probes-ub6jll6r/cmake
+2: Test timeout computed to be: 10
+2: [    0.000] [info] [t1edb] memory: guest space at 0x100000000
+2: VERTEX_MODE_SELFTEST: expanded immediate XYZRHW preserves position/RHW and screen-space mode; programmable and FVF modes remain distinct; no title instructions
+2/2 Test #2: immediate_vertex_mode ............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.01 sec
+{"sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7", "patches": {"directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34", "d3d-device-initialization.patch": "9552a81c159089059d4fa8dc0a8e22483ae3649ac6f4a602119771c4280a2ee8", "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc"}, "synthetic_gpu_probes_passed": 2, "game_data_used": false}

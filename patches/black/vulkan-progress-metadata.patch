@@ -1,0 +1,38 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -8,2 +8,3 @@
+ #include "gpu/vulkan_visibility.h"
++#include "diagnostics/progress.h"
+ #include "gpu/visibility_report.h"
+@@ -1828,2 +1829,3 @@
+ void VulkanBackend::WaitValue(uint64_t v) {
++    urban::progress::GpuOperation progress(0);
+     if (!v || Completed() >= v) return;
+@@ -1863,2 +1865,3 @@
+ void VulkanBackend::Submit(bool wait, bool present) {
++    urban::progress::GpuOperation progress(7);
+     EndRender();
+@@ -2137,2 +2140,3 @@
+ VkShaderModule VulkanBackend::Module(const std::string& src, const char* entry, vkshader::Stage stage, uint64_t& hash) {
++    urban::progress::GpuOperation progress(2);
+     uint64_t seed = Hash(entry, std::strlen(entry), stage == vkshader::Stage::Vertex ? 1 : 2);
+@@ -2226,2 +2230,3 @@
+ VkPipeline VulkanBackend::EnsurePipeline(const PsoKey& k, VkShaderModule vs, VkShaderModule ps) {
++    urban::progress::GpuOperation progress(6);
+     uint64_t h = Hash(&k, sizeof(k));
+@@ -2566,2 +2571,3 @@
+ bool VulkanBackend::ReadBack(Image& im, uint32_t w, uint32_t h, std::vector<uint8_t>& out) {
++    urban::progress::GpuOperation progress(8);
+     Buffer rb;
+@@ -2757,2 +2763,3 @@
+ bool VulkanBackend::BindStageTextures(const State& s, DrawTextures& stages) {
++    urban::progress::GpuOperation progress(5);
+     for (int i = 0; i < 4; i++) stages.view[i] = BindTexture(s, i, stages);
+@@ -2833,2 +2840,3 @@
+ void VulkanBackend::Draw(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices) {
++    urban::progress::GpuOperation progress(3);
+     const bool counted = SimpleState(s, kMCountEnable) != 0;
+@@ -3132,2 +3140,3 @@
+ bool VulkanBackend::AcquireImage(uint32_t& index) {
++    urban::progress::GpuOperation progress(1);
+     if (!host::Foreground()) return false;

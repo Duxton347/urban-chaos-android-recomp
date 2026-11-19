@@ -1,0 +1,138 @@
+--- a/runtime/xdk/d3d8.cpp
++++ b/runtime/xdk/d3d8.cpp
+@@ -5,6 +5,8 @@
+ #include <chrono>
+ #include <map>
+ #include <thread>
++#include <tuple>
++#include "gpu/recorded_push.h"
+ #include <unordered_map>
+ #include <unordered_set>
+
+@@ -387,6 +389,12 @@
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
+     return g_backend ? g_backend->Fence() : 0;
+ }
++HLE_STDCALL(D3DDevice_IsBusy, 0) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    Walk(Dev(kDevPush));
++    return g_backend && g_backend->DeviceBusy();
++}
++
+ HLE_STDCALL(D3DDevice_IsFencePending, 1) {
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
+     return g_backend && g_backend->FencePending(a[0]) ? 1 : 0;
+@@ -542,7 +550,8 @@
+ HLE_STDCALL(D3DDevice_SetViewport, 1) {
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
+     uint32_t v = a[0];
+-    g_state.viewport = {R32(v), R32(v + 4), R32(v + 8), R32(v + 12), GF(v + 16), GF(v + 20)};
++    // Xbox permits nullptr to reapply the current viewport after target/scale changes.
++    if (v) g_state.viewport = {R32(v), R32(v + 4), R32(v + 8), R32(v + 12), GF(v + 16), GF(v + 20)};
+     g_state.scissor_count = 0;
+     UpdateViewportConstants();
+     return 0;
+@@ -946,6 +955,36 @@
+     return 0;
+ }
+
++// Explicit recorded indexed-draw subset. Validate all packets before submitting any draw.
++HLE_STDCALL(D3DDevice_RunPushBuffer, 2) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if(a[1])x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"recorded push buffer fixups are not implemented");
++    auto mapped=[](uint32_t address,uint32_t bytes) {
++        if(!address||bytes>16u*1024*1024||address>0xFFFFFFFFu-bytes)return false;
++        for(uint64_t p=address;p<uint64_t(address)+bytes;p=(p&~uint64_t(4095))+4096)
++            if(!mem::IsCommitted(uint32_t(p)))return false;
++        return !bytes||mem::IsCommitted(address+bytes-1);
++    };
++    uint32_t object=a[0];
++    if(!mapped(object,16))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer object");
++    uint32_t data=R32(object+4),bytes=R32(object+12);
++    if(bytes<4||bytes%4||!mapped(data,bytes))x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"invalid recorded push buffer extent");
++    std::vector<uint32_t> words(bytes/4);
++    if(bytes)std::memcpy(words.data(),HostPtr(data),bytes);
++    std::vector<urban::gpu::IndexedDraw> draws;std::string error;
++    if(!urban::gpu::DecodeXdkRecordedIndices(words,draws,error)) {
++        LOGE("d3d: recorded push buffer rejected: %s",error.c_str());
++        x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"unsupported or malformed recorded GPU commands");
++    }
++    if(!g_backend)x86_trap(ctx,SYM(D3DDevice_RunPushBuffer),"recorded draw has no backend");
++    Walk(Dev(kDevPush));
++    SyncDeferred();
++    for(const auto& draw:draws)
++        g_backend->Draw(g_state,draw.primitive,0,uint32_t(draw.indices.size()),reinterpret_cast<const uint8_t*>(draw.indices.data()));
++    LOG_FIRST(8, "d3d: recorded indexed buffer submitted %zu draws",draws.size());
++    return 0;
++}
++
+ // DrawVerticesUP(prim, count, vertices, stride): the vertices are copied to a ring the render thread reads, stream 0
+ // points there through a vertex buffer header for the draw. A half of the ring is written again once the draws
+ // that read it are done.
+@@ -1017,17 +1056,18 @@
+         std::shared_ptr<gpu::VertexShader> from, vs;
+     };
+     // the render thread tells shaders apart by pointer: one object per program and slot set, the program kept alive
+-    static std::map<std::pair<gpu::VertexShader*, uint32_t>, Made> made;
++    static std::map<std::tuple<gpu::VertexShader*, uint32_t, bool>, Made> made;
+     static std::vector<float> packed;
+     uint32_t prim = g_im_prim, count = uint32_t(g_im_vertices.size() / 64), handle = g_state.vs_handle;
+     g_im_prim = 0;
+     if (!prim || !count) return;
+-    if (!(handle & 1) && (handle & 0xE) == 4) LOG_FIRST(1, "d3d: pretransformed immediate mode vertices are not supported");
++    bool pretransformed = !(handle & 1) && (handle & 0xE) == 4;
+     auto bound = g_state.vs, from = handle & 1 ? bound : nullptr;
+-    Made& m = made[{from.get(), g_im_mask}];
++    Made& m = made[{from.get(), g_im_mask, pretransformed}];
+     if (!m.vs) {
+         m.from = from;
+         m.vs = std::make_shared<gpu::VertexShader>();
++        m.vs->pretransformed = pretransformed;
+         if (from) {
+             m.vs->program = from->program;
+             m.vs->program_type = from->program_type;
+--- a/runtime/gpu/backend.h
++++ b/runtime/gpu/backend.h
+@@ -46,6 +46,7 @@
+     virtual uint32_t Fence() { return ++fence_; }
+     virtual bool FencePending(uint32_t) { return false; }
+     virtual void WaitFence(uint32_t) {}
++    virtual bool DeviceBusy() { return FencePending(Fence()); }
+     virtual bool Busy(uint32_t /*resource*/) { return false; }
+     virtual void WaitResource(uint32_t /*resource*/) {}
+
+--- a/runtime/gpu/render_thread.cpp
++++ b/runtime/gpu/render_thread.cpp
+@@ -222,6 +222,11 @@
+     uint32_t Fence() override { return uint32_t(cur_->id); }
+     bool FencePending(uint32_t fence) override { return fence > done_.load(); }
+     void WaitFence(uint32_t fence) override { Wait(fence, WaitFor::Fence, "fence"); }
++    bool DeviceBusy() override {
++        uint64_t target = cur_->id - 1;
++        if (!cur_->cmds.empty()) target = Submit();
++        return done_.load() < target;
++    }
+     bool Busy(uint32_t resource) override {
+         auto it = last_use_.find(resource);
+         return it != last_use_.end() && it->second > done_.load();
+--- a/runtime/gpu/state.h
++++ b/runtime/gpu/state.h
+@@ -127,6 +127,7 @@
+
+ struct VertexShader {
+     uint32_t handle = 0;       // guest handle, record address | 1
++    bool pretransformed = false; // immediate-mode XYZRHW carried with its expanded input layout
+     std::vector<uint32_t> decl;
+     std::vector<uint32_t> program;  // 4 dwords per instruction
+     uint32_t program_type = 0;      // 0x2078 vertex, 0x7378 state, 0x7778 read/write
+--- a/runtime/gpu/vertex.cpp
++++ b/runtime/gpu/vertex.cpp
+@@ -223,7 +223,7 @@
+
+ // D3DFVF: an FVF handle with position XYZRHW
+ bool Pretransformed(const State& s) {
+-    return !(s.vs_handle & 1) && (s.vs_handle & 0xE) == 0x4;
++    return s.vs_handle & 1 ? s.vs && s.vs->pretransformed : (s.vs_handle & 0xE) == 0x4;
+ }
+
+ IndexBounds IndexRange(const uint8_t* ip, uint32_t count) {

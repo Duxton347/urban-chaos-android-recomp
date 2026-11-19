@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-18",
+  "sdl_commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
+  "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "authored_transport_tests": {
+    "status": "PASS",
+    "stereo_pairs_observed": 5120,
+    "channel_errors": 0,
+    "pause_resume_stop": true,
+    "render_failure": true,
+    "nonfinite_silenced": true,
+    "game_data_used": false,
+    "signal_default_negative_control": true,
+    "sigterm_with_host_policy": -15,
+    "sdl_commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
+    "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+    "driver": "dummy",
+    "invalid_driver_rejected": true,
+    "audible_output_verified": false,
+    "android_device_tested": false,
+    "sources": {
+      "native/audio/sdl_output.h": "ea03291c00cdb653626cf1aa4d69d3abe9813394faf58ae004890b8f99734f38",
+      "native/audio/sdl_output.cpp": "609ab41173e2e428dacbf49eb93e6cf086f652f8941857f6929122b7ace10907",
+      "tests/sdl_audio_fixture.cpp": "f1b36a2cce6129e573de2d1725633d46c1e56c06a3e2e339da445b9d6fbf3de6",
+      "host/sdl-audio/CMakeLists.txt": "4349e1096a507f1fbc16b6f22614c9b2b6a1f107b82627b23690da18a6bfa8fa",
+      "host/research/headless_audio_policy.h": "bc96f3fadd8fec97f1e5097e1a3badebaffefcd5071b4d118508741a36f65a9b"
+    }
+  },
+  "existing_python_tests_passed": 46,
+  "diagnostic_java_checks_passed": 326,
+  "diagnostic_jni_passed": true,
+  "arm64_output_compiled": true,
+  "android_report_menu_compiled_sdk": 34,
+  "android_menu_device_tested": false,
+  "hle_selftests": {
+    "audio": 0,
+    "viewport": 0,
+    "busy": 0,
+    "vertex": 0,
+    "apc": 0,
+    "voice": 0
+  },
+  "measure_regression": {
+    "duration_seconds": 130,
+    "journal": {
+      "events": 21,
+      "codes": {
+        "UC-SESSION-001": 1,
+        "UC-BOOT-001": 1,
+        "UC-BOOT-002": 1,
+        "UC-DISC-001": 1,
+        "UC-RUNTIME-001": 1,
+        "UC-AUDIO-001": 11,
+        "UC-GPU-001": 5
+      },
+      "last_frame": 300,
+      "audio_frames": 5280000,
+      "nonfinite": 0
+    },
+    "exception_recorded": false
+  },
+  "original_sdl_scene": {
+    "exit_code": -9,
+    "timed_out": true,
+    "elapsed_seconds": 185.021,
+    "last_present_counter": 1800,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 8,
+    "exception_recorded": false,
+    "sdl_driver": "dummy",
+    "audible_output_verified": false,
+    "journal": {
+      "events": 55,
+      "codes": {
+        "UC-SESSION-001": 1,
+        "UC-BOOT-001": 1,
+        "UC-BOOT-002": 1,
+        "UC-DISC-001": 1,
+        "UC-AUDIO-003": 1,
+        "UC-RUNTIME-001": 1,
+        "UC-AUDIO-001": 19,
+        "UC-GPU-001": 30
+      },
+      "last_frame": 1800,
+      "audio_frames": 8650752,
+      "nonfinite": 0
+    }
+  },
+  "first_host_sha256": "e542b50662bc43649cae5156c68f0dd47e78abc6f3e849cf98ddcf19b9ba8e74",
+  "first_host_receipt_sha256": "365b515b3d71fe2809d030b02c69a8e043df6725254e8fd9ecb68f6c83926db1",
+  "capture": {
+    "frame": 1800,
+    "size": [
+      640,
+      480
+    ],
+    "inspected": true,
+    "content": "Original Hope Street Police Station opening scene",
+    "sha256": "25db3f74fa45dfeb938341929a851dc5848a13153e14787b415f64ee620437e2",
+    "published": false
+  },
+  "visual_defects_remain": true,
+  "mission_validated": false,
+  "audio_fidelity_validated": false,
+  "android_game_boot_validated": false,
+  "shutdown_failure": {
+    "forced_sigkill": true,
+    "observed": "SIGTERM did not stop the audio-only SDL host within five seconds",
+    "diagnosis": "SDL installs quit signal handlers but this research host does not pump SDL events",
+    "fix_pending": false,
+    "fix": "Linux research host sets SDL_HINT_NO_SIGNAL_HANDLERS before SDL audio initialization; Android policy unchanged"
+  },
+  "initial_configure_failure": {
+    "reason": "SDL X11/Wayland requirement on an audio-only host",
+    "fix": "SDL_UNIX_CONSOLE_BUILD=ON",
+    "raw_first_log_preserved": false
+  },
+  "no_commercial_payload_published": true,
+  "shutdown_postfix": {
+    "exit_code": -15,
+    "elapsed_seconds": 20.018,
+    "timed_out": true,
+    "last_present_counter": 60,
+    "exception_recorded": false,
+    "audio_output": "sdl",
+    "sdl_driver": "dummy",
+    "forced_sigkill": false
+  },
+  "final_host_receipt_sha256": "51b0b125572023affa3c7a3467be5839b05bceb127116bfc67ffe2c39ce8c64a",
+  "final_host_sha256": "6ee7d3401d63c85555efc8ce13a8c6af9fd46273755401648d0d16ce958d8a0b",
+  "export_outcome_failure_recorded_test_passed": true
+}

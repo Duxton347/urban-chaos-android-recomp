@@ -14,7 +14,7 @@
       "commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
       "tree": "512dacc55297a44cedffeab80e13eb22863013d7",
       "license": "MIT; bundled assets require separate review",
-      "role": "read-only audit"
+      "role": "audit; MIT shader translator and explicit headless research renderer overlay, no Black title hooks or assets"
     },
     "runtime": {
       "url": "https://github.com/TGP482/XboxXBERecomp.git",
@@ -28,7 +28,7 @@
       "commit": "fa2c02bb6e21974a89ea9824bc53c9932abe5f9c",
       "tree": "63fb5d2d9284bec19789d10d5820c99405a15e45",
       "license": "zlib + preserved bundled notices",
-      "role": "diagnostic"
+      "role": "shared stereo SDL output and historical diagnostic"
     },
     "zydis": {
       "url": "https://github.com/zyantific/zydis.git",
@@ -48,6 +48,20 @@
       "url": "https://github.com/zyantific/zycore-c",
       "commit": "0b2432ced0884fd152b471d97ecf0258ff4d859f",
       "license": "MIT"
+    },
+    "xboxkit": {
+      "url": "https://github.com/Deterous/XboxKit.git",
+      "commit": "e8c57ca4d8e15fba27c0d1d2f6a21d56b1f38819",
+      "tree": "f4477d2c96d79018e531b2e2cf24dac59cf67a42",
+      "license": "MIT declared in csproj PackageLicenseExpression; no LICENSE text in tree",
+      "role": "audit-only Redump/XDVDFS reference; no embedded C# source"
+    },
+    "glslang": {
+      "url": "https://github.com/KhronosGroup/glslang.git",
+      "commit": "a57276bf558f5cf94d3a9854ebdf5a2236849a5a",
+      "tree": "cfec6b90899c2a0c0df59c9aded51669db1a1cac",
+      "license": "Multiple licenses: BSD-3-Clause, BSD-2-Clause, MIT, Apache-2.0, NVIDIA notices and generated Bison parser GPL-3.0-or-later WITH Bison-exception-2.2; preserve full LICENSE.txt and per-file notices",
+      "role": "Black-compatible HLSL to SPIR-V compiler; optional tools and external dependencies disabled"
     }
   },
   "toolchain": {
@@ -171,10 +185,73 @@
     "licenses/Zycore-MIT.txt": "7991ec4481a82c51d196f7440fda34c578aab51f8b9c7023935c6e03b57638bd",
     "licenses/Zydis-MIT.txt": "e5e99718209e94baaf3e9cbf6f64aa3329c9e73c63b1ab47e10f29d81974e6f3",
     "licenses/tomlplusplus-MIT.txt": "529bc3900a9571e49db285b0df432397e70b881cc3bf48de6667ae74ff4b06d8",
-    "licenses/yuv2rgb.txt": "f7d74004cc75778cae46c5f0139f244d67c07ef64cf51937e8272352197dcb18"
+    "licenses/yuv2rgb.txt": "f7d74004cc75778cae46c5f0139f244d67c07ef64cf51937e8272352197dcb18",
+    "licenses/Black-Android-MIT.txt": "844e017c30b7d78d1484c91c4babe9906df5d9cd800613284ee1c4b0dbc4f609",
+    "licenses/glslang-LICENSE.txt": "17e70c676e1521ff3e4686f04a2053d93a7e28a33be8de7ec37ab0ff72feb677"
   },
   "gradle_verification": {
     "path": "android/gradle/verification-metadata.xml",
     "sha256": "4b68041f3c9ef4cdff1c85bd1bf108db5f6fc15218f94e376982c77b5dbfe3ad"
+  },
+  "audit_heads": {
+    "runtime_observed": "cc9edda3a821a4204dc28783f429b88a27ade4f9",
+    "policy": "keep existing Burner/Black runtime pins; current main changed the generation/loading model"
+  },
+  "research_references": {
+    "voice_properties_layout": {
+      "url": "https://github.com/Cxbx-Reloaded/Cxbx-Reloaded",
+      "commit": "585c49a50af1255ab155099e06f24505f9c5a800",
+      "path": "src/core/hle/DSOUND/XbDSoundTypes.h",
+      "license": "GPL-2.0-or-later",
+      "role": "binary interface facts cross-checked against original wrapper; no implementation incorporated"
+    },
+    "synthetic_x86_oracle": {
+      "name": "unicorn",
+      "version": "2.1.4",
+      "wheel": "unicorn-2.1.4-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "9d6e6dea140560de4ebd8446661f7ef84a357d428c14a3ef09dacd306ec8c239",
+      "license": "GPL-2.0",
+      "role": "optional local test tool for authored fixture only; not used to execute game or shipped in runtime"
+    }
+  },
+  "shader_compiler": {
+    "black_commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
+    "cache_policy": "disabled during qualification",
+    "files": {
+      "native/vk_shader.cpp": "ad1a00b6e186320749bcf4a4e1e1a83c93c987dd932e594b9d2aed77dcf13bf2",
+      "native/vk_shader.h": "143f73fc2c3e612940e53001c46252ff2b5b46ab4be537b9161e8491b6239e02",
+      "LICENSE": "844e017c30b7d78d1484c91c4babe9906df5d9cd800613284ee1c4b0dbc4f609"
+    }
+  },
+  "vulkan_renderer": {
+    "black_commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
+    "files": {
+      "native/vulkan.cpp": "5dd1b2f4542906a96b2b9a13e4fc534c841c3797214e0bcf0e830c21c1d8fe38"
+    },
+    "patch": "patches/black/vulkan-headless-research.patch",
+    "host": "headless Linux research only; game and Android not yet qualified"
+  },
+  "launcher_gradle_verification": {
+    "path": "launcher/gradle/verification-metadata.xml",
+    "sha256": "026f16a8fa0c6a17587a801926ef793f602efa4ab3fdeaf04256dd6aec2e31ff",
+    "additional_metadata": {
+      "5.9.2": {
+        "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.9.2/junit-bom-5.9.2.module",
+        "sha256": "ab137ba5a8e32c9b066bf9126a1c76dd5614b724ba5c0b02549772b5e9f4cf1f",
+        "verified_with": "Maven Central artifact and its published SHA-256; matches Gradle cache"
+      },
+      "5.9.3": {
+        "url": "https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.9.3/junit-bom-5.9.3.module",
+        "sha256": "b401fd25901e582a524aa5343c4b39e28bc56e24961c1069bf2b4bbfcee46b93",
+        "verified_with": "Maven Central artifact and its published SHA-256; matches Gradle cache"
+      }
+    }
+  },
+  "android_runtime_adaptation": {
+    "renderer_patch": "patches/black/vulkan-android-host.patch",
+    "renderer_patch_sha256": "302422fdb6e5cb619ff80ed3e14545d2ea297dae9cec92124ae358fee0086f12",
+    "runtime_patch": "patches/runtime/android-host-portability.patch",
+    "runtime_patch_sha256": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+    "role": "real SDL Android window and private complete runtime build; on-device behavior unverified"
   }
 }

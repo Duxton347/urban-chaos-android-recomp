@@ -1,5 +1,7 @@
 # Notas de implementação e validação
 
+> Histórico da etapa anterior. A rota vigente está em [BUILD_STATUS.md](BUILD_STATUS.md). O diagnóstico não faz parte da entrega do jogo; o teste determinístico antigo não comprovava funções emitidas, corrigido na nova rota.
+
 - Scanner/recompilador construídos com C++20/GCC 14. O primeiro teste de build com C++17 expôs `std::erase_if`; a configuração host foi corrigida, sem modificar o SDK.
 - Gradle inicialmente não utilizava o proxy do shell automaticamente. O script configura propriedades de proxy Java e o truststore do ambiente; TLS permanece verificado.
 - O caminho SDL no CMake Android foi corrigido após o primeiro configure. Builds finais estão em `evidence/android-build.log`.

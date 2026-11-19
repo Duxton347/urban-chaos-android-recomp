@@ -1,0 +1,21 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -3177,7 +3177,8 @@
+     // the frame letterboxed to the game's aspect over black
+     float aspect = game::Aspect();
+     float w = float(swap_extent_.width), h = float(swap_extent_.height);
+-    float vw = std::min(w, h * aspect), vh = vw / aspect;
++    auto viewport = host::FrameViewport(w, h, aspect);
++    float vw = viewport.w, vh = viewport.h;
+     uint32_t filter = std::min(game::Opt().screen_filter, 8u);
+     uint32_t crt = filter <= 2 ? filter : 0;
+     bool fxaa = game::Opt().anti_aliasing == 1, ssaa = game::Opt().anti_aliasing == 2;
+@@ -3246,7 +3247,7 @@
+     if (pipe) {
+         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe);
+         BindSet(set, cbuf.off, cbuf.off);
+-        SetViewport((w - vw) / 2, (h - vh) / 2, vw, vh);
++        SetViewport(viewport.x, viewport.y, vw, vh);
+         SetScissor(0, 0, int32_t(w), int32_t(h));
+         vkCmdDraw(cb, 3, 1, 0, 0);
+     }

@@ -1,0 +1,29 @@
+{
+  "scope": "SDK state/API probes; no title instructions; compiled using private variant metadata",
+  "results": {
+    "audio": 0,
+    "viewport": 0,
+    "busy": 0,
+    "vertex": 0,
+    "voice": 0,
+    "apc": 0
+  },
+  "includes_voice_checks": [
+    "pitch",
+    "bounded query",
+    "spatial mode immediate/deferred",
+    "device stream creation and lifetime",
+    "invalid arguments",
+    "stdcall stack balance",
+    "default stream route",
+    "nonzero bus route explicitly rejected with E_NOTIMPL",
+    "stream pitch changes real voice frequency and rejects invalid pitch"
+  ],
+  "includes_io_apc_checks": [
+    "real queued delivery on supplied thread",
+    "exactly once",
+    "success/EOF/access denied translation",
+    "byte count and IOSB identity",
+    "nested callback stdcall and register preservation"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "status": "RESEARCH_HOST_COMPILED",
+  "g1_qualified": false,
+  "patches": {
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+    "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+    "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+    "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+    "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd"
+  },
+  "host_sources": {
+    "host/research/CMakeLists.txt": "c01f5098079b2005f2957f97ccc651030640e338e7df719fffe8e992801f982f",
+    "host/research/game_info.cpp": "12201e0674257a88f0dcb520b0d2d1602bbdb609ad23dc2ce9b4a7f7c740c429",
+    "host/research/probes.cpp": "3e138a25c4f2ebd02cd840f0452c5a87d333ec639875a4bcc1b6cb8a83cd7518",
+    "host/research/audio_sink.cpp": "2af94fd66a794324695619e6857f364acda6370d844a0565afa897af0c8bd3e8",
+    "host/runtime-probes/gpu_probes.cpp": "9dd497a939401575a2a57e19c3b2d826f2e8b5921b1cfea70aca2caf3d29e5fe",
+    "host/audio-device/test_device_lifetime.cpp": "9640de90efdabe95b8473e925790b7984c0a9b4abde584de11fe3d1339d5c99a",
+    "native/gpu/recorded_push.h": "c10da920cb5af71c4d81ce5feb7b9760331a1be6880e10daf2c70a775ae3852e",
+    "native/audio/cone.h": "dec717a53a08c662665a129dced217e11759b9bda9af10e683a232a9301a6306",
+    "native/audio/spatial.h": "c4a89e2d023b318f1be1481cf1259b35d3ba3315be516d66f47edac6457a90a0"
+  },
+  "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+  "guest_archive_sha256": "3ff47a34fe041b3c6b22d943070d0846f2ba5e4351a42738fc13740a3b02db5e",
+  "host_sha256": "8afad4ce57e3dcdb1fdfd001cb172999c72d85b6dc05e7f569bd247a8f57df57",
+  "observer_enabled": false,
+  "hle_selftests": {
+    "audio": 0,
+    "viewport": 0,
+    "busy": 0,
+    "vertex": 0,
+    "apc": 0,
+    "voice": 0
+  },
+  "scene_run": {
+    "timeout_seconds": 180,
+    "elapsed_seconds": 180.019,
+    "exit_code": -15,
+    "timed_out": true,
+    "last_present_counter": 1800,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 8,
+    "exception_recorded": false
+  },
+  "scene_capture": {
+    "frame": 1800,
+    "width": 640,
+    "height": 480,
+    "sha256": "02964967327274273340bb8d5a58f2195a4a5311e176235e930ba1016149899b",
+    "inspected": true,
+    "content": "Original Hope Street opening cinematic; scenario and police visible; CPU rendering defects remain"
+  },
+  "mission_playable_validated": false,
+  "game_audio_heard": false,
+  "android_boot_validated": false
+}

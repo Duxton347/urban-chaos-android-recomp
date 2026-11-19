@@ -1,0 +1,212 @@
+{
+  "date_utc": "2026-11-18",
+  "classification": "Private experimental APK built and verified; no Android boot claim",
+  "private_owner_testing_only": true,
+  "apk": {
+    "status": "PRIVATE_EXPERIMENTAL_APK_BUILT",
+    "build_id": "experimental-3ef6e0e968626f62",
+    "apk_sha256": "9d06ba4b9e59479e0e41d1aac2d31622a1bdcfede5c06a9c962a645c84922aba",
+    "apk_bytes": 45446952,
+    "native_library_sha256": "3c7d9a9beb155e867544f32dcd02626c4c51667cda22c81fdb54fdc689d53ae3",
+    "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+    "libraries": {
+      "libmain.so": "3c7d9a9beb155e867544f32dcd02626c4c51667cda22c81fdb54fdc689d53ae3",
+      "libSDL3.so": "ed878a9e39e6365d1715fca6fc9724bf5e4368435a3b0f8e9b3b8e48c389f3ee",
+      "libc++_shared.so": "ab4e6c71b96b851de45a8a9bd86369e7dbc2130a44b3b4520564be94847910f2"
+    },
+    "device_tested": false,
+    "game_android_boot_verified": false,
+    "mission_playable_verified": false,
+    "assets_bundled": false,
+    "public_upload_authorized": false
+  },
+  "app_source_hashes": {
+    "launcher/android/src/main/java/org/urbanchaos/launcher/diagnostics/AndroidReports.java": "9077ce8228c21b5e41749d84f59e57c85e82d7917fc904e6ea7137d5727f13ef",
+    "launcher/android/src/main/java/org/urbanchaos/launcher/diagnostics/ReportExportController.java": "3bd04302e5d879d7a4d3c760d654d7ae7a21f1b5b1c03b051d6fc20b01568f22",
+    "launcher/app/build.gradle": "092cb3c5dce1ac22a79684b1be3fc579359257f944c04565ea389c2a22741fcf",
+    "launcher/app/src/main/AndroidManifest.xml": "999bedbe7b7ec8fd3aba458c444f1c7d2f3d94edef3edb02c2c8366bd52f7f76",
+    "launcher/app/src/main/java/org/urbanchaos/launcher/GameActivity.java": "ba74aebfbefc02dbc190b54169f15e401fb5011220c747d04d34c2d4df4bd2a0",
+    "launcher/app/src/main/java/org/urbanchaos/launcher/IsoImport.java": "2141cf599334f30aa54a710ef7a64e98c0efa774ecef9fd2aab10b611dd9deb5",
+    "launcher/app/src/main/java/org/urbanchaos/launcher/LauncherActivity.java": "5a87140e190fe0ebb9696091a20e0aed1cde837585e56acf3b8f16ad20625aff",
+    "launcher/app/src/main/java/org/urbanchaos/launcher/NativeGame.java": "a6de381d823ea1b250fae01e5938165f1b1a05ae06f071fc8f026b2dd43c93ed",
+    "launcher/build.gradle": "0946be50adcc2fbba5ebea125bcedbc43bfee52cd25044bd1b4bbd2803df3f2e",
+    "launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/NativeReports.java": "a250dcd5367b016f6be85bd06865cbeb358a9b2476a2f3929a9bdffd88facdcc",
+    "launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/ReportSession.java": "d962297a2115217769499af8d0dd2634ea8dd8b20fb9a038a7c93a7e77cf3245",
+    "launcher/core/src/main/java/org/urbanchaos/launcher/importer/ResumableCopy.java": "b7c8798bc359e026132ec3fafaf01c2a0653e337f2df43cc0e33dc04a058d45b",
+    "launcher/gradle/verification-metadata.xml": "026f16a8fa0c6a17587a801926ef793f602efa4ab3fdeaf04256dd6aec2e31ff",
+    "launcher/gradle.properties": "ec935e6673988613cb98691284caf55f819799c8fea76c1bf4b9cf74347209cd",
+    "launcher/settings.gradle": "a880ab58e03ab56a683c4efcc5c0b2bc7496d68802145c1b44d4bef37327d11a",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDevice.java": "afdeaf583f051583eff5cc9dcbfb983e3e8923e66d1130ff3e30c21afc8f87f1",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceBLESteamController.java": "2f88711d2c5bb2114be4273b6f3461b165cf19fcedae714d0c0105b2422a4c36",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceManager.java": "5bff9432726930a17cad9502191dd807da2e3cbcff2ad6990966b4b4bd9a7757",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/HIDDeviceUSB.java": "2304ead390ae8839405f338866646fd7e12013732c5abe9339af60864626ddf4",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDL.java": "49d13bd76b65b40bc13b8f4ff1333ecf9fc5473a57bb2d216e2a60dc2e5973a4",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java": "6abe95f1a7e98fff492c34ff689b2b5d168f4ecddc72a80fc17a2af0813da0c5",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLAudioManager.java": "129990250d389bc6550c1a27a81ee9a4cc32a4d6e9080f2fe466480988f214eb",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java": "3bb5d739727b72688cdfe4fe2a3dd6fd7005a2fd2aac311deeda1e53c23e3981",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLDummyEdit.java": "fb777fa4b4cce4d328229014acf156c2c2f47445dacccd5f74f876a64cdf502b",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLInputConnection.java": "7079f65944ce0f6e8e3ca0293fc79c1e4e050f3b4290c39990723e3a0e40bc9b",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLSensorManager.java": "3ffd781744c54e6809ad61515d254af366d34b44e086db90a296c8f159f13dd7",
+    "vendor/SDL/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java": "94762faf8067f9ff64b96c8be13c04c1d6daa5561b59f753e9ad0c0aa30e23c8"
+  },
+  "native_link": {
+    "status": "PRIVATE_ANDROID_LIBRARY_LINKED",
+    "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+    "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+    "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+    "guest_archive_sha256": "ea15e2e29979b1241471a56beef34c3c30f943853847a4a363fa310485a44101",
+    "guest_objects": 129,
+    "apk_created": false,
+    "android_device_tested": false,
+    "game_boot_tested": false,
+    "g1_qualified": false,
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f"
+    },
+    "renderer_source_sha256": "e0db6ce7038dd1c54267d4bdc5d47a68e877d06c5dcd384eb5312c04e266145a",
+    "library_sha256": "3c7d9a9beb155e867544f32dcd02626c4c51667cda22c81fdb54fdc689d53ae3",
+    "library_bytes": 174517976
+  },
+  "packaging_verification": {
+    "sha256": "9d06ba4b9e59479e0e41d1aac2d31622a1bdcfede5c06a9c962a645c84922aba",
+    "bytes": 45446952,
+    "libraries": {
+      "lib/arm64-v8a/libmain.so": {
+        "elf": "ELF64 little-endian AArch64",
+        "machine": 183,
+        "sha256": "3c7d9a9beb155e867544f32dcd02626c4c51667cda22c81fdb54fdc689d53ae3",
+        "size": 174517976
+      },
+      "lib/arm64-v8a/libSDL3.so": {
+        "elf": "ELF64 little-endian AArch64",
+        "machine": 183,
+        "sha256": "ed878a9e39e6365d1715fca6fc9724bf5e4368435a3b0f8e9b3b8e48c389f3ee",
+        "size": 8248776
+      },
+      "lib/arm64-v8a/libc++_shared.so": {
+        "elf": "ELF64 little-endian AArch64",
+        "machine": 183,
+        "sha256": "ab4e6c71b96b851de45a8a9bd86369e7dbc2130a44b3b4520564be94847910f2",
+        "size": 9236352
+      }
+    },
+    "license_assets": [
+      "assets/licenses/Android-NDK-NOTICE.txt",
+      "assets/licenses/HIDAPI-BSD.txt",
+      "assets/licenses/LLVM-NOTICE.txt",
+      "assets/licenses/SDL-source-notices.txt",
+      "assets/licenses/SDL-zlib.txt",
+      "assets/licenses/XboxXBERecomp-MIT.txt",
+      "assets/licenses/XboxXBERecomp-third-party.txt",
+      "assets/licenses/Zycore-MIT.txt",
+      "assets/licenses/Zydis-MIT.txt",
+      "assets/licenses/tomlplusplus-MIT.txt",
+      "assets/licenses/yuv2rgb.txt",
+      "assets/licenses/Black-Android-MIT.txt",
+      "assets/licenses/glslang-LICENSE.txt"
+    ],
+    "signature": {
+      "exit": 0,
+      "stdout": "Verifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): false\nVerified using v3 scheme (APK Signature Scheme v3): true\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nSigner #1 certificate DN: CN=Android Debug, O=Android, C=US\nSigner #1 certificate SHA-256 digest: ac9d5f8592068c9e3772c2278392c31bfb2dd42140ec33faefb8dc070e142122\nSigner #1 certificate SHA-1 digest: f658f0911ecd409055e8d7cc6a5efd99a0534edc\nSigner #1 certificate MD5 digest: d93b11aae4bc65b781823adefeb9580d\nSigner #1 key algorithm: RSA\nSigner #1 key size (bits): 2048\nSigner #1 public key SHA-256 digest: 99fd68eee4636e7fc000a8403a1f71ec0c50d6c28bb99248a01797951aeef9c5\nSigner #1 public key SHA-1 digest: 41f0fda25b43d1dd1f46898e504725fbe52642ce\nSigner #1 public key MD5 digest: 28d0f47cefd32b3f714cb15ce7c9d7a7\n",
+      "stderr": ""
+    },
+    "zipalign": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "manifest": {
+      "exit": 0,
+      "stdout": "package: name='org.urbanchaos.launcher' versionCode='1' versionName='0.1-experimental' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'\nsdkVersion:'29'\ntargetSdkVersion:'34'\napplication: label='' icon=''\napplication-debuggable\nlaunchable-activity: name='org.urbanchaos.launcher.LauncherActivity'  label='' icon=''\nfeature-group: label=''\n  uses-gl-es: '0x20000'\n  uses-feature: name='android.hardware.vulkan.version' version='4198400'\n  uses-feature: name='android.hardware.faketouch'\n  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'\n  uses-feature: name='android.hardware.screen.landscape'\n  uses-implied-feature: name='android.hardware.screen.landscape' reason='one or more activities have specified a landscape orientation'\nmain\nother-activities\nsupports-screens: 'small' 'normal' 'large' 'xlarge'\nsupports-any-density: 'true'\nlocales:\ndensities:\nnative-code: 'arm64-v8a'\n",
+      "stderr": ""
+    },
+    "permissions": {
+      "exit": 0,
+      "stdout": "package: org.urbanchaos.launcher\n",
+      "stderr": ""
+    },
+    "runtime_status": {
+      "installed": false,
+      "launched": false,
+      "vulkan_presented_on_device": false,
+      "game_executed": false
+    }
+  },
+  "public_android_contract": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host": {
+        "sha256": "22400ce5a2c34728bd4382df4929dd0930a196fb88d83b712bbb6d48bb1eb93d",
+        "objects": 2
+      },
+      "arm64": {
+        "sha256": "5523e47e28effbaaaca14ef7797fad1ab502cd783d48d96047475bdd78c32134",
+        "objects": 2
+      },
+      "android-window": {
+        "sha256": "2887973009b7388bc6d7a144818b5be84965e119e6fc9efbcf6331a76582b4f5",
+        "objects": 2
+      },
+      "android-host": {
+        "sha256": "bec7a348721c37ef624cfb4ccb9cdc4d2926af4536fb2d9ab126f1445e464801",
+        "objects": 7,
+        "authored_profile_only": true,
+        "game_linked": false
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "ce593b68b84fd41c21312aba7235ff03e9aa1f25d7891c1d3c0b81b4a9ab6125",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f"
+    },
+    "renderer_source_sha256": "2be53d64d2fcf09917afd190f20eb157fc58f9841755ed14f7d12f62e4501885",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+    "authored_renderer_fixture_passed": true,
+    "fixture_executable_sha256": "a81c025ebfc60b016cceacdb757efbb6173e646919a6e85d94d6ef60e3f1ede9",
+    "android_window_source_sha256": "e0db6ce7038dd1c54267d4bdc5d47a68e877d06c5dcd384eb5312c04e266145a",
+    "android_window_patch_sha256": "302422fdb6e5cb619ff80ed3e14545d2ea297dae9cec92124ae358fee0086f12"
+  },
+  "checks": {
+    "python": 46,
+    "java_diagnostics": 326,
+    "resumable_copy": 14,
+    "jni_zip_vulkan_metadata": true,
+    "java_sdk34_compilation": true
+  },
+  "failed_attempts_preserved": [
+    "Android renderer initially referenced unimplemented dynamic resolution; call disabled until qualified",
+    "JNI validator initially missed entry declaration include; corrected",
+    "Two JUnit BOM Gradle module checksums were missing; verified from Maven Central artifact and sidecar and locked",
+    "O_DIRECTORY is not exposed in public Android Java API; directory opened read-only for fsync instead"
+  ],
+  "not_tested": [
+    "APK installation",
+    "original game boot/menu on Android",
+    "Vulkan/Adreno and audible audio on tablet",
+    "pause/resume behavior on device",
+    "mission gameplay and save/load",
+    "campaign"
+  ],
+  "public_binary_upload": false
+}

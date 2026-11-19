@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Honest gate report. --require-game fails while the actual title build is blocked."""
+import argparse,json,pathlib,sys
+R=pathlib.Path(__file__).resolve().parents[1];p=argparse.ArgumentParser();p.add_argument('--require-game',action='store_true');a=p.parse_args()
+state={'game_status':'REQUIRES_REVERSE_ENGINEERING','g1':'deterministic generation and private Linux research execution; full title integration not qualified','missing':['qualified compatibility of supplied non-reference XBE variant','remaining HLE/ABI/callback and mission validation','Android device boot/Vulkan/audio/lifecycle tests'],'current_research':'original menus and Hope Street opening scene rendered on Linux; surface parent ownership corrected; directional audio applied/tested; gameplay, audible fidelity and Android device execution pending; Windows optional','arm64':'baseline and continuation-aware guest archives compiled (129 AArch64 objects each); complete private libmain.so linked and experimental APK built/signed; Android game boot unverified','burner':'adaptations not incorporated; license unresolved','historical_diagnostic':'not a port','synthetic_smoke':'does not qualify any game gate'}
+print(json.dumps(state,indent=2));sys.exit(78 if a.require_game else 0)

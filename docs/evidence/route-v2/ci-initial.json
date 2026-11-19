@@ -1,0 +1,20 @@
+{
+  "commit": "8fb039e3cde9712fe0e44e48812669c3d57bba7d",
+  "audit": {
+    "run": 43734487605,
+    "conclusion": "success"
+  },
+  "native": {
+    "run": 43734487666,
+    "conclusion": "success"
+  },
+  "tests": {
+    "run": 43734487601,
+    "conclusion": "success"
+  },
+  "android": {
+    "run": 43734487615,
+    "conclusion": "failure",
+    "investigation": "reading log-failed; not treating local AArch64 build as remote success"
+  }
+}

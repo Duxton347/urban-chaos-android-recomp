@@ -1,0 +1,314 @@
+{
+  "kind": "PC_RECOVERY_SOURCE_INVENTORY",
+  "archives": {
+    "source-v0.01.zip": {
+      "sha256": "15ad8ceecea8f203a579aa8054fdd73115627adfdb6d00c48086b0a692179d11",
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.01/Urban-Chaos-Burner-Edition-0.01-Source.zip",
+      "entries": 2333,
+      "uncompressed_bytes": 13908783,
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": [],
+      "declared_identity": {
+        "title_id": "0x534300F7",
+        "version": 3,
+        "xdk_build": 5849,
+        "entry_point": "0x00082027",
+        "kernel_thunk_table": "0x0044B260",
+        "kernel_import_count": 146,
+        "section_count": 17,
+        "xbe_size": 5283840,
+        "xbe_sha256": "B74AE76FDBF1EF5F95DCFABF4F94F3AA738E649ECAEF4068D8531E07071B5DAC",
+        "xboxrecomp_revision": "14522228d296a7004adb02d6aec8335eee268cae"
+      },
+      "identity_source": {
+        "path": "Urban Chaos Burner Edition Source/config/game.json",
+        "sha256": "b2591b3f32ff665398daabcb2134abacbb828493a1feb1b39dcdc6a8ca27092a"
+      },
+      "legacy_seed_count": 247
+    },
+    "source-v0.03.zip": {
+      "sha256": "68a071bdac8bb2a8f55dfe60443ea38c1623999317997bd7506f82a07e222877",
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.03/UrbanChaos-BurnerEdition-0.03-Source.zip",
+      "entries": 2503,
+      "uncompressed_bytes": 14577822,
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": [],
+      "declared_identity": {
+        "title_id": "0x534300F7",
+        "version": 3,
+        "xdk_build": 5849,
+        "entry_point": "0x00082027",
+        "kernel_thunk_table": "0x0044B260",
+        "kernel_import_count": 146,
+        "section_count": 17,
+        "xbe_size": 5283840,
+        "xbe_sha256": "B74AE76FDBF1EF5F95DCFABF4F94F3AA738E649ECAEF4068D8531E07071B5DAC",
+        "xboxrecomp_revision": "14522228d296a7004adb02d6aec8335eee268cae"
+      },
+      "identity_source": {
+        "path": "config/game.json",
+        "sha256": "f8a3679926a917c57e30bea229db17a40c534f8e92cbdac0a17dff176fb4c3ba"
+      },
+      "legacy_seed_count": 247
+    },
+    "source-v0.18.zip": {
+      "sha256": "d705d414c9f7096cdbc45815da4e01f3336a71a99187c880a11928e8e6e33d70",
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.18/UrbanChaos-BurnerEdition-0.18-Source.zip",
+      "entries": 907,
+      "uncompressed_bytes": 144340891,
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    "windows-v0.18.zip": {
+      "sha256": "49ba18d6ec44aea7d47b8b4574ed407ef3b016ed62f40cf9340a5dd9beea0ca6",
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.18/UrbanChaos-BurnerEdition-0.18-Windows-x64.zip",
+      "entries": 337,
+      "uncompressed_bytes": 452366704,
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": [],
+      "pc_binary": {
+        "path": "runtime/UrbanChaosXbeTrial.exe",
+        "size": 27289088,
+        "sha256": "791d1e0bcec71ae69c7a7c2534b40b21c93a58110d2ce303bb866a77e28b611b",
+        "pe_machine": "0x8664",
+        "embedded_raw_candidate": false
+      }
+    }
+  },
+  "history": [
+    {
+      "commit": "bdaef722ef1d589af30e5a58dd8543f64564c4fc",
+      "files": 907,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "cb6c7a72356c17659db6ade8abbf9d6016aa60da",
+      "files": 898,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "d5ec10e331decf94217aeec6a0e440160179cc39",
+      "files": 898,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "0f51c737c3a39a1fbda56274b7142c56165a15c1",
+      "files": 898,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "05cefab3709a2fab538c6c9c24da68963c403265",
+      "files": 874,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "4cced32768fa20101559b730195d89b832a37fd0",
+      "files": 873,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "eb33186a85d055665f9e1ac63dd191f97ecbd92e",
+      "files": 845,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "822606417d9dac86bb5e3ab121353d92ab696161",
+      "files": 816,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "a74aef0a4d6d4faed22838090c999ddb4428a6b1",
+      "files": 816,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "3fa726aeba656e9856b8186b236b44b2e226df12",
+      "files": 813,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "017fe677c0ad6ac5c594dcaf432c60dc8ee7f821",
+      "files": 791,
+      "configs": [],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "935131bc2c01b3f4a78686541890f5f1f07d51fc",
+      "files": 3023,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "e4ed1c56489292ef0b3548d90bfe4350833f5e55",
+      "files": 2876,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "2a689f0b0878d6217df9b8a5b5783898d0dc04d2",
+      "files": 2872,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "ba1319d96ecdee9e02fe769473e67ff86b6fb8cc",
+      "files": 2865,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "10678c03a3446a67b91dc361d9703b62d314751f",
+      "files": 2651,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "76fee62764f5992ee699ea5b870622431d0af54c",
+      "files": 2642,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "2a0e23df4a41b0867d1e7d360211758c1e44335b",
+      "files": 2511,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "95abb4040e632f37ad43dab2d1e542daa5c3807d",
+      "files": 2503,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "b265e7108d58b326aec8b0ce9b3d0d8addf5747c",
+      "files": 2339,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    },
+    {
+      "commit": "c6581087c694afca0d5423da4c6ba7c38611aac3",
+      "files": 2333,
+      "configs": [
+        "config/game.json",
+        "config/memory_read_polls.json",
+        "config/mmio_store32.json",
+        "config/seed_functions.json",
+        "config/trace_functions.json"
+      ],
+      "generated_units": [],
+      "original_images": [],
+      "integration_status": []
+    }
+  ],
+  "qualified_game_build": false,
+  "history_commits_checked": 21
+}

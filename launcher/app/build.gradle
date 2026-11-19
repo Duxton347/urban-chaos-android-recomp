@@ -1,0 +1,25 @@
+import groovy.json.JsonSlurper
+plugins { id 'com.android.application' }
+// The base package is an intermediate. Only the private assembler injects the verified game libraries and signs delivery.
+def nativeDir = providers.gradleProperty('urbanNativeBuild').orNull
+if (!nativeDir) throw new GradleException('Private linked game runtime required; this is not a standalone launcher APK')
+def receipt = new JsonSlurper().parse(file(nativeDir + '/receipt.json'))
+if (receipt.status != 'PRIVATE_ANDROID_LIBRARY_LINKED') throw new GradleException('Actual linked Android game runtime required')
+android {
+ namespace 'org.urbanchaos.launcher'
+ compileSdk 34
+ defaultConfig {
+  applicationId 'org.urbanchaos.launcher'
+  minSdk 29
+  targetSdk 34
+  versionCode 4
+  versionName '0.4-experimental'
+  buildConfigField 'String','BUILD_ID','"'+providers.gradleProperty('urbanBuildId').get()+'"'
+  buildConfigField 'String','XBE_SHA256','"'+receipt.xbe_sha256+'"'
+ }
+ buildFeatures { buildConfig true }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+ sourceSets.main.java.srcDirs += ['../core/src/main/java','../android/src/main/java','../../vendor/SDL/android-project/app/src/main/java']
+ signingConfigs { debug { storeFile file('../../.toolchain/debug.keystore') } }
+ buildTypes { release { minifyEnabled false } }
+}

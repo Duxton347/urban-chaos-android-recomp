@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import hashlib,json,pathlib,struct,subprocess,zipfile,sys
-R=pathlib.Path(__file__).resolve().parents[1];apk=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else R/'android/app/build/outputs/apk/debug/app-debug.apk';sdk=R/'.toolchain/android-sdk';bt=sdk/'build-tools/34.0.0';out={}
+import argparse,hashlib,json,pathlib,struct,subprocess,zipfile,sys
+R=pathlib.Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser();parser.add_argument('apk',nargs='?',type=pathlib.Path,default=R/'android/app/build/outputs/apk/debug/app-debug.apk');parser.add_argument('--output',type=pathlib.Path,default=R/'docs/evidence/apk-verification.json');args=parser.parse_args()
+apk=args.apk;sdk=R/'.toolchain/android-sdk';bt=sdk/'build-tools/34.0.0';out={}
 def run(name,args):
  p=subprocess.run(list(map(str,args)),capture_output=True,text=True);out[name]=dict(exit=p.returncode,stdout=p.stdout,stderr=p.stderr)
  if p.returncode:raise SystemExit(name+' failed: '+p.stderr)
@@ -24,5 +26,5 @@ run('permissions',[bt/'aapt','dump','permissions',apk])
 assert 'MANAGE_EXTERNAL_STORAGE' not in out['permissions']['stdout']
 assert "native-code: 'arm64-v8a'" in out['manifest']['stdout']
 out['runtime_status']={'installed':False,'launched':False,'vulkan_presented_on_device':False,'game_executed':False}
-(R/'docs/evidence/apk-verification.json').write_text(json.dumps(out,indent=2)+'\n')
+args.output.write_text(json.dumps(out,indent=2)+'\n')
 print(json.dumps(out,indent=2))

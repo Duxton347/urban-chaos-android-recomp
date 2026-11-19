@@ -1,0 +1,3 @@
+native	Run scripts/build_pc_runtime_core.sh	2026-11-15T17:16:09.1844346Z [ 86%] Built target xbox_kernel_core
+native	Run scripts/build_pc_runtime_core.sh	2026-11-15T17:16:09.2687704Z 1: REAL_SDK_MEMORY: virtual reserve/commit/query/free and physical/write-combine alias passed; no game executed
+native	Run scripts/build_pc_runtime_core.sh	2026-11-15T17:16:09.2691213Z 100% tests passed, 0 tests failed out of 1

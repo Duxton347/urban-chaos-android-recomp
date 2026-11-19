@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "compiled_shaders": 10,
+  "sdk_hlsl": true,
+  "black_compiler_reused": true,
+  "descriptor_bindings_checked": true,
+  "game_data_used": false,
+  "vulkan_execution": {
+    "device_name": "SwiftShader Device (Subzero)",
+    "status": "PASS",
+    "device_type": 4,
+    "api_version": 4206592,
+    "driver_version": 20971520,
+    "precise_enabled": true,
+    "reports": 21,
+    "visible": 64,
+    "hidden": 0,
+    "discarded": 0,
+    "gpu_pool_reuse": true,
+    "snapshot_clear": true,
+    "pending_before_submission": true,
+    "counter_normalization": true,
+    "counter_wrap": true,
+    "capacity_rejected": true,
+    "writer_retry": true,
+    "record_bytes": 16,
+    "game_data_used": false,
+    "android_device_tested": false
+  },
+  "android_compiled": true,
+  "android_archives": {
+    "liburban_black_shader.a": {
+      "sha256": "dd9b45275e03b15d04cbcebd1b0609d9486b0550e4b36c307e85aabc56b3f2ef",
+      "aarch64_objects": 1
+    },
+    "libglslang.a": {
+      "sha256": "656dba3cf4839f39cb4b5c88f19e9f70ecd0b4ce907d52df5131085fa888979a",
+      "aarch64_objects": 48
+    },
+    "libglslang-default-resource-limits.a": {
+      "sha256": "3c5deabe8b9c758916207a405b90d3d479cbf319de9dceee312d3c668a792f9e",
+      "aarch64_objects": 2
+    }
+  },
+  "cache_enabled": false,
+  "game_vulkan_backend_integrated": false,
+  "game_frames_tested": false,
+  "android_device_tested": false,
+  "validation_layers_enabled": false,
+  "validation_errors": null,
+  "ndk": "28.2.13676358",
+  "cmake": "3.31.6",
+  "spirv_sha256": {
+    "authored-fragment.spv": "b7c1da54bf48f51f124520714f1a7e815dff8d4ad39aff3a7a333b6b385f954d",
+    "authored-vertex.spv": "4682b20f7f60fbcac8c0e27eed81b39fad7ca5d52552bbd627a09abd9a447273",
+    "opaque-helper.spv": "1909f80d46399f0748bc3e913d0b60e7be90169f601b3c8c807a2c350ffa040a",
+    "sdk-alpha.spv": "1e13d9d44cee31e243b4aa37a15cff3371456c2b4b093994cff1c9f0c8bdc5a4",
+    "sdk-fixed.spv": "7f301998fe70f82656789374b672a216b4181178e2626f6ad9125e96988e2217",
+    "sdk-lit.spv": "79778ce54472d8057a862b9d93d97f740a4420ecb0b7612ffbd1eea7e387aade",
+    "sdk-pixel.spv": "839857a74299ae7a877961317368cb77f67fcb683470e8bfb4bba7250ac01fd9",
+    "sdk-rhw.spv": "933eab94c16cd92e6dd71f9bd83af565098609b5603a046c24d8d6b5e69ec2f4",
+    "sdk-shadow.spv": "25b358531b359887ff31df93d128be5cc103437a267d465a9f8db1549428c09b",
+    "sdk-texture.spv": "7e0c2d12e2a9eacfb6dec5e034f6d55a1b665f4635c14efb24420b2ab1c7c4e8"
+  },
+  "dependencies": {
+    "black_commit": "8e9c6fc7d570503ea68d039cff16c09339ee6d30",
+    "cache_policy": "disabled during qualification",
+    "files": {
+      "native/vk_shader.cpp": "ad1a00b6e186320749bcf4a4e1e1a83c93c987dd932e594b9d2aed77dcf13bf2",
+      "native/vk_shader.h": "143f73fc2c3e612940e53001c46252ff2b5b46ab4be537b9161e8491b6239e02",
+      "LICENSE": "844e017c30b7d78d1484c91c4babe9906df5d9cd800613284ee1c4b0dbc4f609"
+    }
+  }
+}
