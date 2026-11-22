@@ -6,7 +6,8 @@
 namespace urban::progress {
 enum class Kind : uint32_t { Idle, Guest, Kernel, Hle, Vulkan };
 struct Slot {
- std::atomic<uint64_t> current{0}, last{0}, calls{0},last_kernel{0},last_hle{0};
+ std::atomic<uint64_t> current{0}, last{0}, calls{0},last_kernel{0},last_hle{0},sample_attempts{0};
+ std::array<std::atomic<uint32_t>,8> code_candidates{};
 };
 inline std::array<Slot,64> slots;
 inline std::atomic<uint32_t> allocated{0};
@@ -21,6 +22,17 @@ inline Slot* Local() {
  // Slots are never recycled, so snapshots cannot follow freed thread state.
  thread_local Slot* slot=[](){auto n=allocated.fetch_add(1);return n<slots.size()?&slots[n]:nullptr;}();
  return slot;
+}
+// Bounded stack scan for code candidates, not a validated unwound call stack. Never exports raw words.
+template<class Reader> void SampleCodeCandidates(uint32_t esp,uint32_t low,uint32_t high,uint32_t codeLow,uint32_t codeHigh,Reader read){
+ auto* slot=Local();if(!slot||(slot->sample_attempts.fetch_add(1,std::memory_order_relaxed)&1023))return;
+ for(auto& value:slot->code_candidates)value.store(0,std::memory_order_relaxed);
+ if(low>high||esp<low||esp>high||esp%4)return;
+ unsigned used=0;uint32_t last=0;uint64_t end=std::min<uint64_t>(high,uint64_t(esp)+256);
+ for(uint64_t at=esp;at+4<=end&&used<slot->code_candidates.size();at+=4){
+  auto value=CodeCaller(read(uint32_t(at)),codeLow,codeHigh);
+  if(value&&value!=last){slot->code_candidates[used++].store(value,std::memory_order_relaxed);last=value;}
+ }
 }
 class Scope {
  Slot* slot_;uint64_t prior_=0;
@@ -71,7 +83,11 @@ public:
 };
 inline void Poll(diagnostics::Journal& journal) {
  for(uint32_t n=0;n<std::min<uint32_t>(allocated.load(),slots.size());++n){
-  auto& slot=slots[n];auto state=slot.current.load(std::memory_order_relaxed),last=slot.last.load(std::memory_order_relaxed);
+  auto& slot=slots[n];
+  if(slot.sample_attempts.load())journal.Emit(diagnostics::Code::CodeCandidates,{{"slot",n},{"attempts",slot.sample_attempts.load()},
+   {"pc0",slot.code_candidates[0].load()},{"pc1",slot.code_candidates[1].load()},{"pc2",slot.code_candidates[2].load()},{"pc3",slot.code_candidates[3].load()},
+   {"pc4",slot.code_candidates[4].load()},{"pc5",slot.code_candidates[5].load()},{"pc6",slot.code_candidates[6].load()},{"pc7",slot.code_candidates[7].load()}});
+  auto state=slot.current.load(std::memory_order_relaxed),last=slot.last.load(std::memory_order_relaxed);
   auto kernel=slot.last_kernel.load(std::memory_order_relaxed),hle=slot.last_hle.load(std::memory_order_relaxed);
   journal.Emit(diagnostics::Code::ThreadProgress,{{"slot",n},{"kind",state>>32},{"target",uint32_t(state)},
    {"last_kind",last>>32},{"last_target",uint32_t(last)},{"calls",slot.calls.load(std::memory_order_relaxed)},

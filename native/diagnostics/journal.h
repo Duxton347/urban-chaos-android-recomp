@@ -22,7 +22,7 @@ enum class Code {
  SourceCompressed, SourceIo, SourceOther, RuntimeWarning, RuntimeError,
  MissingResource, MissingFunction, MissingKernel, GuestTrap, FrameStats, AudioStats,
  AudioOutputFailure, AudioOutputState, VisibilityReport, AndroidHost, UnsupportedPageSize, GpuDevice, GpuCountFailure,
- ThreadProgress, IoProgress, IoCompletion, AudioTiming, GpuTiming, InputLatency, LocaleReady, LocaleRejected, Trace
+ ThreadProgress, IoProgress, IoCompletion, AudioTiming, GpuTiming, InputLatency, LocaleReady, LocaleRejected, LocaleState, CodeCandidates, Trace
 };
 struct Definition { const char* code; const char* level; const char* reason; bool known; };
 inline Definition Describe(Code c) {
@@ -65,6 +65,8 @@ inline Definition Describe(Code c) {
  case Code::InputLatency:return {"UC-INPUT-002","info","Touch press delivery to guest polling; not total display or game response latency",true};
  case Code::LocaleReady:return {"UC-LOCALE-003","info","Verified optional native text archives installed read-only before boot",true};
  case Code::LocaleRejected:return {"UC-LOCALE-002","error","Optional native caption cache rejected; no game boot attempted",true};
+ case Code::LocaleState:return {"UC-LOCALE-005","info","Optional archive request and active override count; no text or filesystem paths",true};
+ case Code::CodeCandidates:return {"UC-CPU-004","info","Code-range candidates sampled from bounded current-thread stack; not an unwound call stack",true};
  case Code::Trace:return {"UC-TRACE-001","debug","Runtime format template; argument values intentionally omitted",false};
  }
  return {"UC-RUNTIME-002","error","Unclassified diagnostic event",false};

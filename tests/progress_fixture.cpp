@@ -31,6 +31,14 @@ int main(int argc,char** argv) {
  uint64_t calls=0;
  for(auto& s:slots){Check(s.current==0);calls+=s.calls;}
  Check(calls==63003);
+ slot->sample_attempts=0;
+ uint32_t words[]={0x11004,0x11004,0x11008,0xffffffff};unsigned sampled=0;
+ SampleCodeCandidates(0x1000,0x1000,0x1010,0x11000,0x12000,[&](uint32_t at){Check(at>=0x1000&&at<0x1010);++sampled;return words[(at-0x1000)/4];});
+ Check(sampled==4&&slot->code_candidates[0]==0x11004&&slot->code_candidates[1]==0x11008&&slot->code_candidates[2]==0);
+ SampleCodeCandidates(0x1000,0x1000,0x1010,0x11000,0x12000,[&](uint32_t){throw std::runtime_error("sampling cadence failed");return 0;});
+ slot->sample_attempts=0;
+ SampleCodeCandidates(0xffc,0x1000,0x1010,0x11000,0x12000,[&](uint32_t){throw std::runtime_error("outside stack read");return 0;});
+ Check(slot->code_candidates[0]==0);
  urban::diagnostics::Journal journal;
  Check(journal.Start(argv[1],"authored-progress",std::string(64,'a')));
  Poll(journal);journal.Finish();

@@ -8,11 +8,13 @@
  #include "cpu/x86_ops.h"
  #include "kernel/kernel.h"
  
-@@ -119,6 +120,7 @@
+@@ -119,6 +120,9 @@
  }
  
  void x86_kernel(X86Context& ctx, uint8_t* base, uint32_t ordinal) {
 +    urban::progress::Scope progress(urban::progress::Kind::Kernel, ordinal, urban::progress::CodeCaller(kernel::R32(ctx.esp), X86CodeBase, X86CodeEnd));
++    if(ordinal==294)if(auto thread=kernel::Current();thread&&thread->stack_size<=thread->stack_top)
++        urban::progress::SampleCodeCandidates(ctx.esp,thread->stack_top-thread->stack_size,thread->stack_top,X86CodeBase,X86CodeEnd,[](uint32_t at){return kernel::R32(at);});
      if (ordinal < 400 && g_exports[ordinal].fn) {
          g_exports[ordinal].fn(ctx, base);
          return;

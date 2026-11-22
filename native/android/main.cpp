@@ -62,7 +62,7 @@ int main(int argc,char** argv){
  const char* storage=SDL_GetAndroidInternalStoragePath();if(!storage)return 2;root=storage;
  std::filesystem::create_directories(root/"game");std::filesystem::create_directories(root/"saves");
  std::filesystem::create_directories(root/"config");std::filesystem::create_directories(root/"cache/shaders");
- auto& report=urban::diagnostics::ProcessJournal();
+ uint32_t locale_archives=0;auto& report=urban::diagnostics::ProcessJournal();
  if(!report.Healthy())report.Start(root/"logs/native",URBAN_BUILD_ID,URBAN_BUILD_XBE_SHA256);
  logx::SetObserver([](logx::Level level,const char* format,const char* expanded){urban::diagnostics::ProcessJournal().Observe(int(level),format,expanded);});
  logx::Init((root/"logs/raw").string(),"UrbanChaos");
@@ -91,7 +91,8 @@ int main(int argc,char** argv){
     source.ReplaceTextArchive(name,std::move(bytes));
    }
    if(!manifest.eof()||seen.empty())throw std::runtime_error("UC-LOCALE-002");
-   report.Emit(urban::diagnostics::Code::LocaleReady,{{"archives",seen.size()}});
+   locale_archives=uint32_t(seen.size());
+   report.Emit(urban::diagnostics::Code::LocaleReady,{{"archives",locale_archives}});
   }
   source.Activate(false); // Only the exact compiled revision is accepted in this first Android integration.
   input::Init();
@@ -113,7 +114,7 @@ int main(int argc,char** argv){
     host::PadEvent(event);
    }while(SDL_PollEvent(&event));
    if(SDL_GetTicks()-last_audio>=1000){audio::PollOutputDiagnostics();last_audio=SDL_GetTicks();logx::Flush();}
-   if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);host::PollInputDiagnostics();last_progress=SDL_GetTicks();}
+   if(SDL_GetTicks()-last_progress>=10000){urban::progress::Poll(report);report.Emit(urban::diagnostics::Code::LocaleState,{{"requested",argc==3?1u:0u},{"archives",locale_archives}});host::PollInputDiagnostics();last_progress=SDL_GetTicks();}
   }
  }catch(const urban::game::SourceError& error){report.Emit(urban::diagnostics::SourceCode(error.code));}
  catch(const std::exception& error){report.Emit(std::string_view(error.what())=="UC-LOCALE-002"?urban::diagnostics::Code::LocaleRejected:urban::diagnostics::Code::BootFailed);}
