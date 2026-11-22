@@ -13,6 +13,8 @@ def build(spec):
         name=row['name'];require(name in NAMES and name not in seen,'Unsupported/duplicate archive');seen.add(name)
         raw=pathlib.Path(row['archive']).read_bytes();archive=Archive(raw);bank=TextBank(archive.unpack(NAMES[name]));doc=json.loads(pathlib.Path(row['translations']).read_text());bank.translate(doc)
         entries=[r for r in doc['entries'] if r.get('translation') and r['translation']!=r['source']]
+        translated_keys={entry['key'] for entry in entries}
+        require(set(row.get('required_keys',[]))<=translated_keys,'Required caption translations missing')
         text(name);text(NAMES[name]);text(hashlib.sha256(raw).hexdigest());text(hashlib.sha256(bank.data).hexdigest());integer(len(entries))
         for entry in entries:text(entry['key']);integer(entry['variant']);text(entry['translation'])
     require(len(result)<=2*1024*1024,'Pack too large');return bytes(result)

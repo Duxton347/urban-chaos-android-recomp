@@ -19,8 +19,8 @@ def authored_bank():
         blocks.append(keys+meta+pool+bytes(64-len(pool))+b'\xfe\x81')
     return struct.pack('<HH5I',2,32,112,36,64,2,2)+b''.join(blocks)
 
-def authored_archive(text_last=False,duplicate=False):
-    payloads=[('authored.exttxt',authored_bank()),('texture.bin',bytes(range(32)))]
+def authored_archive(text_last=False,duplicate=False,text_name="authored.exttxt"):
+    payloads=[(text_name,authored_bank()),('texture.bin',bytes(range(32)))]
     if text_last:payloads.reverse()
     if duplicate:payloads.insert(1,('texture.bin',b'other authored bytes'))
     records=bytearray();compressed=[zlib.compress(data,9) for name,data in payloads]

@@ -37,8 +37,9 @@ public final class SubtitleArchive {
    check(n==expected&&overflow==0&&inflater.finished()&&inflater.getRemaining()==0,"inflate_shape");return result;
   }catch(DataFormatException error){throw new IOException("inflate",error);}finally{inflater.end();}
  }
- private static byte[] deflate(byte[] raw)throws IOException{
-  Deflater encoder=new Deflater(9);try{encoder.setInput(raw);encoder.finish();ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] chunk=new byte[8192];
+ private static byte[] deflate(byte[] raw)throws IOException{return deflate(raw,9);}
+ private static byte[] deflate(byte[] raw,int level)throws IOException{
+  Deflater encoder=new Deflater(level);try{encoder.setInput(raw);encoder.finish();ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] chunk=new byte[8192];
    while(!encoder.finished()){int n=encoder.deflate(chunk);check(n>0&&out.size()<=LIMIT-n,"deflate_limit");out.write(chunk,0,n);}return out.toByteArray();
   }finally{encoder.end();}
  }
@@ -67,21 +68,46 @@ public final class SubtitleArchive {
   }
   return result;
  }
- public static byte[] patch(byte[] archive,String entry,String bankSha,Map<String,String> translations)throws IOException{
+ private static final class Entry {
+  String name;int record,offset,raw,packed;
+ }
+ private static List<Entry> index(byte[] archive)throws IOException{
   check(archive.length>=208&&archive.length<=LIMIT&&archive.length%2048==16&&u32(archive,0)==28,"archive_header");
   check(MessageDigest.isEqual(digest("MD5",archive,archive.length-16),Arrays.copyOfRange(archive,archive.length-16,archive.length)),"archive_md5");
   for(int p=24;p<44;p+=4)check(u32(archive,p)==(archive.length-16)/2048,"archive_sectors");
-  int table=u32(archive,192),count=u32(archive,196);check(table>=4&&table<=16*1024*1024&&count>0&&count<=100000,"archive_index");span(196,table,archive.length-16);int end=196+table,at=200,target=-1,maxEnd=0,maxOffset=0;java.util.List<int[]> extents=new ArrayList<>();
+  int table=u32(archive,192),count=u32(archive,196);check(table>=4&&table<=16*1024*1024&&count>0&&count<=100000,"archive_index");span(196,table,archive.length-16);
+  int end=196+table,at=200;List<Entry> entries=new ArrayList<>();
   for(int i=0;i<count;i++){
-   int length=u16(archive,at);at+=2;check(length>0&&length<=1024,"archive_name");span(at,length+16,end);String name=zstring(archive,at,at+length);check(name.length()==length-1,"archive_name");at+=length;
-   int offset=u32(archive,at),packed=u32(archive,at+8);span(offset,packed,archive.length-16);check(offset>=end,"archive_payload");extents.add(new int[]{offset,packed});check(u32(archive,at+4)>=0&&u32(archive,at+4)<=LIMIT,"archive_raw_limit");maxOffset=Math.max(maxOffset,offset);maxEnd=Math.max(maxEnd,offset+packed);
-   if(name.equals(entry)){check(target==-1,"archive_ambiguous");target=at;}at+=16;
+   int length=u16(archive,at);at+=2;check(length>0&&length<=1024,"archive_name");span(at,length+16,end);Entry e=new Entry();e.name=zstring(archive,at,at+length);check(e.name.length()==length-1,"archive_name");at+=length;
+   e.record=at;e.offset=u32(archive,at);e.raw=u32(archive,at+4);e.packed=u32(archive,at+8);span(e.offset,e.packed,archive.length-16);check(e.offset>=end&&e.raw>=0&&e.raw<=LIMIT,"archive_payload");at+=16;entries.add(e);
   }
-  extents.sort(java.util.Comparator.comparingInt(e->e[0]));int prior=end;for(int[] extent:extents){check(extent[0]>=prior,"archive_overlap");prior=extent[0]+extent[1];}
-  check(at==end&&target>=0,"archive_target");int offset=u32(archive,target),rawSize=u32(archive,target+4),packed=u32(archive,target+8);check(offset==maxOffset&&offset+packed==maxEnd,"text_must_be_last");
-  for(int i=maxEnd;i<archive.length-16;i++)check(archive[i]==0,"archive_trailer");byte[] bank=inflate(archive,offset,packed,rawSize);check(sha(bank).equals(bankSha),"bank_revision");
-  byte[] replaced=translateBank(bank,translations),compressed=deflate(replaced);long payloadEnd=(long)offset+compressed.length,padded=(payloadEnd+2047)/2048*2048;check(padded+16<=LIMIT,"archive_output_limit");
-  byte[] result=new byte[(int)padded+16];System.arraycopy(archive,0,result,0,offset);put(result,target+4,replaced.length);put(result,target+8,compressed.length);System.arraycopy(compressed,0,result,offset,compressed.length);
-  for(int p=24;p<44;p+=4)put(result,p,(int)padded/2048);System.arraycopy(digest("MD5",result,(int)padded),0,result,(int)padded,16);return result;
+  check(at==end,"archive_index_end");entries.sort(Comparator.comparingInt(e->e.offset));int previous=end;
+  for(Entry e:entries){check(e.offset>=previous,"archive_overlap");previous=e.offset+e.packed;}
+  for(int i=previous;i<archive.length-16;i++)check(archive[i]==0,"archive_trailer");return entries;
+ }
+ private static byte[] finish(byte[] prefix,byte[] compressed,int offset)throws IOException{
+  long padded=((long)offset+compressed.length+2047)/2048*2048;check(padded+16<=LIMIT,"archive_output_limit");byte[] result=Arrays.copyOf(prefix,(int)padded+16);
+  System.arraycopy(compressed,0,result,offset,compressed.length);for(int p=24;p<44;p+=4)put(result,p,(int)padded/2048);
+  System.arraycopy(digest("MD5",result,(int)padded),0,result,(int)padded,16);return result;
+ }
+ public static byte[] patch(byte[] archive,String entry,String bankSha,Map<String,String> translations)throws IOException{
+  List<Entry> entries=index(archive);Entry target=null;
+  for(Entry e:entries)if(e.name.equals(entry)){check(target==null,"archive_ambiguous");target=e;}
+  check(target!=null&&target==entries.get(entries.size()-1),"text_must_be_last");byte[] bank=inflate(archive,target.offset,target.packed,target.raw);check(sha(bank).equals(bankSha),"bank_revision");
+  byte[] replaced=translateBank(bank,translations),compressed=deflate(replaced),prefix=Arrays.copyOf(archive,target.offset);
+  put(prefix,target.record+4,replaced.length);put(prefix,target.record+8,compressed.length);return finish(prefix,compressed,target.offset);
+ }
+ /** Same raw resources and index identities, encoded as standard stored DEFLATE blocks for faster guest loading. */
+ public static byte[] storedResources(byte[] archive)throws IOException{
+  List<Entry> entries=index(archive);ByteArrayOutputStream out=new ByteArrayOutputStream();out.write(archive,0,entries.get(0).offset);
+  int[] offsets=new int[entries.size()],sizes=new int[entries.size()];
+  for(int i=0;i<entries.size();i++){
+   Entry e=entries.get(i);byte[] raw=inflate(archive,e.offset,e.packed,e.raw),packed=deflate(raw,0);
+   offsets[i]=out.size();sizes[i]=packed.length;check(out.size()<=LIMIT-packed.length,"archive_output_limit");out.write(packed);
+   if(i+1<entries.size()){int gap=e.offset+e.packed,length=entries.get(i+1).offset-gap;check(out.size()<=LIMIT-length,"archive_output_limit");out.write(archive,gap,length);}
+  }
+  byte[] result=finish(out.toByteArray(),new byte[0],out.size());
+  for(int i=0;i<entries.size();i++){put(result,entries.get(i).record,offsets[i]);put(result,entries.get(i).record+8,sizes[i]);}
+  System.arraycopy(digest("MD5",result,result.length-16),0,result,result.length-16,16);return result;
  }
 }

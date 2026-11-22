@@ -7,7 +7,7 @@ import org.urbanchaos.launcher.diagnostics.*;
 import java.io.File;
 import java.util.concurrent.*;
 public final class LauncherActivity extends Activity {
- private IsoImport importer;private ExecutorService worker;private TextView status;private Button select,resume,start;private volatile boolean importing;private CheckBox portuguese;
+ private IsoImport importer;private ExecutorService worker;private TextView status;private Button select,resume,start;private volatile boolean importing;private CheckBox portuguese,loadingCache;
  private static AndroidReports applicationReports;
  private AndroidReports reports;private ReportExportController export;
  @Override public void onCreate(Bundle state){super.onCreate(state);importer=new IsoImport(this);worker=Executors.newSingleThreadExecutor();
@@ -19,17 +19,18 @@ public final class LauncherActivity extends Activity {
   resume=button(layout,"Retomar importação",()->copy(null));
   button(layout,"Pausar importação",()->importer.cancelled=true);
   button(layout,"Descartar importação pendente",()->new android.app.AlertDialog.Builder(this).setMessage("Descartar somente a cópia incompleta? A ISO de origem, instalação ativa e saves serão preservados.").setNegativeButton("Manter",null).setPositiveButton("Descartar",(dialog,which)->{importer.cancelled=true;worker.execute(()->{importer.discard(message->runOnUiThread(()->status.setText(message)));runOnUiThread(this::refresh);});}).show());
-  if(NativeSubtitles.available(this)){portuguese=new CheckBox(this);portuguese.setText("Português: Hope Street e parte dos menus (experimental)");portuguese.setChecked(getPreferences(0).getBoolean("ptbr",false));portuguese.setOnCheckedChangeListener((v,on)->getPreferences(0).edit().putBoolean("ptbr",on).apply());layout.addView(portuguese);}
+  if(NativeSubtitles.available(this)){portuguese=new CheckBox(this);portuguese.setText("Português: menus e abertura de Hope Street (parcial)");portuguese.setChecked(getPreferences(0).getBoolean("ptbr",false));portuguese.setOnCheckedChangeListener((v,on)->getPreferences(0).edit().putBoolean("ptbr",on).apply());layout.addView(portuguese);
+   loadingCache=new CheckBox(this);loadingCache.setText("Cache de carregamento experimental (usa mais espaço)");loadingCache.setChecked(getPreferences(0).getBoolean("loading_cache",false));loadingCache.setOnCheckedChangeListener((v,on)->getPreferences(0).edit().putBoolean("loading_cache",on).apply());layout.addView(loadingCache);}
   start=button(layout,"Iniciar jogo experimental",this::launch);
   try{if(applicationReports==null)applicationReports=new AndroidReports(this,BuildConfig.BUILD_ID,BuildConfig.XBE_SHA256);reports=applicationReports;importer.reports=reports.session();export=new ReportExportController(this,reports);layout.addView(export.createButton());}catch(Exception error){status.setText("Relatórios indisponíveis (UC-LOG-001)");}
   setContentView(layout);refresh();
  }
  private void launch(){
-  File file=importer.selected();if(file==null||importing)return;boolean pt=portuguese!=null&&portuguese.isChecked();importing=true;refresh();status.setText(pt?"Preparando legendas nativas…":"Iniciando…");
-  worker.execute(()->{long started=android.os.SystemClock.elapsedRealtime();try{NativeGame.load();String locale=pt?NativeSubtitles.prepare(this,file.getAbsolutePath()):null;
-   if(pt&&reports!=null)reports.session().event(ReportSession.Event.LOCALE_PREPARED,ReportSession.detail("duration_ms",android.os.SystemClock.elapsedRealtime()-started));
+  File file=importer.selected();if(file==null||importing)return;boolean pt=portuguese!=null&&portuguese.isChecked(),cache=loadingCache!=null&&loadingCache.isChecked();importing=true;refresh();status.setText(pt||cache?"Preparando recursos nativos…":"Iniciando…");
+  worker.execute(()->{long started=android.os.SystemClock.elapsedRealtime();try{NativeGame.load();String locale=pt||cache?NativeSubtitles.prepare(this,file.getAbsolutePath(),pt,cache):null;
+   if((pt||cache)&&reports!=null)reports.session().event(ReportSession.Event.LOCALE_PREPARED,ReportSession.detail("duration_ms",android.os.SystemClock.elapsedRealtime()-started));
    runOnUiThread(()->{importing=false;refresh();if(!isFinishing()&&!isDestroyed())startActivity(new Intent(this,GameActivity.class).putExtra("game_path",file.getAbsolutePath()).putExtra("locale_path",locale));});
-  }catch(Exception failure){if(reports!=null)reports.session().event(ReportSession.Event.LOCALE_FAILED,ReportSession.detail("exception_class",failure.getClass().getName()));runOnUiThread(()->{importing=false;refresh();status.setText("UC-LOCALE-001: não foi possível preparar as legendas. Desative Português para iniciar com os textos originais.");});}});
+  }catch(Exception failure){if(reports!=null)reports.session().event(ReportSession.Event.LOCALE_FAILED,ReportSession.detail("exception_class",failure.getClass().getName()));runOnUiThread(()->{importing=false;refresh();status.setText("UC-LOCALE-001: não foi possível preparar os recursos opcionais. Desative Português e o cache para iniciar com os recursos originais.");});}});
  }
  private Button button(LinearLayout layout,String text,Runnable action){Button button=new Button(this);button.setText(text);button.setOnClickListener(view->action.run());layout.addView(button);return button;}
  private void refresh(){select.setEnabled(!importing);select.setText(importer.journal.exists()?"Selecionar a mesma ISO para retomar":"Selecionar ISO");resume.setEnabled(!importing&&importer.journal.exists());start.setEnabled(!importing&&importer.selected()!=null);}

@@ -13,6 +13,11 @@ with tempfile.TemporaryDirectory(dir=ROOT/'build',prefix='captions-test-') as tm
     subprocess.run([str(java/'javac'),'-d',str(out),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/localization/SubtitleArchive.java'),str(ROOT/'tests/SubtitleArchiveTest.java')],check=True)
     subprocess.run([str(java/'java'),'-cp',str(out),'SubtitleArchiveTest',str(out/'source.bin'),hashlib.sha256(bank.data).hexdigest(),str(out/'result.bin'),str(out/'first.bin')],check=True)
     result=Archive((out/'result.bin').read_bytes());assert result.unpack('authored.exttxt')==expected
+    stored=Archive((out/'result.bin.stored').read_bytes())
+    for a,b in zip(result.ordered,stored.ordered):
+        assert a['name']==b['name'] and a['identifier']==b['identifier'] and a['raw']==b['raw']
+        import zlib
+        assert zlib.decompress(result.data[a['offset']:a['offset']+a['packed']])==zlib.decompress(stored.data[b['offset']:b['offset']+b['packed']])
     before=Archive(archive)
     for a,b in zip(before.ordered[:-1],result.ordered[:-1]):assert before.data[a['offset']:a['offset']+a['packed']]==result.data[b['offset']:b['offset']+b['packed']]
-    print('Java/Python translated banks identical; other compressed payloads unchanged')
+    print('Java/Python translated banks identical; other compressed payloads unchanged; stored cache preserves every raw resource')

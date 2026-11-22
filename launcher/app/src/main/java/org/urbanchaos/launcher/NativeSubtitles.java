@@ -17,12 +17,14 @@ final class NativeSubtitles {
   AtomicFile atomic=new AtomicFile(file);FileOutputStream out=null;
   try{out=atomic.startWrite();out.write(bytes);atomic.finishWrite(out);}catch(IOException error){if(out!=null)atomic.failWrite(out);throw error;}
  }
- static String prepare(Context c,String iso)throws IOException{
+ private static byte[] withProfile(byte[] pack,boolean translate,boolean stored){byte[] profiled=Arrays.copyOf(pack,pack.length+2);profiled[pack.length]=(byte)(translate?1:0);profiled[pack.length+1]=(byte)(stored?1:0);return profiled;}
+ static String prepare(Context c,String iso,boolean translate,boolean stored)throws IOException{
+  check(translate||stored);
   byte[] pack;
   try(InputStream in=c.getAssets().open(ASSET);ByteArrayOutputStream out=new ByteArrayOutputStream()){
    byte[] buf=new byte[8192];int n;while((n=in.read(buf))!=-1){check(out.size()+n<=2*1024*1024);out.write(buf,0,n);}pack=out.toByteArray();
   }
-  File directory=new File(c.getFilesDir(),"config/localization/"+SubtitleArchive.sha(pack));check(directory.isDirectory()||directory.mkdirs());
+  File directory=new File(c.getFilesDir(),"config/localization/"+SubtitleArchive.sha(withProfile(pack,translate,stored)));check(directory.isDirectory()||directory.mkdirs());
   StringBuilder manifest=new StringBuilder();Set<String> seen=new HashSet<>();
   try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(pack))){
    byte[] magic=new byte[8];in.readFully(magic);check(Arrays.equals(magic,"UCPTBR01".getBytes(StandardCharsets.US_ASCII)));int archives=number(in,3);check(archives>0);
@@ -31,9 +33,11 @@ final class NativeSubtitles {
     check(Arrays.asList("globallanguage.lst","99-01.ent","12-01.ent").contains(name)&&seen.add(name)&&archiveSha.matches("[0-9a-f]{64}")&&bankSha.matches("[0-9a-f]{64}"));
     int count=number(in,10000);Map<String,String> translations=new LinkedHashMap<>();
     for(int n=0;n<count;n++){String key=text(in);int variant=number(in,255);check(translations.put(SubtitleArchive.identity(key,variant),text(in))==null);}
+    if(!translate&&(!stored||!name.equals("12-01.ent")))continue;
     // Read from the user's mounted ISO; no original archive is part of this APK.
     byte[] source=NativeGame.readTextArchive(iso,name);check(source!=null&&SubtitleArchive.sha(source).equals(archiveSha));
-    byte[] patched=SubtitleArchive.patch(source,entry,bankSha,translations);String sha=SubtitleArchive.sha(patched);File cached=new File(directory,name);
+    byte[] patched=translate?SubtitleArchive.patch(source,entry,bankSha,translations):source;
+    if(stored&&name.equals("12-01.ent"))patched=SubtitleArchive.storedResources(patched);String sha=SubtitleArchive.sha(patched);File cached=new File(directory,name);
     if(!cached.isFile()||cached.length()!=patched.length||!SubtitleArchive.sha(Files.readAllBytes(cached.toPath())).equals(sha))write(cached,patched);
     manifest.append(name).append(' ').append(sha).append('\n');
    }
