@@ -39,6 +39,7 @@ int main(int argc,char** argv) {
  slot->sample_attempts=0;
  SampleCodeCandidates(0xffc,0x1000,0x1010,0x11000,0x12000,[&](uint32_t){throw std::runtime_error("outside stack read");return 0;});
  Check(slot->code_candidates[0]==0);
+ visibility_polls=7;visibility_submits=3;idle_flushes=5;same_present_texture_updates=2;
  urban::diagnostics::Journal journal;
  Check(journal.Start(argv[1],"authored-progress",std::string(64,'a')));
  Poll(journal);journal.Finish();

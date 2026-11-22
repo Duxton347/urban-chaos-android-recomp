@@ -12,8 +12,8 @@ android {
   applicationId 'org.urbanchaos.launcher'
   minSdk 29
   targetSdk 34
-  versionCode 5
-  versionName '0.5-experimental'
+  versionCode 6
+  versionName '0.6-experimental'
   buildConfigField 'String','BUILD_ID','"'+providers.gradleProperty('urbanBuildId').get()+'"'
   buildConfigField 'String','XBE_SHA256','"'+receipt.xbe_sha256+'"'
  }

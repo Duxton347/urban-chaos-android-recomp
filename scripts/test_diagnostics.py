@@ -51,6 +51,8 @@ def main():
         assert any(item['code']=='UC-GPU-005' and item['detail']['operation']==2 and item['detail']['calls']==1 for item in progress_records)
         completion=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-003')
         assert completion['offset']==1024 and completion['requested']==8 and completion['completed']==3
+        sync=next(item['detail'] for item in progress_records if item['code']=='UC-GPU-006')
+        assert sync=={'visibility_polls':7,'visibility_submits':3,'idle_flushes':5,'same_present_texture_updates':2}
         assert 'SENTINEL_' not in json.dumps(progress_records)
         subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-pthread',
             '-I'+str(ROOT/'native'),'-I'+str(overlay/'runtime'),'-I'+str(ROOT/'vendor/runtime/runtime'),

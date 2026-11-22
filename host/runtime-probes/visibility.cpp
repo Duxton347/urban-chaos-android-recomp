@@ -1,17 +1,20 @@
 // Authored geometry exercises the selected real SDK rasterizer and report delivery.
 #include "gpu/backend.h"
+#include "gpu/texture.h"
 #include "kernel/kernel.h"
 #include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <chrono>
+#include <thread>
 static gpu::Surface Surface(uint32_t format) {
     uint32_t header=mem::AllocSystem(20),data=mem::AllocContiguous(64*8,0,0xFFFFFFFF,4096);
     kernel::W32(header,0x50001);kernel::W32(header+4,mem::PhysicalFromVirtual(data));
     kernel::W32(header+12,(format<<8)|0x20);kernel::W32(header+16,7|(7<<12));
     return {.header=header,.data=data,.format=kernel::R32(header+12),.size=kernel::R32(header+16)};
 }
-int ReferenceVisibilitySelfTest(bool reject_points) {
+int ReferenceVisibilitySelfTest(bool reject_points,bool asynchronous) {
     if(!mem::Init())return 2;
     kernel::g_base=mem::Base();
     for(bool threaded:{false,true}) {
@@ -33,7 +36,11 @@ int ReferenceVisibilitySelfTest(bool reject_points) {
         uint32_t report=mem::AllocSystem(20);
         auto result=[&] {
             kernel::W32(report+12,0xFFFFFFFF);kernel::W32(report+16,0xC0DEC0DE);
-            backend->GetReport(report);backend->Flush();
+            backend->GetReport(report);
+            if(!asynchronous)backend->Flush();else {
+                auto end=std::chrono::steady_clock::now()+std::chrono::seconds(3);
+                do{backend->FlushVisibilityReports();if(kernel::R32(report+12)==0)break;std::this_thread::yield();}while(std::chrono::steady_clock::now()<end);
+            }
             assert(kernel::R32(report+12)==0&&kernel::R32(report+16)==0xC0DEC0DE);
             return kernel::R32(report+8);
         };
@@ -59,6 +66,43 @@ int ReferenceVisibilitySelfTest(bool reject_points) {
         state.ps.reset();state.rs[gpu::kRsPsTextureModes]=0;state.simple[gpu::kMPsCompareMode>>2]=0;
         triangle(.25f);assert(result()==visible);
         backend->ClearReport();assert(result()==0);
+        if(asynchronous){
+            auto saved=state;
+            uint32_t tex=mem::AllocSystem(20),pixels=mem::AllocContiguous(64*8,0,0xFFFFFFFF,4096);
+            kernel::W32(tex,0x40001);kernel::W32(tex+4,mem::PhysicalFromVirtual(pixels));
+            kernel::W32(tex+12,(0x12<<8)|0x20);kernel::W32(tex+16,7|(7<<12));
+            state.textures[0]=tex;state.vs_handle=0x144;state.streams[0].stride=28;state.rs[gpu::kRsZEnable]=0;
+            state.tss[0][gpu::kTssColorOp]=2;state.tss[0][gpu::kTssColorArg1]=2;
+            state.tss[0][gpu::kTssAlphaOp]=2;state.tss[0][gpu::kTssAlphaArg1]=2;
+            state.simple[gpu::kMAlphaTestEnable>>2]=1;state.simple[gpu::kMAlphaFunc>>2]=0x204;state.simple[gpu::kMAlphaRef>>2]=128;
+            auto textured=[&]{
+                const struct Vertex {float x,y,z,w;uint32_t color;float u,v;} data[]={
+                    {1,1,.25f,1,0xFFFFFFFF,.5f,.5f},{6,1,.25f,1,0xFFFFFFFF,.5f,.5f},{1,6,.25f,1,0xFFFFFFFF,.5f,.5f}};
+                std::memcpy(kernel::HostPtr(vertices),data,sizeof(data));backend->Draw(state,5,0,3,nullptr);
+            };
+            std::memset(kernel::HostPtr(pixels),0xFF,64*8);gpu::MarkDirty(tex);backend->ClearReport();textured();
+            if(result()!=visible)throw std::runtime_error("Opaque authored texture did not pass alpha test");
+            std::memset(kernel::HostPtr(pixels),0,64*8);gpu::MarkDirty(tex);backend->ClearReport();textured();
+            if(result()!=0)throw std::runtime_error("Texture lock update within one presentation reused stale alpha");
+            state=saved;
+        }
+        if(asynchronous){
+            uint32_t batch=mem::AllocSystem(8*20);
+            for(unsigned i=0;i<8;i++){
+                backend->Clear(state,0,nullptr,3,0,1,0);backend->ClearReport();triangle(.25f);
+                kernel::W32(batch+i*20+12,0xFFFFFFFF);kernel::W32(batch+i*20+16,0xC0DEC0DE);
+                backend->GetReport(batch+i*20);backend->FlushVisibilityReports();
+            }
+            auto end=std::chrono::steady_clock::now()+std::chrono::seconds(3);
+            for(;;){
+                backend->FlushVisibilityReports();bool ready=true;
+                for(unsigned i=0;i<8;i++)ready&=kernel::R32(batch+i*20+12)==0;
+                if(ready)break;
+                if(std::chrono::steady_clock::now()>=end)throw std::runtime_error("Queued visibility reports did not complete");
+                std::this_thread::yield();
+            }
+            for(unsigned i=0;i<8;i++){assert(kernel::R32(batch+i*20+8)==visible);assert(kernel::R32(batch+i*20+16)==0xC0DEC0DE);}
+        }
         if(!threaded && reject_points) {
             bool rejected=false;
             try { backend->Draw(state,1,0,3,nullptr); } catch(const std::runtime_error&) { rejected=true; }
@@ -68,3 +112,5 @@ int ReferenceVisibilitySelfTest(bool reject_points) {
     }
     return 0;
 }
+
+int ReferenceVisibilitySelfTest(bool reject_points){return ReferenceVisibilitySelfTest(reject_points,false);}

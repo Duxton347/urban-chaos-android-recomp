@@ -15,7 +15,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--android', action='store_true')
     parser.add_argument('--android-window', action='store_true',help='Also compile the real SDL Android surface adapter')
+    parser.add_argument('--fence-fallback-only',action='store_true',help='Exercise the Vulkan 1.1 fence/render-pass paths with authored geometry')
     args = parser.parse_args()
+    if args.fence_fallback_only and (args.android or args.android_window):raise ValueError('Fallback-only is a host execution test')
     sdk = pathlib.Path(os.environ.get('ANDROID_HOME', ROOT/'.toolchain/android-sdk'))
     ndk = sdk/'ndk/28.2.13676358'
     if 'Pkg.Revision = 28.2.13676358' not in (ndk/'source.properties').read_text():
@@ -35,11 +37,20 @@ def main():
         renderer = prepare_renderer(source/'vulkan')
         receipt['renderer_source_sha256'] = digest(renderer)
         receipt['renderer_patch_sha256'] = digest(ROOT/'patches/black/vulkan-headless-research.patch')
-        variants=[('host',False,False)]
+        variants=[('host',False,False),('host-fence',False,False)]
+        if args.fence_fallback_only:variants=[('host-fence',False,False)]
         if args.android or args.android_window:variants.append(('arm64',True,False))
         if args.android_window:variants.append(('android-window',True,True))
         for name,android,window in variants:
             selected=renderer
+            if name=='host-fence':
+                # Mutate only a temporary authored-test overlay, never production sources/capabilities.
+                text=renderer.read_text()
+                for capability in ('timeline_ok_ = api >= VK_API_VERSION_1_2;', 'dynamic_ = dynamic;'):
+                    if text.count(capability)!=1:raise RuntimeError('Pinned capability selector changed')
+                    text=text.replace(capability,capability.split('=')[0]+'= false; // authored fallback test')
+                selected=source/'vulkan-fence.cpp';selected.write_text(text)
+                receipt['forced_fence_renderpass_source_sha256']=digest(selected)
             if window:
                 selected=prepare_renderer(source/'vulkan-android',android=True)
                 receipt['android_window_source_sha256']=digest(selected)
@@ -76,13 +87,15 @@ def main():
                     env.pop(key,None)
                 fixture = subprocess.run([str(build/'vulkan_renderer_fixture')],cwd=output,env=env,
                     capture_output=True,text=True,timeout=60)
-                (output/'fixture.log').write_text(fixture.stdout+fixture.stderr)
+                (output/(name+'-fixture.log')).write_text(fixture.stdout+fixture.stderr)
+                if name=='host':(output/'fixture.log').write_text(fixture.stdout+fixture.stderr)
                 fixture.check_returncode()
                 if any(marker in fixture.stdout+fixture.stderr for marker in ('does not compile','does not link','failed (','UC-VK-')):
                     raise RuntimeError('Renderer fixture logged a shader, driver or contract failure')
                 if 'VULKAN_RENDERER_CONTRACT:' not in fixture.stdout:
                     raise RuntimeError('Renderer fixture did not complete')
                 receipt['authored_renderer_fixture_passed'] = True
+                if name=='host-fence':receipt['authored_fence_renderpass_fixture_passed']=True
                 receipt['fixture_executable_sha256'] = digest(build/'vulkan_renderer_fixture')
     receipt['status'] = 'PASS'
     (output/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')

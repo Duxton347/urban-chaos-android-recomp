@@ -41,7 +41,7 @@ def prepare(destination, context=False, tools_only=False, android=False):
             raise ValueError('Android host patches do not apply to host recompilation tools')
         selected += ('android-host-portability.patch','android-input-sampling.patch')
     if not tools_only:
-        selected += ('progress-metadata.patch','native-text-overrides.patch')
+        selected += ('progress-metadata.patch','native-text-overrides.patch','async-visibility-contract.patch','command-stream-synchronization.patch')
     for name in selected:
         patch = ROOT/'patches/runtime'/name
         hashes[name] = hashlib.sha256(patch.read_bytes()).hexdigest()

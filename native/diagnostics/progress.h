@@ -70,7 +70,8 @@ inline void StreamStarved(){starved.fetch_add(1,std::memory_order_relaxed);}
 struct GpuMetric {std::atomic<uint64_t> calls{0},us{0},max_us{0};};
 // 0 wait, 1 acquire, 2 module, 3 draw (inclusive), 4 assembly,
 // 5 texture binding, 6 pipeline lookup/create, 7 submission, 8 readback. Nested totals must not be summed.
-inline std::array<GpuMetric,9> gpu;
+inline std::array<GpuMetric,10> gpu;
+inline std::atomic<uint64_t> visibility_polls{0},visibility_submits{0},idle_flushes{0},same_present_texture_updates{0};
 class GpuOperation {
  Scope scope_;GpuMetric& metric_;
  std::chrono::steady_clock::time_point start_=std::chrono::steady_clock::now();
@@ -99,6 +100,7 @@ inline void Poll(diagnostics::Journal& journal) {
  auto read=last_read_id.load(std::memory_order_relaxed);
  journal.Emit(diagnostics::Code::IoCompletion,{{"queued_apcs",apcs_queued.load()},{"delivered_apcs",apcs_delivered.load()},
   {"resource_id",read>>32},{"requested",uint32_t(read)},{"offset",last_read_offset.load()},{"completed",last_read_bytes.load()}});
+ journal.Emit(diagnostics::Code::GpuSynchronization,{{"visibility_polls",visibility_polls.load()},{"visibility_submits",visibility_submits.load()},{"idle_flushes",idle_flushes.load()},{"same_present_texture_updates",same_present_texture_updates.load()}});
  for(uint32_t n=0;n<gpu.size();++n)journal.Emit(diagnostics::Code::GpuTiming,
   {{"operation",n},{"calls",gpu[n].calls.load()},{"total_us",gpu[n].us.load()},{"max_us",gpu[n].max_us.load()}});
 }

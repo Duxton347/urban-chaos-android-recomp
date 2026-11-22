@@ -12,7 +12,7 @@
 +    if(!g_backend || !g_backend->SupportsVisibilityReports())
 +        x86_trap(ctx,SYM(D3DDevice_GetVisibilityTestResult),"backend does not support visibility reports");
 +    Walk(Dev(kDevPush));
-+    g_backend->Flush();
++    g_backend->FlushVisibilityReports();
  }
 
  HLE_STDCALL(D3DDevice_BlockUntilVerticalBlank, 0) {

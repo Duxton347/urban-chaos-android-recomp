@@ -40,7 +40,7 @@ if(NOT ANDROID)
  target_compile_features(vulkan_renderer_fixture PRIVATE cxx_std_20)
  target_compile_options(vulkan_renderer_fixture PRIVATE -O1 -UNDEBUG -march=x86-64-v2 -fsigned-char -fno-strict-aliasing)
  target_compile_definitions(vulkan_renderer_fixture PRIVATE XBE_RAW_VERTICES=0)
- target_include_directories(vulkan_renderer_fixture PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness" "${SDK}/harness/compat")
+ target_include_directories(vulkan_renderer_fixture PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness" "${SDK}/harness/compat" "${REPO}/native")
  find_library(URBAN_VULKAN_LOADER NAMES vulkan libvulkan.so.1 REQUIRED)
  target_link_libraries(vulkan_renderer_fixture PRIVATE urban_vulkan_renderer_contract
   "${REPO}/build/vulkan-shaders/liburban_black_shader.a"

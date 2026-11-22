@@ -1,0 +1,45 @@
+--- a/runtime/xdk/d3d8.cpp
++++ b/runtime/xdk/d3d8.cpp
+@@ -333,4 +333,5 @@
+     if (res && g_backend) {
+         std::lock_guard<std::recursive_mutex> lock(g_lock);
++        Walk(Dev(kDevPush));
+         uint32_t type = R32(res) & 0x70000;  // 0x40000 texture, 0x50000 surface
+         if (type == 0x40000 || type == 0x50000) {
+@@ -360,5 +361,7 @@
+     if ((a[5] & 0x20) && res && g_backend) {  // D3DLOCK_NOOVERWRITE
+         std::lock_guard<std::recursive_mutex> lock(g_lock);
++        Walk(Dev(kDevPush));
+         g_backend->SyncLate(mem::VirtualFromPhysical(R32(res + 4)));
++        gpu::MarkDirty(res);
+     }
+ }
+@@ -366,4 +369,5 @@
+     if (a[0] && g_backend) {
+         std::lock_guard<std::recursive_mutex> lock(g_lock);
++        Walk(Dev(kDevPush));
+         g_backend->WaitResource(a[0]);
+     }
+@@ -375,4 +379,5 @@
+     uint32_t res = a[0];
+     if (!res) return 0;
++    Walk(Dev(kDevPush));
+     // set on the device, a surface also through its texture
+     uint32_t common = R32(res), parent = (common & 0x70000) == 0x50000 ? R32(res + 0x14) : 0;
+@@ -388,4 +393,5 @@
+ HLE_STDCALL(D3DDevice_InsertFence, 0) {
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
++    Walk(Dev(kDevPush));
+     return g_backend ? g_backend->Fence() : 0;
+ }
+@@ -402,8 +408,10 @@
+ HLE_STDCALL(D3D_SetFence, 1) {
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
++    Walk(Dev(kDevPush));
+     return g_backend ? g_backend->Fence() : 0;
+ }
+ HLE_STDCALL(D3D_KickOffAndWaitForIdle, 0) {
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
++    Walk(Dev(kDevPush));
+     if (g_backend) g_backend->Flush();
+     return 0;
