@@ -86,6 +86,8 @@ def main():
         classes=out/'classes';classes.mkdir()
         subprocess.run([javac,'-d',str(classes),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/controls/TouchLayout.java'),str(ROOT/'tests/TouchLayoutTest.java')],check=True)
         subprocess.run([java,'-cp',str(classes),'TouchLayoutTest'],check=True)
+        subprocess.run([javac,'-d',str(classes),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/controls/SwipeLook.java'),str(ROOT/'tests/SwipeLookTest.java')],check=True)
+        subprocess.run([java,'-ea','-cp',str(classes),'SwipeLookTest'],check=True)
         core=ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/ReportSession.java'
         subprocess.run([javac,'-d',str(classes),str(core),str(ROOT/'launcher/core/src/main/java/org/urbanchaos/launcher/diagnostics/NativeReports.java'),str(ROOT/'tests/DiagnosticsTest.java'),str(ROOT/'tests/DiagnosticsJniTest.java')],check=True)
         subprocess.run([java,'-cp',str(classes),'DiagnosticsTest',str(out/'java'),str(native)],check=True)
