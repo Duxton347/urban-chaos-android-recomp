@@ -1,0 +1,45 @@
+{
+  "single_pair_only": true,
+  "android_performance_measured": false,
+  "software_vulkan_host": true,
+  "decompressed_mission_resources_identical": 12338,
+  "original_archive_bytes": 9510928,
+  "stored_archive_bytes": 15597584,
+  "baseline": {
+    "exit_code": -15,
+    "elapsed_seconds": 120.048,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false,
+    "gameplay_validated": false,
+    "frame1680_elapsed_seconds": 64.782,
+    "first_visibility_seconds": 73.194,
+    "frame1680_to_visibility_seconds": 8.412,
+    "frame1800_elapsed_seconds": 93.568
+  },
+  "stored": {
+    "exit_code": -15,
+    "elapsed_seconds": 120.089,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false,
+    "gameplay_validated": false,
+    "frame1680_elapsed_seconds": 62.566,
+    "first_visibility_seconds": 70.069,
+    "frame1680_to_visibility_seconds": 7.503,
+    "frame1800_elapsed_seconds": 90.922
+  },
+  "translated_and_stored": {
+    "exit_code": -15,
+    "elapsed_seconds": 120.098,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false,
+    "gameplay_validated": false,
+    "frame1680_elapsed_seconds": 61.877,
+    "first_visibility_seconds": 71.038,
+    "frame1680_to_visibility_seconds": 9.161,
+    "frame1800_elapsed_seconds": 103.257
+  },
+  "full_mission_validated": false
+}

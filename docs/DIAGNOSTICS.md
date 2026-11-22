@@ -88,3 +88,12 @@ A versão 0.3 usa o evento Java existente `UC-INPUT-001` para perfil/modo/enquad
 `UC-CPU-003` inclui último ordinal kernel/caller e hash do nome público HLE/caller, filtrando endereços fora da seção de código. `UC-DISC-003` registra APCs enfileiradas/concluídas e última leitura: ID de recurso por hash, offset, quantidade pedida/concluída; não inclui nomes ou conteúdo. São snapshots independentes entre threads; não representam transação atômica da última leitura. Permitem procurar ausência de progresso sem confundi-la com fim de arquivo.
 
 `UC-LOCALE-003`: substituições nativas de texto conferidas e instaladas antes do boot, com contagem de arquivos; não prova legendas visíveis/sincronizadas. `UC-LOCALE-002`: cache rejeitado antes do boot. `UC-LOCALE-001`: preparação Java não concluída, mensagem no launcher e classe da exceção no journal Java. `UC-LOCALE-004`: cache preparado, com duração em milissegundos; não prova exibição de legendas. O exportador não inclui cache, dicionários ou bancos de texto.
+
+
+## Complementos 0.5
+
+`UC-LOCALE-005` é repetido no journal nativo a cada dez segundos: `requested` informa que um cache opcional foi solicitado; `archives` informa quantos arquivos foram efetivamente substituídos. No journal Java, o mesmo código registra seleção `original` ou `cache_requested`, sem caminhos. A contagem não comprova idioma, exibição ou sincronização das legendas. O evento periódico conserva a confirmação se o startup inicial não estiver na exportação.
+
+`UC-CPU-004` apresenta `pc0`…`pc7`, candidatos filtrados pela faixa de código a partir de uma varredura limitada da stack atual, a cada 1.024 passagens pela saída de critical section. Não exporta palavras brutas e não equivale a stack trace desenrolado. Contadores/candidatos são snapshots independentes. A limitação de faixa/cadência é coberta por fixture autoral.
+
+`tools/analyze_report.py` resume o ZIP exportado sem extração e compara com uma referência opcional. Diferencia ausência de confirmação de idioma de confirmação explícita com zero arquivos; indica quando a captura atual termina antes do primeiro report de visibilidade da referência. Não atribui causas ou declara missão jogável automaticamente.

@@ -1,5 +1,7 @@
 # Legendas nativas e controles — investigação 0.4
 
+**Atualização 0.5:** foram identificadas e preenchidas as 19 legendas faltantes da abertura no frontend. A cobertura 0.4 abaixo é histórica. Há também cache experimental opcional: com ele, os bytes comprimidos mudam, preservando os bytes descomprimidos de todos os recursos. Não confundir com a preservação dos payloads comprimidos no modo somente tradução. [Falha, ensaios e novo APK](LOADING_05_INVESTIGATION.md).
+
 ## Estado comprovado
 
 O relato `jogo abriu.zip` confirma entrada na missão no tablet após a abertura; não comprova missão jogável ou campanha. A versão 0.3 apresentou lentidão grave ao entrar em 3D. O teste Linux limpo também chegou à cena externa inicial de Hope Street; software Vulkan não mede desempenho Adreno.
