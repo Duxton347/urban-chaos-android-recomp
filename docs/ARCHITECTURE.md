@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+Atualização 0.6: consultas de visibilidade têm submissão/polling separados da espera de idle. Pools giram por submissão, enquanto o relógio de apresentações continua ligado ao Present real. Fences e acesso a recursos respeitam comandos guest anteriores; texturas observam escritas também dentro do mesmo frame. [Rotas e limites](MISSION_RENDERER_06.md).
+
 Atualização 0.5: tradução e cache de carregamento são opções independentes e reversíveis. O cache recodifica apenas a compressão do contêiner, preservando cada recurso descomprimido, e deixa a ISO intacta. A missão no tablet continua em investigação; medições Linux não qualificam desempenho Android. [Experimento, diagnóstico e limites](LOADING_05_INVESTIGATION.md).
 
 Atualização 0.4: o proprietário entrou na missão no tablet com 0.3, mas relatou lentidão/defeitos. O HUD de navegação passa a usar analógico; o jogo já oferece sensibilidade dentro de Options → Controller. Tradução parcial utiliza bancos nativos e substituições imutáveis no disco, sem modificar a ISO. [Contrato e limites](NATIVE_SUBTITLES.md).

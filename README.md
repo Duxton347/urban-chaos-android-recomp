@@ -5,7 +5,7 @@ Entrega definida: **launcher Android para importar e executar a ISO original**, 
 
 Port nativo Android ARM64 de **Urban Chaos: Riot Response (Xbox original)** por recompilação estática. A meta é preservar o jogo original; o alvo prioritário é Xiaomi Pad 6 / HyperOS 2.0.16.0.
 
-**Estado: menu e entrada lenta na missão relatados pelo proprietário com 0.3; 0.4 voltou a não abrir a missão no teste enviado. O candidato privado 0.5 corrige a cobertura das legendas da abertura e acrescenta cache opcional e diagnóstico. Biblioteca ARM64 e APK compilados/assinados; missão jogável e campanha ainda não verificadas.** [Investigação 0.5 e limites](docs/LOADING_05_INVESTIGATION.md). [Primeiro teste](docs/FIRST_TABLET_TEST.md) · [Receita Android](docs/ANDROID_BUILD.md). O diagnóstico histórico em `android/` permanece separado.
+**Estado: o proprietário abriu a missão com 0.5, após demora longa, com desempenho e gráficos defeituosos. O candidato privado 0.6 corrige sincronização/ordem de comandos e coerência de texturas no renderer. Biblioteca ARM64 e APK compilados/assinados; ainda sem teste 0.6 no tablet ou missão jogável/campanha verificadas.** [Investigação 0.6 e limites](docs/MISSION_RENDERER_06.md). [Primeiro teste](docs/FIRST_TABLET_TEST.md) · [Receita Android](docs/ANDROID_BUILD.md). O diagnóstico histórico em `android/` permanece separado.
 
 ## Primeira entrega e rota
 

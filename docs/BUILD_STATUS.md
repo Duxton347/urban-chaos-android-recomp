@@ -1,5 +1,7 @@
 # Build status — nova rota de recompilação
 
+**Atualização 0.6, 2026-11-22:** o proprietário abriu a missão com 0.5, mas relatou execução/gráficos defeituosos; o intervalo final mede cerca de 0,968 apresentações/s. Corrigidos polling/submissão de visibilidade, conclusão real de fences/device busy, ordem de comandos antes de acesso a recursos e invalidação de texturas no mesmo Present. Contratos Vulkan passaram em timeline e fences/render passes; biblioteca ARM64 e APK 0.6 privados compilados/assinados. Abertura 3D Linux observada, sem ganho geral de FPS comprovado ou teste 0.6 no tablet. [Evidências e teste necessário](MISSION_RENDERER_06.md).
+
 **Atualização 0.5, 2026-11-22:** proprietário relatou que 0.4 não entrou na missão e mostrou legendas de vídeo em inglês. Confirmadas 19 entradas da abertura sem tradução; dicionário privado corrigido e cobertura mínima exigida no gerador. Cache opcional de recursos com bytes descomprimidos idênticos testado no Linux, com pequeno ganho em um único par; fica desativado por padrão. Três ensaios Linux chegaram à abertura 3D, sem qualificar missão completa. APK privado 0.5 compilado/assinado; sem teste Android novo e sem correção de missão comprovada. [Análise e limites](LOADING_05_INVESTIGATION.md).
 
 **Atualização 0.4, 2026-11-19:** o novo relato do proprietário confirma entrada na missão no tablet com a versão 0.3, ainda muito lenta e com defeitos visuais. A hipótese de loading permanente deixou de descrever esse teste. Navegação por analógico e sensibilidade no menu original verificadas no Linux; tradução nativa parcial de Hope Street e cache opcional de textos implementados. Runtime real ARM64 ligado e APK 0.4 privado compilado/assinado, com tradução opcional e três partes verificadas para transporte. Novo APK ainda não testado no dispositivo; não há ganho de FPS ou missão jogável comprovados. [Legendas, controles e limites](NATIVE_SUBTITLES.md).
@@ -114,7 +116,7 @@ XboxKit reduz incerteza sobre formatos de disco e offsets; não resolve a integr
 | Diagnóstico histórico | Build anterior registrado | Tablet não testado | Não é jogo | Não é jogo | Não é jogo |
 | Urban Chaos Linux de pesquisa | Sim: código + host de teste | Intro/título; depuração da carga da missão | Principal e dificuldade observados | Ainda não jogável | Não verificada |
 | Código guest baseline Android ARM64 | Sim: 129 objetos AArch64 | Não ligado a host Android | Não testado em Android | Não testada | Não verificada |
-| Urban Chaos Android experimental | Biblioteca real e APK 0.5 privados | Boot/menu relatados até 0.4; 0.5 sem teste no tablet | Menus confirmados pelo proprietário | 0.3 entrou lentamente; 0.4 não abriu no relato; 0.5 pendente | Não verificada |
+| Urban Chaos Android experimental | Biblioteca real e APK 0.6 privados | Boot/menu/entrada lenta na missão relatados até 0.5; 0.6 sem teste no tablet | Confirmados pelo proprietário | Aberta com 0.5, lenta e defeituosa; 0.6 pendente | Não verificada |
 | Urban Chaos Windows | Build completo não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado | Não demonstrado |
 
 ## CI inicial

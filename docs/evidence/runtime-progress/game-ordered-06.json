@@ -1,0 +1,13 @@
+{
+  "exit_code": -15,
+  "timed_out": true,
+  "elapsed_seconds": 180.041,
+  "last_present_counter": 1920,
+  "missing_disc_requests": 0,
+  "completed_visibility_reports": 16,
+  "exception_recorded": false,
+  "gameplay_validated": false,
+  "concurrent_compilation_stress": true,
+  "performance_benchmark": false,
+  "android_validated": false
+}

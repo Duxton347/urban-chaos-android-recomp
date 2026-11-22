@@ -97,3 +97,10 @@ A versão 0.3 usa o evento Java existente `UC-INPUT-001` para perfil/modo/enquad
 `UC-CPU-004` apresenta `pc0`…`pc7`, candidatos filtrados pela faixa de código a partir de uma varredura limitada da stack atual, a cada 1.024 passagens pela saída de critical section. Não exporta palavras brutas e não equivale a stack trace desenrolado. Contadores/candidatos são snapshots independentes. A limitação de faixa/cadência é coberta por fixture autoral.
 
 `tools/analyze_report.py` resume o ZIP exportado sem extração e compara com uma referência opcional. Diferencia ausência de confirmação de idioma de confirmação explícita com zero arquivos; indica quando a captura atual termina antes do primeiro report de visibilidade da referência. Não atribui causas ou declara missão jogável automaticamente.
+
+
+## Contadores do renderer 0.6
+
+`UC-GPU-006`: `visibility_polls`, `visibility_submits`, `idle_flushes` e `same_present_texture_updates`. Os dois primeiros separam leituras de resultados de novas submissões; o terceiro conta flushes sem comandos novos que evitaram uma submissão vazia, preservando a espera por trabalho anterior quando exigida; o último conta invalidações por escrita de textura dentro do mesmo Present. Não são uma medição de FPS ou prova de todos os defeitos visuais corrigidos.
+
+Operação 9 de `UC-GPU-005` mede o polling/submissão de reports, inclusive eventuais esperas de reutilização segura de pools. Continua sendo tempo host, com sobreposição de operações aninhadas. O analisador offline inclui o último snapshot de sincronização.

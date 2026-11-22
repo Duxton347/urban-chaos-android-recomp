@@ -1,0 +1,90 @@
+{
+  "normal_renderer": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host": {
+        "sha256": "1b04391e57d74c0e15752c96c732aa8ad2e9197a63c0dc44cd97cd99a5325fef",
+        "objects": 2
+      },
+      "arm64": {
+        "sha256": "80150f98d897ac03cbb635956e0d57e15ca2c70ed7d95b9ee32d927f9000e1e4",
+        "objects": 2
+      },
+      "android-window": {
+        "sha256": "fc8a5b50f7097c6b53b75db7dbc6976f839364c169f4d45656bb0b12cc70eb8a",
+        "objects": 2
+      },
+      "android-host": {
+        "sha256": "5d860d80da8862af7513aba65dee6d22b765fb6c6290232a11b0b21606a5e384",
+        "objects": 7,
+        "authored_profile_only": true,
+        "game_linked": false
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+      "android-input-sampling.patch": "910238473233766f1e4c4349a07d67309cc7df7376279f5dd1b4824475c62bdf",
+      "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+      "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+      "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73"
+    },
+    "renderer_source_sha256": "dc454a95b5d070940e1be3ea9cc44c34b670896930cc883e482865f01578c9fb",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+    "authored_renderer_fixture_passed": true,
+    "fixture_executable_sha256": "bebd64887ed309e6bbc25d4fba729d3abd4277c1b4ab4c274830a23666cef4d2",
+    "android_window_source_sha256": "e1f947887398d86ab9c1943fc598fa76974016c27351416762eb417490da5601",
+    "android_window_patch_sha256": "302422fdb6e5cb619ff80ed3e14545d2ea297dae9cec92124ae358fee0086f12"
+  },
+  "forced_fence_renderpass_renderer": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host-fence": {
+        "sha256": "53a13a805832af0c96d95ac9d877c71f14355fd127245c9e68ff7c7ef37ee4d3",
+        "objects": 2
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+      "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+      "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73"
+    },
+    "renderer_source_sha256": "dc454a95b5d070940e1be3ea9cc44c34b670896930cc883e482865f01578c9fb",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "forced_fence_renderpass_source_sha256": "56c90c88c6d7b9c519116cab44ec8afbe1f3831eb7bd16fcac3ccfe6b3acd53f",
+    "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+    "authored_renderer_fixture_passed": true,
+    "authored_fence_renderpass_fixture_passed": true,
+    "fixture_executable_sha256": "4d4488cf64105744a757b7d79da26f73f216e6ef28dae6db09f6ee5ac7c29cb2"
+  },
+  "stale_texture_negative_control_reproduced": true,
+  "negative_control_error": "Texture lock update within one presentation reused stale alpha",
+  "game_data_used_in_contracts": false,
+  "android_device_tested": false
+}
