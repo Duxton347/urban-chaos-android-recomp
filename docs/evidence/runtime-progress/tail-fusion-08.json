@@ -1,0 +1,16 @@
+{
+  "x86_recomp.17.cpp": {
+    "fused_edges": 1,
+    "source_sha256": "edc202a8c068a73c6b68da9d54514e442b91c150610cd646c742a008d8f41d06",
+    "output_sha256": "ae4e9ad636a479c15a92bb41673b90bd75db9a8bc6413c7ccfa90e9feebfd7bb"
+  },
+  "public_rebuild_matched": true,
+  "game_run_seconds": 180.074,
+  "last_present": 1800,
+  "termination": "programmed SIGTERM after bounded run",
+  "missing_disc_requests": 0,
+  "mission_playable_verified": false,
+  "android_device_tested": false,
+  "fps_benchmark": false,
+  "concurrent_compile_load": true
+}

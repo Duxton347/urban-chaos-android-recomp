@@ -104,3 +104,6 @@ A versão 0.3 usa o evento Java existente `UC-INPUT-001` para perfil/modo/enquad
 `UC-GPU-006`: `visibility_polls`, `visibility_submits`, `idle_flushes` e `same_present_texture_updates`. Os dois primeiros separam leituras de resultados de novas submissões; o terceiro conta flushes sem comandos novos que evitaram uma submissão vazia, preservando a espera por trabalho anterior quando exigida; o último conta invalidações por escrita de textura dentro do mesmo Present. Não são uma medição de FPS ou prova de todos os defeitos visuais corrigidos.
 
 Operação 9 de `UC-GPU-005` mede o polling/submissão de reports, inclusive eventuais esperas de reutilização segura de pools. Continua sendo tempo host, com sobreposição de operações aninhadas. O analisador offline inclui o último snapshot de sincronização.
+
+
+Na versão 0.8, `UC-INPUT-002` acrescenta `look_events` (deltas não nulos recebidos) e `look_delivered` (leituras que consumiram o acumulado). Vários eventos podem ser coalescidos em uma leitura, sem fila; contagens diferentes não provam perda. Não registra coordenadas.

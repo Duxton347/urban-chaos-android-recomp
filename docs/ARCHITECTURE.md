@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+0.8: deltas de mira são acumulados no host até a leitura do Pad, sem expirar pelo tempo de parede; o HUD compacto separa fontes extras. União revisada de um fragmento folha herda o contrato da pilha de origem e mantém a entrada dinâmica original. [Detalhes](GAMEPLAY_HUD_08.md).
+
 0.7: mira relativa por arrasto sobre fontes Xbox e migração para controles completos. Pós-processamento revisado de dois helpers elimina transferência apenas com PC de retorno preservado; nenhum outro contrato de pilha foi relaxado. [Evidências e limites](MISSION_EXECUTION_07.md).
 
 Atualização 0.6: consultas de visibilidade têm submissão/polling separados da espera de idle. Pools giram por submissão, enquanto o relógio de apresentações continua ligado ao Present real. Fences e acesso a recursos respeitam comandos guest anteriores; texturas observam escritas também dentro do mesmo frame. [Rotas e limites](MISSION_RENDERER_06.md).
