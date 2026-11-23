@@ -35,7 +35,7 @@ urban::display::Mode DisplayMode(){return urban::display::Mode(display_mode.load
 void PollInputDiagnostics(){
  urban::touch::Stats stats;{std::lock_guard lock(mutex);stats=touch.Snapshot();}
  urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::InputLatency,
-  {{"presses",stats.presses},{"delivered",stats.delivered},{"total_us",stats.total_us},{"max_us",stats.max_us}});
+  {{"presses",stats.presses},{"delivered",stats.delivered},{"total_us",stats.total_us},{"max_us",stats.max_us},{"look_events",stats.look_events},{"look_delivered",stats.look_delivered}});
 }
 void PadEvent(const SDL_Event& event){
  std::lock_guard lock(mutex);
@@ -62,3 +62,5 @@ extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padBut
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padStick(JNIEnv*,jclass,jint stick,jfloat x,jfloat y,jboolean active){std::lock_guard lock(mutex);touch.Axis(stick,x,y,active);}
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_clearTouch(JNIEnv*,jclass){std::lock_guard lock(mutex);touch.Clear();}
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_displayMode(JNIEnv*,jclass,jint mode){if(mode>=0&&mode<=2)display_mode=mode;}
+
+extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padLookDelta(JNIEnv*,jclass,jfloat x,jfloat y){std::lock_guard lock(mutex);touch.LookDelta(x,y);}

@@ -9,6 +9,7 @@ namespace input {bool Connected(int port);}
 extern "C" void Java_org_urbanchaos_launcher_NativeGame_padButton(JNIEnv*,jclass,jint,jboolean);
 extern "C" void Java_org_urbanchaos_launcher_NativeGame_padStick(JNIEnv*,jclass,jint,jfloat,jfloat,jboolean);
 extern "C" void Java_org_urbanchaos_launcher_NativeGame_clearTouch(JNIEnv*,jclass);
+extern "C" void Java_org_urbanchaos_launcher_NativeGame_padLookDelta(JNIEnv*,jclass,jfloat,jfloat);
 static void Check(bool ok){if(!ok)throw std::runtime_error("Android touch host contract failed");}
 int main(){
  Java_org_urbanchaos_launcher_NativeGame_padButton(nullptr,nullptr,0,true);
@@ -21,6 +22,15 @@ int main(){
  Check(input::Poll(0).rx==32767&&input::Poll(0).ry==-32767);
  Java_org_urbanchaos_launcher_NativeGame_clearTouch(nullptr,nullptr);
  Check(input::Poll(0).rx==0);
- host::ClearInput();
+ Java_org_urbanchaos_launcher_NativeGame_padLookDelta(nullptr,nullptr,.2f,-.3f);
+ for(int n=0;n<20;n++)Check(input::Connected(0));
+ auto look=input::Poll(0);Check(look.rx>6500&&look.ry< -9800);
+ Check(input::Poll(0).rx==0);
+ Java_org_urbanchaos_launcher_NativeGame_padLookDelta(nullptr,nullptr,.5f,.5f);
+ Java_org_urbanchaos_launcher_NativeGame_padLookDelta(nullptr,nullptr,.5f,.5f);
+ look=input::Poll(0);Check(look.rx==32767&&look.ry==32767);
+ Java_org_urbanchaos_launcher_NativeGame_padLookDelta(nullptr,nullptr,1,1);
+ host::ClearInput();Check(input::Poll(0).rx==0);
+
  std::cout<<"Android touch host discovery/short-tap/axis contract passed; authored inputs only\n";
 }

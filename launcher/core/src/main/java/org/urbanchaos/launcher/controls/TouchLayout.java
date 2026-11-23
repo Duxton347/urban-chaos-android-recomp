@@ -27,7 +27,7 @@ public final class TouchLayout {
   layout.add("up","UP",8,-1,cx,cy-.12f,r);layout.add("down","DOWN",9,-1,cx,cy+.12f,r);
   layout.add("left","LEFT",10,-1,cx-.075f,cy,r);layout.add("right","RIGHT",11,-1,cx+.075f,cy,r);
    layout.add("y","Y",3,-1,.88f,.42f,r);
-   layout.add("black","BLACK",4,-1,.72f,.39f,r*.85f);layout.add("white","WHITE",5,-1,.26f,.39f,r*.85f);
+   layout.add("black","AUX 1",4,-1,.72f,.39f,r*.85f);layout.add("white","AUX 2",5,-1,.26f,.39f,r*.85f);
    layout.add("lt","LT",6,-1,.12f,.23f,r);layout.add("rt","RT",7,-1,.88f,.23f,r);
    layout.add("ls","L3",14,-1,.25f,.92f,r*.75f);layout.add("rs","R3",15,-1,.72f,.94f,r*.75f);
    layout.add("move","L",-1,0,.14f,.73f,.11f);layout.add("look","R",-1,1,.68f,.70f,.105f);
@@ -35,12 +35,23 @@ public final class TouchLayout {
   return layout;
  }
  private void add(String id,String label,int button,int stick,float x,float y,float radius){controls.add(new Control(id,label,button,stick,x,y,radius));}
+ public static boolean extra(String id){return Arrays.asList("black","white","ls","rs","up","down","left","right","back").contains(id);}
+ public static TouchLayout mobile(boolean tablet){
+  TouchLayout p=defaults(tablet,true);
+  p.find("a").configure(.90f,.82f,.054f,.50f);p.find("b").configure(.96f,.68f,.050f,.50f);
+  p.find("x").configure(.83f,.68f,.050f,.50f);p.find("y").configure(.90f,.54f,.050f,.50f);
+  p.find("move").configure(.14f,.78f,.100f,.35f);
+  p.find("lt").configure(.12f,.30f,.060f,.45f);p.find("rt").configure(.88f,.30f,.070f,.55f);
+  p.find("start").configure(.55f,.08f,.030f,.40f);
+  return p;
+ }
  public TouchLayout copy(){TouchLayout other=new TouchLayout();for(Control c:controls)other.controls.add(c.copy());return other;}
  public Control find(String id){for(Control c:controls)if(c.id.equals(id))return c;return null;}
  public static float radius(Control c,float w,float h){return c.radius*Math.min(w,h);}
- public Control hit(float x,float y,float w,float h){
+ public Control hit(float x,float y,float w,float h){return hit(x,y,w,h,c->true);}
+ public Control hit(float x,float y,float w,float h,java.util.function.Predicate<Control> visible){
   Control best=null;float score=Float.MAX_VALUE;
-  for(Control c:controls){float dx=x-c.x*w,dy=y-c.y*h,r=radius(c,w,h);float d=(dx*dx+dy*dy)/(r*r);
+  for(Control c:controls){if(!visible.test(c))continue;float dx=x-c.x*w,dy=y-c.y*h,r=radius(c,w,h);float d=(dx*dx+dy*dy)/(r*r);
    if(d<=1.35f*1.35f&&d<score){score=d;best=c;}}
   return best;
  }

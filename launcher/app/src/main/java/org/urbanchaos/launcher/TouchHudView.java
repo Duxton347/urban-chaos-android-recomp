@@ -23,9 +23,9 @@ final class TouchHudView extends View {
   public void stick(int stick,float x,float y,boolean active){NativeGame.padStick(stick,x,y,active);}
  });
  private TouchLayout layout,snapshot;private Control selected;private int drag=-1;
- private boolean tablet,full=true,editing,hidden,swipe=true,lookLeft=true;
- private final SwipeLook look=new SwipeLook((x,y,active)->NativeGame.padStick(1,x,y,active));
- private final Runnable settleLook=new Runnable(){public void run(){look.tick(android.os.SystemClock.uptimeMillis());invalidate();}};private int display;
+ private boolean tablet,full=true,editing,hidden,swipe=true,lookLeft=true,extras=false;
+ private final SwipeLook look=new SwipeLook((x,y,active)->{if(active)NativeGame.padLookDelta(x,y);});
+ private int display;
  private float dragX,dragY,originX,originY;private int insetLeft,insetRight,insetTop,insetBottom;
  private final float density;
  TouchHudView(Activity activity,Runnable export,ReportSession reports){
@@ -44,7 +44,7 @@ final class TouchHudView extends View {
  }
  private float dp(float n){return n*density;}
  private void bounds(){area.set(insetLeft+dp(6),insetTop+dp(6),Math.max(insetLeft+dp(7),getWidth()-insetRight-dp(6)),Math.max(insetTop+dp(7),getHeight()-insetBottom-dp(6)));}
- private String filename(){return (tablet?"tablet":"phone")+(full?"-xbox":"-menu")+".json";}
+ private String filename(){return (tablet?"tablet":"phone")+(full?"-mobile8":"-menu")+".json";}
  private AtomicFile file(String name){return new AtomicFile(new File(new File(activity.getFilesDir(),"config/hud"),name));}
  private JSONObject read(String name){
   try(InputStream input=file(name).openRead();ByteArrayOutputStream bytes=new ByteArrayOutputStream()){
@@ -64,7 +64,7 @@ final class TouchHudView extends View {
  private void profileChanged(String reason){if(reports!=null)reports.event(ReportSession.Event.INPUT_PROFILE,ReportSession.detail("profile",tablet?"tablet":"phone","mode",full?"xbox":"menu","state","display_"+display,"reason",reason));}
  private void settings(){try{write("settings.json",new JSONObject().put("schema",1).put("tablet",tablet).put("full",full).put("combatControls7",true).put("swipe",swipe).put("lookLeft",lookLeft).put("display",display));profileChanged("settings");}catch(JSONException impossible){throw new IllegalStateException(impossible);}}
  private void loadLayout(){
-  layout=TouchLayout.defaults(tablet,full);JSONObject data=read(filename());if(data==null){confine();return;}
+  layout=full?TouchLayout.mobile(tablet):TouchLayout.defaults(tablet,false);JSONObject data=read(filename());if(data==null){confine();return;}
   try{
    TouchLayout parsed=layout.copy();JSONArray controls=data.getJSONArray("controls");java.util.HashSet<String> ids=new java.util.HashSet<>();
    boolean legacy=!full&&controls.length()==9;
@@ -87,7 +87,7 @@ final class TouchHudView extends View {
    boolean saved=write(filename(),new JSONObject().put("schema",1).put("controls",controls));profileChanged(saved?"layout_saved":"save_failed");return saved;
   }catch(JSONException invalid){notice("Não foi possível salvar o layout.");return false;}
  }
- void releaseAll(){look.clear();removeCallbacks(settleLook);router.clear();NativeGame.clearTouch();drag=-1;invalidate();}
+ void releaseAll(){look.clear();router.clear();NativeGame.clearTouch();drag=-1;invalidate();}
  @Override protected void onDetachedFromWindow(){releaseAll();super.onDetachedFromWindow();}
  @Override protected void onSizeChanged(int w,int h,int oldw,int oldh){releaseAll();bounds();if(layout!=null)for(Control c:layout.controls)clamp(c);super.onSizeChanged(w,h,oldw,oldh);}
  private void color(int color,float alpha,Paint.Style style){paint.setColor(color);paint.setAlpha(Math.round(255*alpha));paint.setStyle(style);paint.setStrokeWidth(dp(1.5f));}
@@ -96,7 +96,7 @@ final class TouchHudView extends View {
  @Override protected void onDraw(Canvas canvas){
   super.onDraw(canvas);bounds();
   if(!hidden||editing)for(Control c:layout.controls){
-   if(swipe&&full&&!editing&&c.id.equals("look"))continue;
+   if(!visible(c)&&!editing)continue;
    float x=area.left+c.x*area.width(),y=area.top+c.y*area.height(),r=TouchLayout.radius(c,area.width(),area.height());boolean down=router.pressed(c);
    color(Color.rgb(12,21,29),down?.88f:c.alpha*.72f,Paint.Style.FILL);canvas.drawCircle(x,y,r,paint);
    int accent=c.id.equals("a")?0xff8bd464:c.id.equals("b")?0xfff27c79:c.id.equals("x")?0xff78b9ef:c.id.equals("y")?0xffead56d:Color.WHITE;
@@ -108,17 +108,33 @@ final class TouchHudView extends View {
     canvas.save();canvas.translate(x,y);canvas.rotate(c.button==8?0:c.button==9?180:c.button==10?270:90);
     Path path=new Path();path.moveTo(0,-r*.32f);path.lineTo(r*.3f,r*.22f);path.lineTo(-r*.3f,r*.22f);path.close();
     color(Color.WHITE,down?1:c.alpha,Paint.Style.FILL);canvas.drawPath(path,paint);canvas.restore();
+   }else if(c.id.equals("rt")){
+    color(Color.WHITE,down?1:c.alpha,Paint.Style.STROKE);
+    canvas.drawCircle(x,y-r*.10f,r*.32f,paint);
+    canvas.drawLine(x-r*.52f,y-r*.10f,x-r*.20f,y-r*.10f,paint);canvas.drawLine(x+r*.20f,y-r*.10f,x+r*.52f,y-r*.10f,paint);
+    canvas.drawLine(x,y-r*.62f,x,y-r*.30f,paint);canvas.drawLine(x,y+r*.10f,x,y+r*.40f,paint);
+    color(Color.WHITE,c.alpha,Paint.Style.FILL);paint.setTextAlign(Paint.Align.CENTER);paint.setTextSize(r*.27f);canvas.drawText("RT",x,y+r*.73f,paint);
+   }else if(c.id.equals("start")){
+    color(Color.WHITE,c.alpha,Paint.Style.FILL);canvas.drawRect(x-r*.30f,y-r*.40f,x-r*.10f,y+r*.40f,paint);canvas.drawRect(x+r*.10f,y-r*.40f,x+r*.30f,y+r*.40f,paint);
    }else{
     color(accent,down?1:c.alpha,Paint.Style.FILL);paint.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL));paint.setTextAlign(Paint.Align.CENTER);
     paint.setTextSize(r*(c.label.length()>2?.40f:.78f));canvas.drawText(c.label,x,y-(paint.ascent()+paint.descent())/2,paint);
    }
   }
-  if(full&&swipe&&!hidden&&!editing){color(Color.WHITE,.35f,Paint.Style.FILL);paint.setTextAlign(Paint.Align.CENTER);paint.setTextSize(dp(11));canvas.drawText("ARRASTE PARA MIRAR",getWidth()*(lookLeft?.27f:.64f),insetTop+dp(100),paint);}
+  if(full&&swipe&&!hidden&&!editing){color(Color.WHITE,.35f,Paint.Style.FILL);paint.setTextAlign(Paint.Align.CENTER);paint.setTextSize(dp(11));canvas.drawText("MIRA · ARRASTE",getWidth()*.50f,insetTop+dp(100),paint);}
   color(0xff0c151d,.83f,Paint.Style.FILL);canvas.drawCircle(gearX(),gearY(),dp(21),paint);
   color(Color.WHITE,.9f,Paint.Style.FILL);for(int n=-1;n<=1;n++)canvas.drawCircle(gearX()+dp(n*6),gearY(),dp(1.8f),paint);
+  if(full&&!hidden&&!editing){color(0xff0c151d,.65f,Paint.Style.FILL);canvas.drawCircle(gearX()-dp(50),gearY(),dp(19),paint);
+   color(Color.WHITE,.8f,Paint.Style.STROKE);canvas.drawLine(gearX()-dp(58),gearY(),gearX()-dp(42),gearY(),paint);
+   if(!extras)canvas.drawLine(gearX()-dp(50),gearY()-dp(8),gearX()-dp(50),gearY()+dp(8),paint);}
   if(editing){color(Color.BLACK,.7f,Paint.Style.FILL);canvas.drawRoundRect(dp(12),insetTop+dp(10),getWidth()-insetRight-dp(65),insetTop+dp(46),dp(8),dp(8),paint);
    color(Color.WHITE,1,Paint.Style.FILL);paint.setTextAlign(Paint.Align.LEFT);paint.setTextSize(dp(13));
    canvas.drawText("EDITAR HUD · arraste · tamanho e salvar no menu ⋯",dp(22),insetTop+dp(34),paint);}
+ }
+ private boolean visible(Control c){
+  if(!full)return true;
+  if(c.id.equals("look"))return !swipe;
+  return extras||!TouchLayout.extra(c.id);
  }
  private void clamp(Control c){
   float r=TouchLayout.radius(c,area.width(),area.height());
@@ -130,13 +146,14 @@ final class TouchHudView extends View {
   bounds();int action=event.getActionMasked(),at=event.getActionIndex(),id=event.getPointerId(at);
   float x=event.getX(at),y=event.getY(at);
   if(action==MotionEvent.ACTION_DOWN||action==MotionEvent.ACTION_POINTER_DOWN){
+   if(full&&!hidden&&!editing&&Math.hypot(x-(gearX()-dp(50)),y-gearY())<=dp(22)){releaseAll();extras=!extras;invalidate();return true;}
    if(Math.hypot(x-gearX(),y-gearY())<=dp(25)){releaseAll();showMenu();return true;}
-   if(!hidden||editing){Control c=layout.hit(x-area.left,y-area.top,area.width(),area.height());
+   if(!hidden||editing){Control c=layout.hit(x-area.left,y-area.top,area.width(),area.height(),candidate->editing||visible(candidate));
     if(swipe&&full&&!editing&&c!=null&&c.id.equals("look"))c=null;
     if(editing&&drag<0){selected=c;if(c!=null){drag=id;dragX=x;dragY=y;originX=c.x;originY=c.y;}}
     else if(!editing){
      if(c!=null)router.down(id,c,x-area.left,y-area.top,area.width(),area.height());
-     else if(full&&swipe&&((x<getWidth()*.5f)==lookLeft))look.down(id,x,y);
+     else if(full&&swipe)look.down(id,x,y);
     }
    }
   }else if(action==MotionEvent.ACTION_MOVE){
@@ -144,7 +161,7 @@ final class TouchHudView extends View {
     int pointer=event.getPointerId(n);
     if(editing&&pointer==drag&&selected!=null){selected.x=originX+(event.getX(n)-dragX)/area.width();selected.y=originY+(event.getY(n)-dragY)/area.height();clamp(selected);}
     else if(!editing){
-     if(look.owns(pointer)){look.move(pointer,event.getX(n),event.getY(n),Math.min(area.width(),area.height()),android.os.SystemClock.uptimeMillis());removeCallbacks(settleLook);postDelayed(settleLook,90);}
+     if(look.owns(pointer)){look.move(pointer,event.getX(n),event.getY(n),Math.min(area.width(),area.height()),android.os.SystemClock.uptimeMillis());}
      else router.move(pointer,event.getX(n)-area.left,event.getY(n)-area.top,area.width(),area.height());
     }
    }
@@ -153,16 +170,16 @@ final class TouchHudView extends View {
   invalidate();return true;
  }
  private void notice(String message){Toast.makeText(activity,message,Toast.LENGTH_SHORT).show();}
- private void help(){new AlertDialog.Builder(activity).setTitle("Como usar").setMessage("Menus: o joystick esquerdo navega, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nMira por arrasto: deslize na área livre à esquerda (troque o lado em ⋯ → Mira). Não precisa tocar em um joystick direito. Ao parar o dedo, a mira para. Os botões têm prioridade sobre a área de mira.\n\nControle Xbox completo é o padrão: L move; LT/RT são gatilhos; L3/R3 pressionam os analógicos. Os nomes seguem o controle original. O esquema escolhido dentro do jogo determina cada ação.\n\nUse vários dedos e mantenha pressionado para segurar uma ação. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA sensibilidade e a inversão da mira ficam no próprio jogo: Options → Controller → Horizontal/Vertical Sensitivity. O desempenho e os defeitos gráficos da missão continuam em investigação.").setPositiveButton("Entendi",null).show();}
+ private void help(){new AlertDialog.Builder(activity).setTitle("Como usar").setMessage("Menus: o joystick esquerdo navega, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nMira por arrasto: deslize na área livre da tela. Não precisa tocar em um joystick direito. Ao parar o dedo, a mira para. Os botões têm prioridade sobre a área de mira.\n\nHUD mobile: joystick move, A/B/X/Y ficam à direita e LT/RT são os gatilhos. Controles extras abrem no botão +, ao lado de ⋯. Black/White eram dois botões do Xbox original, agora identificados como Aux 1/2 no painel extra. L3/R3 pressionam os analógicos. Os nomes seguem o controle original. O esquema escolhido dentro do jogo determina cada ação.\n\nUse vários dedos e mantenha pressionado para segurar uma ação. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA sensibilidade e a inversão da mira ficam no próprio jogo: Options → Controller → Horizontal/Vertical Sensitivity. O desempenho e os defeitos gráficos da missão continuam em investigação.").setPositiveButton("Entendi",null).show();}
  private void showMenu(){
   String[] items=editing?new String[]{"Salvar layout","Cancelar edição","Tamanho do controle selecionado","Opacidade do controle selecionado","Restaurar posições padrão"}:
-   new String[]{"Enquadramento da tela","Modo de controle","Editar HUD","Perfil: "+(tablet?"tablet":"celular"),hidden?"Mostrar controles":"Ocultar controles","Como usar","Exportar relatório","Mira: "+(swipe?(lookLeft?"arrasto à esquerda":"arrasto à direita"):"joystick direito")};
+   new String[]{"Enquadramento da tela","Modo de controle","Editar HUD","Perfil: "+(tablet?"tablet":"celular"),hidden?"Mostrar controles":"Ocultar controles","Como usar","Exportar relatório","Mira: "+(swipe?"arrastar na tela":"joystick direito"),extras?"Recolher controles extras":"Mostrar controles extras"};
   new AlertDialog.Builder(activity).setTitle(editing?"Editar HUD":"Tela e controles").setItems(items,(dialog,which)->{
    if(editing){switch(which){
     case 0:if(saveLayout()){editing=false;snapshot=null;selected=null;}break;
     case 1:layout=snapshot;editing=false;snapshot=null;selected=null;break;
     case 2:case 3:adjust(which==2);break;
-    case 4:layout=TouchLayout.defaults(tablet,full);confine();selected=null;break;
+    case 4:layout=full?TouchLayout.mobile(tablet):TouchLayout.defaults(tablet,false);confine();selected=null;break;
    }}else switch(which){
     case 0:displayOptions();break;
     case 1:new AlertDialog.Builder(activity).setTitle("Modo de controle").setSingleChoiceItems(new String[]{"Navegação de menus","Controle Xbox completo"},full?1:0,(d,n)->{releaseAll();full=n==1;loadLayout();settings();d.dismiss();invalidate();}).show();break;
@@ -171,7 +188,8 @@ final class TouchHudView extends View {
     case 4:releaseAll();hidden=!hidden;break;
     case 5:help();break;
     case 6:if(export!=null)export.run();break;
-    case 7:new AlertDialog.Builder(activity).setTitle("Mira por toque").setSingleChoiceItems(new String[]{"Arrastar área livre à esquerda","Arrastar área livre à direita","Joystick direito"},swipe?(lookLeft?0:1):2,(d,n)->{releaseAll();swipe=n<2;lookLeft=n==0;settings();d.dismiss();invalidate();}).show();break;
+    case 8:releaseAll();extras=!extras;break;
+    case 7:new AlertDialog.Builder(activity).setTitle("Mira por toque").setSingleChoiceItems(new String[]{"Arrastar área livre da tela","Joystick direito"},swipe?0:1,(d,n)->{releaseAll();swipe=n==0;settings();d.dismiss();invalidate();}).show();break;
    }
    invalidate();
   }).setNegativeButton("Fechar",null).show();

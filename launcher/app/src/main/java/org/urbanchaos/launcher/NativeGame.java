@@ -7,6 +7,7 @@ final class NativeGame {
     static native void menuButton(int key,boolean down);
     static native void padButton(int key,boolean down);
     static native void padStick(int stick,float x,float y,boolean active);
+    static native void padLookDelta(float x,float y);
     static native void clearTouch();
     static native void displayMode(int mode);
 }

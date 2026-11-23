@@ -31,6 +31,10 @@ public final class TouchLayoutTest {
   TouchLayout saved=menu.copy();a.configure(.6f,.7f,.08f,.8f);check(saved.find("a").x!=a.x);
   try{a.configure(Float.NaN,.5f,.1f,.5f);throw new AssertionError();}catch(IllegalArgumentException good){checks++;}
   check(TouchLayout.defaults(false,false).find("a").radius>saved.find("a").radius);
+  TouchLayout compact=TouchLayout.mobile(true);
+  check(compact.find("y")!=null&&compact.find("rt")!=null);
+  Control aux=compact.find("black");check(compact.hit(aux.x*1280,aux.y*800,1280,800,c->!TouchLayout.extra(c.id))!=aux);
+  check(TouchLayout.extra("black")&&!TouchLayout.extra("a"));
   System.out.println("HUD layout/multitouch checks passed: "+checks+"; no game execution");
  }
 }

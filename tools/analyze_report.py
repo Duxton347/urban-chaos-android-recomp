@@ -27,7 +27,7 @@ def analyze(path):
  def selected(code):return [r for r in rows if r['code']==code]
  def last(code):values=selected(code);return numbers(values[-1]) if values else None
  frames=selected('UC-GPU-001');visibility=selected('UC-GPU-002');io=selected('UC-DISC-002')
- result={'build':builds.get(key),'capture_elapsed_ms':rows[-1]['elapsed_ms'],'code_counts':dict(counts),'last_frame':numbers(frames[-1]).get('frame') if frames else None,'first_visibility_elapsed_ms':visibility[0]['elapsed_ms'] if visibility else None,'last_io':last('UC-DISC-002'),'last_io_completion':last('UC-DISC-003'),'last_locale_state':last('UC-LOCALE-005'),'last_gpu_synchronization':last('UC-GPU-006'),'mission_playable_verified':False}
+ result={'build':builds.get(key),'capture_elapsed_ms':rows[-1]['elapsed_ms'],'code_counts':dict(counts),'last_frame':numbers(frames[-1]).get('frame') if frames else None,'first_visibility_elapsed_ms':visibility[0]['elapsed_ms'] if visibility else None,'last_io':last('UC-DISC-002'),'last_io_completion':last('UC-DISC-003'),'last_locale_state':last('UC-LOCALE-005'),'last_gpu_synchronization':last('UC-GPU-006'),'last_input':last('UC-INPUT-002'),'mission_playable_verified':False}
  if len(frames)>=2:
   a,b=frames[-2:];delta=b['elapsed_ms']-a['elapsed_ms'];result['last_presentations_per_second']=round((numbers(b)['frame']-numbers(a)['frame'])*1000/delta,3) if delta>0 else None
  result['reads_progressed_in_last_io_interval']=len(io)>=2 and numbers(io[-1]).get('bytes',0)>numbers(io[-2]).get('bytes',0)
