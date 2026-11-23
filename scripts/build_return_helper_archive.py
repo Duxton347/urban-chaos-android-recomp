@@ -6,6 +6,7 @@ import argparse,pathlib,json,hashlib,subprocess,shutil,sys,re
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from relocate_return_helpers import transform
+from fuse_tail_fragments import fuse
 
 def sha(p):return hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
 def main():
@@ -28,7 +29,12 @@ def main():
  if sha(base)!=a.expected_base:raise ValueError('Baseline digest mismatch')
  review=json.loads(a.review.read_text());source=generated/review['source_file'];text=source.read_text()
  if sha(source)!=review['source_sha256']:raise ValueError('Generated source changed')
- out.mkdir(parents=True);changed=out/source.name;changed.write_text(transform(text,review['helpers']))
+ if review.get('mode')=='tail-fusion':
+  rewritten,proof=fuse(text)
+  if proof['fused_edges']!=review['expected_fused_edges']:raise ValueError('Unexpected fusion graph')
+  changes=proof['fused_edges']
+ else:rewritten=transform(text,review['helpers']);changes=len(review['helpers'])
+ out.mkdir(parents=True);changed=out/source.name;changed.write_text(rewritten)
  tool=ROOT/'.toolchain/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64'
  flags=[]
  if a.target=='arm64':
@@ -42,5 +48,5 @@ def main():
  archive=out/base.name;shutil.copyfile(base,archive);subprocess.run([str(ar),'r',str(archive),str(obj)],check=True)
  if subprocess.check_output([str(ar),'t',str(archive)],text=True).splitlines()!=members:raise ValueError('Unexpected archive members')
  shutil.copyfile(baseline/'CMakeCache.txt',out/'CMakeCache.txt')
- (out/'helper-receipt.json').write_text(json.dumps({'target':a.target,'base_sha256':sha(base),'archive_sha256':sha(archive),'review_sha256':sha(a.review),'modified_source_sha256':sha(changed),'command':command,'modified_functions':len(review['helpers']),'gameplay_validated':False},indent=2)+'\n')
+ (out/'helper-receipt.json').write_text(json.dumps({'target':a.target,'base_sha256':sha(base),'archive_sha256':sha(archive),'review_sha256':sha(a.review),'modified_source_sha256':sha(changed),'command':command,'reviewed_changes':changes,'gameplay_validated':False},indent=2)+'\n')
 if __name__=='__main__':main()

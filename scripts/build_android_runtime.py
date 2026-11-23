@@ -25,7 +25,9 @@ def main():
     parser.add_argument('--profile',type=pathlib.Path,default=ROOT/'config/research/user-xbe-resumable.json')
     parser.add_argument('--resume',action='store_true',help='Preserve failed attempt logs and rebuild the same verified inputs')
     parser.add_argument('--rebuild',action='store_true',help='Replace a superseded linked library while preserving receipts and source overlays')
+    parser.add_argument('--guest-transform-receipt',type=pathlib.Path,help='Reviewed private archive transition receipt, only with rebuild')
     args=parser.parse_args()
+    if args.guest_transform_receipt and not args.rebuild:raise ValueError('Archive transition requires rebuild')
     xbe,generated,archive,output=map(private_path,(args.xbe,args.generated,args.archive,args.out))
     cache=(archive.parent/'CMakeCache.txt').read_text()
     optimized=re.search(r'^URBAN_GUEST_OPTIMIZATION:STRING=([12])$',cache,re.M)
@@ -55,7 +57,11 @@ def main():
     if not machines or any(machine!='AArch64' for machine in machines):raise ValueError('AArch64 guest archive required')
     if args.resume or args.rebuild:
         old=json.loads((output/'receipt.json').read_text())
-        if old['status']!=('PRIVATE_ANDROID_LIBRARY_LINKED' if args.rebuild else 'BUILD_FAILED') or old['xbe_sha256']!=info['sha256'] or old['profile_sha256']!=sha(args.profile) or old['guest_archive_sha256']!=sha(archive):
+        same_archive=old['guest_archive_sha256']==sha(archive)
+        if args.guest_transform_receipt:
+            transition=json.loads(private_path(str(args.guest_transform_receipt)).read_text())
+            if transition['base_sha256']!=old['guest_archive_sha256'] or transition['archive_sha256']!=sha(archive) or transition['target']!='arm64':raise ValueError('Guest archive transition mismatch')
+        if old['status']!=('PRIVATE_ANDROID_LIBRARY_LINKED' if args.rebuild else 'BUILD_FAILED') or old['xbe_sha256']!=info['sha256'] or old['profile_sha256']!=sha(args.profile) or (not same_archive and not args.guest_transform_receipt):
             raise ValueError('Only the same verified private inputs can be resumed or rebuilt')
         if args.rebuild and sha(output/'cmake/libmain.so')!=old['library_sha256']:raise ValueError('Superseded library checksum mismatch')
         attempt=1
@@ -69,6 +75,7 @@ def main():
              'guest_optimization':int(optimized.group(1)),'guest_build_cache_sha256':sha(archive.parent/'CMakeCache.txt'),
              'guest_archive_sha256':sha(archive),'guest_objects':len(machines),'apk_created':False,
              'android_device_tested':False,'game_boot_tested':False,'g1_qualified':False}
+    if args.guest_transform_receipt:receipt['guest_archive_transition']=transition
     try:
         receipt['runtime_patches']=prepare(output/'sdk',context=True,android=True)
         renderer=prepare_renderer(output/'vulkan',android=True)

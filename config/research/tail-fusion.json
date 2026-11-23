@@ -1,0 +1,7 @@
+{
+  "mode": "tail-fusion",
+  "source_file": "x86_recomp.17.cpp",
+  "source_sha256": "edc202a8c068a73c6b68da9d54514e442b91c150610cd646c742a008d8f41d06",
+  "expected_fused_edges": 1,
+  "evidence": "Leaf fragment reached by one static tail edge inherits the parent return-frame contract; original dynamic entries remain unchanged."
+}
