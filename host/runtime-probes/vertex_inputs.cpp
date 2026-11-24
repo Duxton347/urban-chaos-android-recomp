@@ -48,29 +48,56 @@ void NativeVertexInputsSelfTest() {
  // Packed Xbox streams need natural component alignment, not D3D12's dword stride/offset restriction.
  auto packed_data=mem::AllocContiguous(4096,0,0xFFFFFFFF,4096),packed_vb=mem::AllocSystem(12);
  kernel::W32(packed_vb,1);kernel::W32(packed_vb+4,mem::PhysicalFromVirtual(packed_data));
- for(unsigned type:{0x31u,0x35u}) {
+ for(unsigned type:{0x31u,0x35u,0x16u}) {
   std::array<unsigned char,512> native{};
   for(unsigned shifted:{0u,1u}) {
-   s.vs->inputs[0]={1,shifted,0x42};s.vs->inputs[3]={0,0,type};s.vs->inputs[4]={0,6,0x44};s.vs->hash=0;
+   s.vs->inputs[0]={1,shifted,0x42};s.vs->inputs[3]={0,type==0x16?6u:0u,type};s.vs->inputs[4]={0,type==0x16?0u:6u,type==0x16?0x31u:0x44u};s.vs->hash=0;
    s.streams[0]={packed_vb,10};s.streams[1]={vb,20};
    const float positions[][4]={{1,1,0,1},{6,1,0,1},{1,6,0,1}};
    const int16_t normal[]={-8192,16384,24576};const int16_t integers[]={-2,0,1};const unsigned char extra_bytes[]={51,102,153,204};
    for(unsigned v=0;v<3;v++){
     auto* dst=static_cast<unsigned char*>(kernel::HostPtr(packed_data))+10*v;
-    std::memcpy(dst,type==0x31?normal:integers,6);std::memcpy(dst+6,extra_bytes,4);
+    std::memcpy(dst,type==0x35?integers:normal,6);std::memcpy(dst+6,extra_bytes,4);
     std::memcpy(static_cast<unsigned char*>(kernel::HostPtr(data))+20*v+shifted,positions[v],16);
    }
    gpu::Assembled a;if(!gpu::Assemble(s,5,0,3,nullptr,a))throw std::runtime_error("Compact stream assembly failed");
    if(!shifted&&!a.vertices.empty())throw std::runtime_error("Compact stream still expanded because of dword alignment");
    if(shifted&&a.vertices.empty())throw std::runtime_error("Misaligned FLOAT4 bypassed portable conversion");
+   if(!shifted&&type==0x16) {
+    const auto& e=a.elements[3];const auto& buffer=a.buffers[e.buffer];
+    if(e.offset||buffer.stride!=4||buffer.bytes!=12)throw std::runtime_error("Packed normal was not copied to aligned native words");
+    for(unsigned v=0;v<3;v++)if(std::memcmp(buffer.src+v*4,extra_bytes,4))throw std::runtime_error("Packed normal copy changed its bits");
+   }
    b->Clear(s,0,nullptr,0xF0,0xFF000000,1,0);b->Draw(s,5,0,3,nullptr);b->Sync(pixels,512);
    auto* result=static_cast<unsigned char*>(kernel::HostPtr(pixels));
    if(!shifted)std::memcpy(native.data(),result,512);
    else for(unsigned y=0;y<8;y++)for(unsigned x=0;x<32;x++)if(std::abs(int(native[y*64+x])-int(result[y*64+x]))>1)throw std::runtime_error("Compact native stream differs from portable conversion");
   }
  }
+ // Dense indexed ranges and sparse gathers must keep each packed normal paired with its position.
+ auto indexed_positions=mem::AllocContiguous(32768,0,0xFFFFFFFF,4096),indexed_packed=mem::AllocContiguous(32768,0,0xFFFFFFFF,4096);
+ kernel::W32(vb+4,mem::PhysicalFromVirtual(indexed_positions));kernel::W32(packed_vb+4,mem::PhysicalFromVirtual(indexed_packed));
+ const float points[][4]={{1,1,0,1},{6,1,0,1},{1,6,0,1}};const uint32_t normals[]={255u,511u<<11,255u<<22};
+ for(bool sparse:{false,true}) {
+  const uint16_t indices[]={uint16_t(sparse?1100:2),0,uint16_t(sparse?17:1)};s.base_vertex=sparse?2:4;
+  std::array<unsigned char,512> native{};
+  for(unsigned shifted:{0u,1u}) {
+   s.vs->inputs[0]={1,shifted,0x42};s.vs->inputs[3]={0,6,0x16};s.vs->inputs[4]={0,0,0x31};s.vs->hash=0;
+   for(unsigned v=0;v<3;v++) {
+    const unsigned id=indices[v]+s.base_vertex;
+    std::memcpy(static_cast<unsigned char*>(kernel::HostPtr(indexed_positions))+20*id+shifted,points[v],16);
+    std::memcpy(static_cast<unsigned char*>(kernel::HostPtr(indexed_packed))+10*id+6,&normals[v],4);
+   }
+   gpu::Assembled a;if(!gpu::Assemble(s,5,0,3,reinterpret_cast<const uint8_t*>(indices),a))throw std::runtime_error("Indexed packed stream assembly failed");
+   if(!shifted&&(a.vertices.size()||bool(a.index_count)==sparse))throw std::runtime_error("Packed indexed native dense/sparse policy changed");
+   b->Clear(s,0,nullptr,0xF0,0xFF000000,1,0);b->Draw(s,5,0,3,reinterpret_cast<const uint8_t*>(indices));b->Sync(pixels,512);
+   auto* result=static_cast<unsigned char*>(kernel::HostPtr(pixels));
+   if(!shifted)std::memcpy(native.data(),result,512);
+   else for(unsigned y=0;y<8;y++)for(unsigned x=0;x<32;x++)if(std::abs(int(native[y*64+x])-int(result[y*64+x]))>1)throw std::runtime_error("Indexed packed normal no longer matches its vertex");
+  }
+ }
  if(urban::progress::native_vertex_draws.load()==native_before)throw std::runtime_error("Native vertex fixture did not use native fetch");
- std::printf("NATIVE_VERTEX_INPUTS: %u formats and 2 compact stride-10 layouts agree with portable conversion (pixel tolerance 1/255), misaligned FLOAT4 layouts fall back; authored data only\n",cases);
+ std::printf("NATIVE_VERTEX_INPUTS: %u formats and 3 compact stride-10 layouts agree with portable conversion (pixel tolerance 1/255), misaligned FLOAT4 layouts fall back; indexed dense/sparse streams agree; authored data only\n",cases);
 }
 
 // Xbox permits a linear 32-bit colour view over D24S8 storage. GPU writes must remain visible through that view.
