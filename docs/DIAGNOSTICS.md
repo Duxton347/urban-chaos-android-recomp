@@ -107,3 +107,6 @@ Operação 9 de `UC-GPU-005` mede o polling/submissão de reports, inclusive eve
 
 
 Na versão 0.8, `UC-INPUT-002` acrescenta `look_events` (deltas não nulos recebidos) e `look_delivered` (leituras que consumiram o acumulado). Vários eventos podem ser coalescidos em uma leitura, sem fila; contagens diferentes não provam perda. Não registra coordenadas.
+
+
+0.9: `UC-CPU-003` inclui `cpu_valid`/`cpu_ns`; o analisador informa porcentagem de um núcleo somente entre leituras válidas. `UC-GPU-006` inclui `two_sided_draws`. Não são medidas de FPS nem prova de causa dos artefatos; a coleta de CPU indisponível fica explicitamente inválida.

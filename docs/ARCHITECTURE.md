@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+0.9: orientação frontal declarada é independente do descarte; fog sem tabela respeita o fator do vertex program. Metadados medem tempo CPU real de cada thread, sem instrumentar instruções. A investigação de gameplay continua sem qualificação. [Detalhes](RENDERING_INVESTIGATION_09.md).
+
 0.8: deltas de mira são acumulados no host até a leitura do Pad, sem expirar pelo tempo de parede; o HUD compacto separa fontes extras. União revisada de um fragmento folha herda o contrato da pilha de origem e mantém a entrada dinâmica original. [Detalhes](GAMEPLAY_HUD_08.md).
 
 0.7: mira relativa por arrasto sobre fontes Xbox e migração para controles completos. Pós-processamento revisado de dois helpers elimina transferência apenas com PC de retorno preservado; nenhum outro contrato de pilha foi relaxado. [Evidências e limites](MISSION_EXECUTION_07.md).

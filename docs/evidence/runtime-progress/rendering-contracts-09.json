@@ -1,0 +1,75 @@
+{
+  "renderer_contract": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host": {
+        "sha256": "0875f79d496226ba8df836a9331e67da24e6800def167be756f05cabfad83caa",
+        "objects": 2
+      },
+      "host-fence": {
+        "sha256": "19ae1774850676ccde03567208a89ef4c74f4b1827ce16563faf98646bcab64f",
+        "objects": 2
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+      "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+      "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73",
+      "command-stream-synchronization.patch": "5378158a2f353caa5c64af4badf96fc389a97fb22cb9f0a4e4f1bae1e8c54512"
+    },
+    "renderer_source_sha256": "1005c3d687b5e77d5e71ec59b17b78d0a09f41e3f8819751fac142bd8218aaaf",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+    "authored_renderer_fixture_passed": true,
+    "fixture_executable_sha256": "5110c42f682ff632cf6c6339fccb918fc16c04e733ce2db1d043f30ca9107044",
+    "forced_fence_renderpass_source_sha256": "71d64152d3d3b238acfb4541f50627260f41941917f7257b624533494cf398d3",
+    "authored_fence_renderpass_fixture_passed": true
+  },
+  "fog_negative_pixel": {
+    "B": 0,
+    "G": 0,
+    "R": 255
+  },
+  "fog_corrected_pixel": {
+    "B": 191,
+    "G": 0,
+    "R": 64
+  },
+  "facing_negative_both_red": true,
+  "facing_corrected_front_red_back_green": true,
+  "culling_clockwise_counterclockwise_passed": true,
+  "observed_texture_modes": [
+    0,
+    1,
+    15,
+    16
+  ],
+  "fog_disabled_in_observed_opening_passes": true,
+  "same_scene_reference_comparison_valid": false,
+  "device_tested": false,
+  "mission_playable_verified": false,
+  "clean_game_run": {
+    "seconds": 120.069,
+    "last_present": 1800,
+    "missing_requests": 0,
+    "native_fatal_observed": false,
+    "termination": "programmed SIGTERM",
+    "opening_two_sided_draws": 0,
+    "thread_cpu_clock_valid": true,
+    "benchmark": false,
+    "android_device_tested": false
+  }
+}

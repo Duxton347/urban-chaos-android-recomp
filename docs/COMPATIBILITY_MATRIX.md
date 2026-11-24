@@ -28,3 +28,6 @@ São nove caminhos modificados no total. O runtime pinado pela Burner permanece 
 - **Shaders/plataforma:** Vulkan Black depende de glslang, ImGui, SDL e interfaces `common/options.h`, `common/aspect.h`, `d3d/gpu_frame.h` e `host.h`. Separar essas dependências de Black e confrontar as chaves de shader do pin, incluindo XYZRHW e reports, antes de qualificar o backend. Nenhum desses hooks de título foi transplantado.
 
 A primeira cena de Hope Street foi apresentada no renderer CPU da pesquisa; isso não muda esses gates de Vulkan/SDL3 nem comprova gameplay no Android.
+
+
+Atualização 0.9: a reutilização do backend Vulkan não garantia todos os contratos do SDK. Corrigidos fog programável sem tabela e orientação frontal independente de culling, com controles negativos e pixels autorais. Isso não qualifica a compatibilidade gráfica completa do título. [Evidências](RENDERING_INVESTIGATION_09.md).
