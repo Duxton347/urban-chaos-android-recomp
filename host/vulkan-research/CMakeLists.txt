@@ -33,7 +33,7 @@ if(URBAN_ANDROID_WINDOW)
 endif()
 if(NOT ANDROID)
  set(SDK "${REPO}/vendor/runtime")
- add_executable(vulkan_renderer_fixture fixture_main.cpp "${REPO}/host/runtime-probes/visibility.cpp"
+ add_executable(vulkan_renderer_fixture fixture_main.cpp "${REPO}/host/runtime-probes/visibility.cpp" "${REPO}/host/runtime-probes/fog.cpp"
   "${SDK}/runtime/gpu/shaders.cpp" "${SDK}/runtime/gpu/texture.cpp"
   "${URBAN_OVERLAY}/runtime/gpu/vertex.cpp" "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp"
   "${SDK}/runtime/kernel/memory.cpp" "${SDK}/runtime/core/log.cpp" "${SDK}/harness/app_headless.cpp")

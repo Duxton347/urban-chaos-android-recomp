@@ -1,0 +1,27 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -785,8 +785,13 @@
+ void KeyRasterizer(const State& s, const Assembled& a, PsoKey& k) {
+     constexpr uint32_t kCullCw = 0x900;
+     uint32_t cull = s.rs[kRsCullMode];
+-    k.cull = cull != 0 && a.topology == Topology::Triangles;
+-    k.ccw = cull == kCullCw;
++    // Facing controls two-sided shader colors independently of which winding is culled.
++    k.ccw = s.rs[kRsFrontFace] == 0x901;
++    k.cull = VK_CULL_MODE_NONE;
++    if (a.topology == Topology::Triangles && (cull == kCullCw || cull == 0x901)) {
++        bool discard_front = (cull == kCullCw) != bool(k.ccw);
++        k.cull = discard_front ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
++    }
+     k.fill = s.rs[kRsFillMode];
+ }
+ 
+@@ -2327,7 +2332,7 @@
+     VkPipelineRasterizationStateCreateInfo rs{VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO};
+     constexpr uint32_t kFillWireframe = 0x1B01;
+     rs.polygonMode = k.fill == kFillWireframe && feats_.fillModeNonSolid ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+-    rs.cullMode = k.cull ? VK_CULL_MODE_BACK_BIT : VK_CULL_MODE_NONE;
++    rs.cullMode = VkCullModeFlags(k.cull);
+     rs.frontFace = k.ccw ? VK_FRONT_FACE_COUNTER_CLOCKWISE : VK_FRONT_FACE_CLOCKWISE;
+     rs.depthBiasEnable = k.zbias != 0 || k.zslope != 0;
+     rs.depthBiasConstantFactor = float(k.zbias);

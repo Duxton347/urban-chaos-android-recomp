@@ -8,8 +8,10 @@ namespace kernel {uint8_t* g_base=nullptr;}
 const app::GameInfo app::kGame={.title=L"Authored Vulkan backend contract",.name=L"VulkanContract",.log="VulkanContract"};
 int ReferenceVisibilitySelfTest(bool);
 int ReferenceVisibilitySelfTest(bool,bool);
+void ProgrammableFogSelfTest();
 int main(){
     if(ReferenceVisibilitySelfTest(false)||ReferenceVisibilitySelfTest(false,true))return 2;
+    ProgrammableFogSelfTest();
     auto backend=gpu::CreateBackend();
     if(!backend->Init(8,8))return 3;
     gpu::State invalid{};

@@ -46,6 +46,14 @@ int ReferenceVisibilitySelfTest(bool reject_points,bool asynchronous) {
         };
         backend->Clear(state,0,nullptr,1,0,1,0);backend->ClearReport();triangle(.25f);
         uint32_t visible=result();assert(visible>0&&visible<64);
+        for(uint32_t cull:{0x900u,0x901u}){
+            state.rs[gpu::kRsCullMode]=cull;
+            backend->Clear(state,0,nullptr,1,0,1,0);backend->ClearReport();triangle(.25f);
+            auto samples=result();
+            if(samples!=(cull==0x900?0:visible))throw std::runtime_error("Xbox culling winding differs from y-down reference");
+        }
+        state.rs[gpu::kRsCullMode]=0;
+
         backend->Clear(state,0,nullptr,1,0,1,0);backend->ClearReport();
         state.simple[gpu::kMColorWriteEnable>>2]=0x01010101;
         triangle(.25f);assert(result()==visible); // full color shading agrees with count-only path

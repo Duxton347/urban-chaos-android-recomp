@@ -6,6 +6,11 @@ static void Check(bool ok){if(!ok)throw std::runtime_error("progress contract fa
 int main(int argc,char** argv) {
  Check(argc==2);
  auto* slot=Local();
+#if defined(__linux__)
+ bool cpu_valid=false;auto cpu_before=CpuNanoseconds(*slot,cpu_valid);Check(cpu_valid);
+ volatile uint64_t authored_sum=0;for(unsigned n=0;n<1000000;++n)authored_sum=authored_sum+n;
+ auto cpu_after=CpuNanoseconds(*slot,cpu_valid);Check(cpu_valid&&cpu_after>cpu_before);
+#endif
  {
   Scope guest(Kind::Guest,0x11000);
   try {Scope kernel(Kind::Kernel,219,CodeCaller(0x11024,0x11000,0x12000));Check(slot->current==Packed(Kind::Kernel,219));throw 1;}
@@ -39,7 +44,7 @@ int main(int argc,char** argv) {
  slot->sample_attempts=0;
  SampleCodeCandidates(0xffc,0x1000,0x1010,0x11000,0x12000,[&](uint32_t){throw std::runtime_error("outside stack read");return 0;});
  Check(slot->code_candidates[0]==0);
- visibility_polls=7;visibility_submits=3;idle_flushes=5;same_present_texture_updates=2;
+ visibility_polls=7;visibility_submits=3;idle_flushes=5;same_present_texture_updates=2;two_sided_draws=11;
  urban::diagnostics::Journal journal;
  Check(journal.Start(argv[1],"authored-progress",std::string(64,'a')));
  Poll(journal);journal.Finish();

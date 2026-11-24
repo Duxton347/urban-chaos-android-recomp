@@ -31,6 +31,16 @@ def analyze(path):
  if len(frames)>=2:
   a,b=frames[-2:];delta=b['elapsed_ms']-a['elapsed_ms'];result['last_presentations_per_second']=round((numbers(b)['frame']-numbers(a)['frame'])*1000/delta,3) if delta>0 else None
  result['reads_progressed_in_last_io_interval']=len(io)>=2 and numbers(io[-1]).get('bytes',0)>numbers(io[-2]).get('bytes',0)
+ cpu=collections.defaultdict(list)
+ for row in selected('UC-CPU-003'):
+  d=numbers(row)
+  if d.get('cpu_valid')==1 and 'slot' in d:cpu[d['slot']].append(row)
+ cpu_usage=[]
+ for slot,values in sorted(cpu.items()):
+  if len(values)<2:continue
+  a,b=values[-2:];dt=b['elapsed_ms']-a['elapsed_ms'];dn=numbers(b).get('cpu_ns',0)-numbers(a).get('cpu_ns',0)
+  if dt>0 and dn>=0:cpu_usage.append({'slot':slot,'kind':numbers(b).get('kind'),'cpu_percent_of_one_core':round(dn/(dt*10000),3),'interval_ms':dt})
+ result['last_thread_cpu']=cpu_usage
  result['gpu_host_timing']={str(numbers(r)['operation']):numbers(r) for r in selected('UC-GPU-005') if 'operation' in numbers(r)}
  with path.open('rb') as file:result['report_sha256']=hashlib.file_digest(file,'sha256').hexdigest()
  return result
