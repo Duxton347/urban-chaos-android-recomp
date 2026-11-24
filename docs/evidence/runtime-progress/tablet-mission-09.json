@@ -1,0 +1,146 @@
+{
+  "build": "experimental-6671d1a3586443d4",
+  "capture_elapsed_ms": 391699,
+  "code_counts": {
+    "UC-SESSION-001": 1,
+    "UC-ANDROID-001": 1,
+    "UC-LOCALE-003": 1,
+    "UC-BOOT-001": 1,
+    "UC-BOOT-002": 1,
+    "UC-AUDIO-003": 11,
+    "UC-DISC-001": 1,
+    "UC-GPU-003": 2,
+    "UC-GPU-001": 56,
+    "UC-AUDIO-001": 39,
+    "UC-AUDIO-004": 40,
+    "UC-RUNTIME-001": 1,
+    "UC-CPU-003": 117,
+    "UC-CPU-004": 39,
+    "UC-DISC-002": 39,
+    "UC-DISC-003": 39,
+    "UC-GPU-006": 39,
+    "UC-GPU-005": 390,
+    "UC-LOCALE-005": 39,
+    "UC-INPUT-002": 39,
+    "UC-GPU-002": 16
+  },
+  "last_frame": 3300,
+  "first_visibility_elapsed_ms": 32477,
+  "last_io": {
+    "reads": 1094,
+    "bytes": 61954320,
+    "short_reads": 34,
+    "inflight": 0,
+    "total_us": 285899,
+    "max_us": 7524,
+    "stream_empty_blocks": 0,
+    "thread_slots_dropped": 0
+  },
+  "last_io_completion": {
+    "queued_apcs": 651,
+    "delivered_apcs": 650,
+    "resource_id": 2836069715,
+    "requested": 55296,
+    "offset": 211660800,
+    "completed": 55296
+  },
+  "last_locale_state": {
+    "requested": 1,
+    "archives": 3
+  },
+  "last_gpu_synchronization": {
+    "visibility_polls": 594126,
+    "visibility_submits": 0,
+    "idle_flushes": 0,
+    "same_present_texture_updates": 0,
+    "two_sided_draws": 0
+  },
+  "last_input": {
+    "presses": 128,
+    "delivered": 119,
+    "total_us": 14031020,
+    "max_us": 3460717,
+    "look_events": 6054,
+    "look_delivered": 741
+  },
+  "mission_playable_verified": false,
+  "last_presentations_per_second": 4.924,
+  "reads_progressed_in_last_io_interval": true,
+  "last_thread_cpu": [
+    {
+      "slot": 1,
+      "kind": 3,
+      "cpu_percent_of_one_core": 83.872,
+      "interval_ms": 10033
+    },
+    {
+      "slot": 2,
+      "kind": 0,
+      "cpu_percent_of_one_core": 0.242,
+      "interval_ms": 10033
+    }
+  ],
+  "gpu_host_timing": {
+    "0": {
+      "operation": 0,
+      "calls": 21427,
+      "total_us": 24559641,
+      "max_us": 19948
+    },
+    "1": {
+      "operation": 1,
+      "calls": 3313,
+      "total_us": 3557582,
+      "max_us": 39589
+    },
+    "2": {
+      "operation": 2,
+      "calls": 72,
+      "total_us": 488682,
+      "max_us": 41356
+    },
+    "3": {
+      "operation": 3,
+      "calls": 1995026,
+      "total_us": 35150029,
+      "max_us": 82859
+    },
+    "4": {
+      "operation": 4,
+      "calls": 1995026,
+      "total_us": 12590749,
+      "max_us": 996
+    },
+    "5": {
+      "operation": 5,
+      "calls": 1995026,
+      "total_us": 4657485,
+      "max_us": 13627
+    },
+    "6": {
+      "operation": 6,
+      "calls": 1995026,
+      "total_us": 1241775,
+      "max_us": 71072
+    },
+    "7": {
+      "operation": 7,
+      "calls": 9702,
+      "total_us": 18201390,
+      "max_us": 20646
+    },
+    "8": {
+      "operation": 8,
+      "calls": 2172,
+      "total_us": 20424500,
+      "max_us": 29566
+    },
+    "9": {
+      "operation": 9,
+      "calls": 594126,
+      "total_us": 8607,
+      "max_us": 624
+    }
+  },
+  "report_sha256": "536e71b0d9404074f98add34e4cd2191794e26ac74cc380efb41d895fc449c2c"
+}

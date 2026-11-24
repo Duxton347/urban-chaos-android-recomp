@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+0.10: views lineares de cor sobre o D24S8 atualmente vinculado recebem bytes derivados do attachment GPU, com serial de escrita e autoridade CPU/GPU. A conversão acontece antes da filtragem. Entrada nativa de vértices consulta suporte de formatos do dispositivo e preserva a conversão portátil e o endereçamento declarado. [Contrato e validação](RENDERING_INVESTIGATION_10.md).
+
 0.9: orientação frontal declarada é independente do descarte; fog sem tabela respeita o fator do vertex program. Metadados medem tempo CPU real de cada thread, sem instrumentar instruções. A investigação de gameplay continua sem qualificação. [Detalhes](RENDERING_INVESTIGATION_09.md).
 
 0.8: deltas de mira são acumulados no host até a leitura do Pad, sem expirar pelo tempo de parede; o HUD compacto separa fontes extras. União revisada de um fragmento folha herda o contrato da pilha de origem e mantém a entrada dinâmica original. [Detalhes](GAMEPLAY_HUD_08.md).

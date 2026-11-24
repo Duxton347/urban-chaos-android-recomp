@@ -1,0 +1,60 @@
+{
+  "status": "PRIVATE_EXPERIMENTAL_APK_BUILT",
+  "build_id": "experimental-315c00c19ca570e2",
+  "apk_sha256": "66675198f9b8d2c6e68eb5feefc684f6be93f3ede28c9bdc9038ba4f555f8cd6",
+  "apk_bytes": 28264376,
+  "native_library_sha256": "8d13fad907494d172146fe2f3967352c7ecfa3cd686fd7cdd6ff0e78945b3853",
+  "libraries": {
+    "libmain.so": "8d13fad907494d172146fe2f3967352c7ecfa3cd686fd7cdd6ff0e78945b3853",
+    "libSDL3.so": "37ff757752472123a831a304ddcfa49be642b97c40a88686b977e9d38dd205e1",
+    "libc++_shared.so": "ab4e6c71b96b851de45a8a9bd86369e7dbc2130a44b3b4520564be94847910f2"
+  },
+  "device_tested": false,
+  "mission_playable_verified": false,
+  "version_code": 10,
+  "version_name": "0.10-experimental",
+  "certificate_sha256": "ac9d5f8592068c9e3772c2278392c31bfb2dd42140ec33faefb8dc070e142122",
+  "certificate_same_as_09": true,
+  "transport": {
+    "apk_sha256": "66675198f9b8d2c6e68eb5feefc684f6be93f3ede28c9bdc9038ba4f555f8cd6",
+    "parts": [
+      {
+        "name": "UrbanChaos-v010.zip.001",
+        "bytes": 9500000,
+        "sha256": "586528ddc3f5801a29b1add427c864ba8d4009eb02941e2485f75d7f8e6ac1de"
+      },
+      {
+        "name": "UrbanChaos-v010.zip.002",
+        "bytes": 9500000,
+        "sha256": "dcff4b29f9d4a23b94991469c8987a7325ff1860cd0976aeb4a76e93ee6688b8"
+      },
+      {
+        "name": "UrbanChaos-v010.zip.003",
+        "bytes": 9264528,
+        "sha256": "cbbb311091db19bdc906e89d2f1837fd3aee31323b3d957391ffd7230e261b6e"
+      }
+    ],
+    "joined_zip_crc_valid": true,
+    "apk_hash_valid": true
+  },
+  "architecture": "AArch64",
+  "publicly_uploaded": false,
+  "runtime_patches": {
+    "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+    "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+    "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+    "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+    "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+    "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+    "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+    "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+    "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+    "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+    "android-input-sampling.patch": "910238473233766f1e4c4349a07d67309cc7df7376279f5dd1b4824475c62bdf",
+    "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+    "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+    "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73",
+    "command-stream-synchronization.patch": "5378158a2f353caa5c64af4badf96fc389a97fb22cb9f0a4e4f1bae1e8c54512",
+    "native-vertex-fallback.patch": "757165c60f8167527ca26ca92746c2376f29e5d4366bccc0632be1494418cb29"
+  }
+}
