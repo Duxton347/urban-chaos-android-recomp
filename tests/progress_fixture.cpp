@@ -45,6 +45,7 @@ int main(int argc,char** argv) {
  SampleCodeCandidates(0xffc,0x1000,0x1010,0x11000,0x12000,[&](uint32_t){throw std::runtime_error("outside stack read");return 0;});
  Check(slot->code_candidates[0]==0);
  visibility_polls=7;visibility_submits=3;idle_flushes=5;same_present_texture_updates=2;two_sided_draws=11;
+ native_vertex_draws=17;converted_vertex_draws=19;vertex_upload_bytes=123456;depth_colour_conversions=5;depth_colour_binds=23;
  urban::diagnostics::Journal journal;
  Check(journal.Start(argv[1],"authored-progress",std::string(64,'a')));
  Poll(journal);journal.Finish();

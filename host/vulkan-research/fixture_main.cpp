@@ -9,9 +9,13 @@ const app::GameInfo app::kGame={.title=L"Authored Vulkan backend contract",.name
 int ReferenceVisibilitySelfTest(bool);
 int ReferenceVisibilitySelfTest(bool,bool);
 void ProgrammableFogSelfTest();
+void NativeVertexInputsSelfTest();
+void DepthColourAliasSelfTest();
 int main(){
     if(ReferenceVisibilitySelfTest(false)||ReferenceVisibilitySelfTest(false,true))return 2;
     ProgrammableFogSelfTest();
+    NativeVertexInputsSelfTest();
+    DepthColourAliasSelfTest();
     auto backend=gpu::CreateBackend();
     if(!backend->Init(8,8))return 3;
     gpu::State invalid{};

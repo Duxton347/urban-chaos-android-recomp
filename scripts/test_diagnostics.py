@@ -52,7 +52,7 @@ def main():
         completion=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-003')
         assert completion['offset']==1024 and completion['requested']==8 and completion['completed']==3
         sync=next(item['detail'] for item in progress_records if item['code']=='UC-GPU-006')
-        assert sync=={'visibility_polls':7,'visibility_submits':3,'idle_flushes':5,'same_present_texture_updates':2,'two_sided_draws':11}
+        assert sync=={'visibility_polls':7,'visibility_submits':3,'idle_flushes':5,'same_present_texture_updates':2,'two_sided_draws':11,'native_vertex_draws':17,'converted_vertex_draws':19,'vertex_upload_bytes':123456,'depth_colour_conversions':5,'depth_colour_binds':23}
         assert 'SENTINEL_' not in json.dumps(progress_records)
         subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-pthread',
             '-I'+str(ROOT/'native'),'-I'+str(overlay/'runtime'),'-I'+str(ROOT/'vendor/runtime/runtime'),

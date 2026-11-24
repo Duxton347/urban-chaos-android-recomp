@@ -1,0 +1,67 @@
+--- a/runtime/gpu/vertex.h
++++ b/runtime/gpu/vertex.h
+@@ -58,5 +58,7 @@
+ // false when there is nothing to draw
+ // indices: the title's 16 bit indices, null for an unindexed draw
+ bool Assemble(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices, Assembled& out);
++// Identical geometry, expanded to float4 for backends lacking a native input format.
++bool AssemblePortable(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices, Assembled& out);
+ 
+ }  // namespace gpu
+--- a/runtime/gpu/vertex.cpp
++++ b/runtime/gpu/vertex.cpp
+@@ -265,6 +265,12 @@
+     return st.stride ? st.stride : layout.stream_stride[size_t(in.stream)];
+ }
+ 
++// Vulkan can fetch naturally aligned components from compact streams (e.g. SHORT3 + UBYTE4, stride 10).
++// Other backends keep the pinned SDK's dword restriction.
++#ifndef XBE_NATIVE_COMPONENT_ALIGNMENT
++#define XBE_NATIVE_COMPONENT_ALIGNMENT 0
++#endif
++constexpr bool kComponentAlignment = XBE_NATIVE_COMPONENT_ALIGNMENT;
+ constexpr uint32_t kStrideAlign = 4;            // the input assembler reads strides in dwords
+ constexpr uint32_t kElementOffsetEnd = 0x10000;  // the element offset is stored as uint16_t
+ 
+@@ -273,8 +279,12 @@
+         const auto& in = inputs.layout.inputs[size_t(inputs.regs[k])];
+         HostElement he = HostFormat(in.type);
+         uint32_t stride = StrideOf(s, inputs.layout, in);
+-        bool readable = he.format && stride && stride % kStrideAlign == 0 && in.offset < kElementOffsetEnd &&
+-                        in.offset % std::min<uint32_t>(he.bytes, 4) == 0;
++        const uint32_t kind = in.type & 15;
++        const uint32_t component = kind == 0 || kind == 4 ? 1 : kind == 1 || kind == 5 ? 2 : 4;
++        const uint32_t stride_alignment = kComponentAlignment ? component : kStrideAlign;
++        const uint32_t offset_alignment = kComponentAlignment ? component : std::min<uint32_t>(he.bytes, 4);
++        bool readable = he.format && stride && stride % stride_alignment == 0 && in.offset < kElementOffsetEnd &&
++                        in.offset % offset_alignment == 0;
+         if (!readable) {
+             LOG_FIRST(32, "vertex: converted on the CPU: v%d type %02X offset %u stride %u", inputs.regs[k], in.type,
+                       in.offset, stride);
+@@ -440,7 +450,7 @@
+     vs.stream_stride[0] = off;
+ }
+ 
+-bool Assemble(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* ip, Assembled& out) {
++static bool AssembleWithPolicy(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* ip, Assembled& out, bool allow_native) {
+     ResetAssembled(out);
+     if (!count || prim < 1 || prim > 10) return false;
+ 
+@@ -467,9 +477,16 @@
+     Inputs inputs = {*layout, regs, nregs};
+ 
+     // the guest's own vertices when the input assembler can read every element of them
+-    bool raw = kRawVertices && RawReadable(s, inputs);
++    bool raw = allow_native && RawReadable(s, inputs);
+     if (raw) return AssembleRaw(s, inputs, d, out);
+     return AssembleConverted(s, inputs, d, out);
+ }
+ 
++bool Assemble(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* ip, Assembled& out) {
++    return AssembleWithPolicy(s, prim, start, count, ip, out, kRawVertices);
++}
++bool AssemblePortable(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* ip, Assembled& out) {
++    return AssembleWithPolicy(s, prim, start, count, ip, out, false);
++}
++
+ }  // namespace gpu
