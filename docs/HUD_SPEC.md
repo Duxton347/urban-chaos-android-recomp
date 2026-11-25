@@ -1,5 +1,7 @@
 # HUD e ações — implementação de fontes Xbox e especificação de gameplay
 
+Estado atual de implementação e novas regras mobile: [Hope Street e controles 11](MISSION_CONTROLS_11.md). Esse registro prevalece sobre as etapas históricas abaixo; tiro automático continua pendente de integração ao estado original de alvo.
+
 **Atualização 0.3:** overlay original em Canvas, navegação/controle Xbox completo, dois analógicos, multitouch, editor de posição/tamanho/opacidade, perfis independentes e persistência implementados, compilados e testados em contratos autorais. Toques curtos preservados para XInputGetState; consulta de conexão não os consome. [Guia e testes](TOUCH_HUD.md). O mapeamento é para fontes Xbox comprovadas em `core/input.h` e `xdk/xapi.cpp`, sem atribuir tiro/escudo/equipe antes de qualificar os consumidores do título. Missão e ergonomia Android ainda requerem teste real. Os itens de especificação abaixo mantêm os gates semânticos originais.
 
 **Não criar botões do jogo antes de verificar os consumidores originais.** Esta entrega documenta o mapeamento público disponível; não adiciona um HUD fictício ao port.
