@@ -11,6 +11,8 @@ namespace urban::progress {
 enum class Kind : uint32_t { Idle, Guest, Kernel, Hle, Vulkan };
 struct Slot {
  std::atomic<uint64_t> current{0}, last{0}, calls{0},last_kernel{0},last_hle{0},sample_attempts{0};
+ // Transitions, not faults: resumable execution deliberately uses X86Transfer.
+ std::atomic<uint64_t> transfers{0},resume_steps{0};
  std::array<std::atomic<uint32_t>,8> code_candidates{};
  std::atomic<int64_t> cpu_clock{INT64_MAX};
 };
@@ -113,6 +115,7 @@ inline void Poll(diagnostics::Journal& journal) {
   bool cpu_valid=false;auto cpu_ns=CpuNanoseconds(slot,cpu_valid);
   journal.Emit(diagnostics::Code::ThreadProgress,{{"slot",n},{"kind",state>>32},{"target",uint32_t(state)},
    {"cpu_valid",cpu_valid},{"cpu_ns",cpu_ns},{"last_kind",last>>32},{"last_target",uint32_t(last)},{"calls",slot.calls.load(std::memory_order_relaxed)},
+   {"transfers",slot.transfers.load(std::memory_order_relaxed)},{"resume_steps",slot.resume_steps.load(std::memory_order_relaxed)},
    {"kernel",kernel>>32},{"kernel_caller",uint32_t(kernel)},{"hle",hle>>32},{"hle_caller",uint32_t(hle)}});
  }
  journal.Emit(diagnostics::Code::IoProgress,{{"reads",reads.load()},{"bytes",bytes.load()},{"short_reads",short_reads.load()},

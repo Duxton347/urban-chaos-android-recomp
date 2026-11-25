@@ -1,0 +1,18 @@
+--- a/runtime/cpu/dispatch.cpp
++++ b/runtime/cpu/dispatch.cpp
+@@ -184,6 +184,7 @@
+                     break;
+                 }
+                 ctx.resume_pc = 0;
++                if(auto* slot=urban::progress::Local())slot->resume_steps.fetch_add(1,std::memory_order_relaxed);
+                 auto point = g_resumes.find(target);
+                 if (point != g_resumes.end()) {
+                     ctx.resume_pc = target;
+@@ -192,6 +193,7 @@
+                 else x86_trap(ctx, target, "missing guest continuation");
+                 target = ctx.return_target;
+             } catch (const X86Transfer& transfer) {
++                if(auto* slot=urban::progress::Local())slot->transfers.fetch_add(1,std::memory_order_relaxed);
+                 if (transfer.target == 0xFFFFFFF0u && ctx.return_slot != root_return_slot) throw;
+                 ctx.esp = transfer.esp;
+                 target = transfer.target;

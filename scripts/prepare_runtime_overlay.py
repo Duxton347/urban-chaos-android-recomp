@@ -42,6 +42,8 @@ def prepare(destination, context=False, tools_only=False, android=False):
         selected += ('android-host-portability.patch','android-input-sampling.patch')
     if not tools_only:
         selected += ('progress-metadata.patch','native-text-overrides.patch','async-visibility-contract.patch','command-stream-synchronization.patch','native-vertex-fallback.patch')
+        if context:
+            selected += ('guest-transfer-metrics.patch',)
     for name in selected:
         patch = ROOT/'patches/runtime'/name
         hashes[name] = hashlib.sha256(patch.read_bytes()).hexdigest()
