@@ -110,3 +110,6 @@ Na versão 0.8, `UC-INPUT-002` acrescenta `look_events` (deltas não nulos receb
 
 
 0.9: `UC-CPU-003` inclui `cpu_valid`/`cpu_ns`; o analisador informa porcentagem de um núcleo somente entre leituras válidas. `UC-GPU-006` inclui `two_sided_draws`. Não são medidas de FPS nem prova de causa dos artefatos; a coleta de CPU indisponível fica explicitamente inválida.
+
+
+Investigação de renderização 12: `UC-GPU-006` inclui `signed_texture_binds` e `signed_texture_upload_bytes`. Contam usos de variantes assinadas e bytes convertidos/uploadados, respectivamente. Não incluem texels, nomes de recursos ou prova de fidelidade da missão. O recibo Android fixa o hash do conversor; o empacotador recusa um runtime sem esse vínculo.
