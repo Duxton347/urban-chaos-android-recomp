@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Incrementally rebuild reviewed return helpers, preserving the baseline archive.
+"""Incrementally rebuild reviewed generated units, preserving the baseline archive.
 Title inputs, object, source and output remain ignored; no game assets are published.
 """
 import argparse,pathlib,json,hashlib,subprocess,shutil,sys,re
@@ -7,6 +7,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from relocate_return_helpers import transform
 from fuse_tail_fragments import fuse
+from fuse_tail_cfg import fuse_cfg
 
 def sha(p):return hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
 def main():
@@ -29,7 +30,11 @@ def main():
  if sha(base)!=a.expected_base:raise ValueError('Baseline digest mismatch')
  review=json.loads(a.review.read_text());source=generated/review['source_file'];text=source.read_text()
  if sha(source)!=review['source_sha256']:raise ValueError('Generated source changed')
- if review.get('mode')=='tail-fusion':
+ if review.get('mode')=='cfg-fusion':
+  rewritten,proof=fuse_cfg(text,review['roots'])
+  if proof['graphs']!=review['expected_graphs']:raise ValueError('Unexpected closed tail CFG')
+  changes=sum(g['edges'] for g in proof['graphs'])
+ elif review.get('mode')=='tail-fusion':
   rewritten,proof=fuse(text)
   if proof['fused_edges']!=review['expected_fused_edges']:raise ValueError('Unexpected fusion graph')
   changes=proof['fused_edges']

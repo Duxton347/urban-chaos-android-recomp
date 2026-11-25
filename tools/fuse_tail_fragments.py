@@ -26,6 +26,10 @@ def fuse(text):
    tail=tails[0];owner=next((f for f in fs.values() if f.start()<tail.start()<f.end()),None)
    if owner is None or owner[2]==addr:continue
    payload=body[:begin]+body[end:]
+   # C++ labels have function scope, including inside nested blocks. A fragment
+   # may share a guest label with its owner; rename definitions and references.
+   prefix='urban_fused_'+str(count+len(changes))+'_'+addr+'_'
+   payload=re.sub(r'\bloc_[0-9A-Fa-f]+\b',lambda label:prefix+label[0],payload)
    changes.append((tail.start(),tail.end(),'{ X86_SAVE_FLAGS(); {\n'+payload+'\n} }'))
   if not changes:break
   # Each replacement is disjoint; preserve function entry mappings and original target bodies.

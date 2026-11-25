@@ -1,0 +1,16 @@
+{
+  "mode": "cfg-fusion",
+  "source_file": "x86_recomp.7.cpp",
+  "source_sha256": "a52497d2ab8d757ecb315c73a77cff57f09ce51760c70136aaa232b6fca2c0b6",
+  "roots": [
+    "0004FFE0"
+  ],
+  "expected_graphs": [
+    {
+      "root": "0004FFE0",
+      "blocks": 13,
+      "edges": 14
+    }
+  ],
+  "scope": "One reviewed closed call-free tail CFG; original dynamic entries and RET guards retained"
+}
