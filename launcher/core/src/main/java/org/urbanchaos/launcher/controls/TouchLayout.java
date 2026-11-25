@@ -58,17 +58,33 @@ public final class TouchLayout {
  public static final class Router {
   public interface Sink {void button(int button,boolean down);void stick(int stick,float x,float y,boolean active);}
   private final Sink sink;private final Map<Integer,Control> owners=new HashMap<>();private final int[] counts=new int[16];
+  private final boolean[] toggles=new boolean[16],latched=new boolean[16];
+  private boolean commandWheel;private final Map<Integer,Integer> commandOwners=new HashMap<>();
+  private final Map<Integer,float[]> commandOrigins=new HashMap<>();
+  public void toggleMode(int button,boolean enabled){toggles[button]=enabled;}
+  public void commandWheel(boolean enabled){commandWheel=enabled;}
+  private void emit(int b){sink.button(b,latched[b]||(!toggles[b]&&counts[b]>0));}
+  private void command(int pointer,int button){Integer old=commandOwners.put(pointer,button);if(old!=null&&old==button)return;if(old!=null){--counts[old];emit(old);}++counts[button];emit(button);}
   private final boolean[] sticks=new boolean[2];private final float[] axes=new float[4];
   public Router(Sink sink){this.sink=sink;}
   public boolean down(int pointer,Control c,float x,float y,float w,float h){
    if(c==null||owners.containsKey(pointer)||(c.stick>=0&&sticks[c.stick]))return false;
+   if(commandWheel&&c.id.equals("down")&&!commandOwners.isEmpty())return false;
    owners.put(pointer,c);
-   if(c.button>=0){if(counts[c.button]++==0)sink.button(c.button,true);}
+   if(commandWheel&&c.id.equals("down")){commandOrigins.put(pointer,new float[]{x,y});command(pointer,9);}
+   else if(c.button>=0){if(toggles[c.button]){if(counts[c.button]++==0){latched[c.button]=!latched[c.button];emit(c.button);}}else{++counts[c.button];emit(c.button);}}
    else {sticks[c.stick]=true;move(pointer,x,y,w,h);}
    return true;
   }
   public void move(int pointer,float x,float y,float w,float h){
-   Control c=owners.get(pointer);if(c==null||c.stick<0)return;
+   Control c=owners.get(pointer);if(c==null)return;
+   if(commandOwners.containsKey(pointer)){
+    float[] origin=commandOrigins.get(pointer);
+    float dx=x-origin[0],dy=y-origin[1],r=radius(c,w,h);
+    int b=Math.hypot(dx,dy)<r*.55?9:Math.abs(dx)>Math.abs(dy)?(dx<0?10:11):(dy<0?8:9);
+    command(pointer,b);return;
+   }
+   if(c.stick<0)return;
    float r=radius(c,w,h),dx=(x-c.x*w)/r,dy=(c.y*h-y)/r;
    float length=(float)Math.hypot(dx,dy);
    if(length<=.08f){dx=dy=0;}else{float magnitude=(Math.min(length,1)-.08f)/.92f;dx=dx/length*magnitude;dy=dy/length*magnitude;}
@@ -76,11 +92,13 @@ public final class TouchLayout {
   }
   public void up(int pointer){
    Control c=owners.remove(pointer);if(c==null)return;
-   if(c.button>=0){if(--counts[c.button]==0)sink.button(c.button,false);}
+   Integer command=commandOwners.remove(pointer);commandOrigins.remove(pointer);
+   if(command!=null){--counts[command];emit(command);}
+   else if(c.button>=0){--counts[c.button];emit(c.button);}
    else {sticks[c.stick]=false;axes[c.stick*2]=axes[c.stick*2+1]=0;sink.stick(c.stick,0,0,false);}
   }
-  public boolean pressed(Control c){return c.button>=0?counts[c.button]>0:sticks[c.stick];}
+  public boolean pressed(Control c){if(commandWheel&&c.id.equals("down"))return !commandOwners.isEmpty();return c.button>=0?counts[c.button]>0||latched[c.button]:sticks[c.stick];}
   public float axis(int n){return axes[n];}
-  public void clear(){for(int id:new ArrayList<>(owners.keySet()))up(id);}
+  public void clear(){for(int id:new ArrayList<>(owners.keySet()))up(id);for(int b=0;b<16;b++)if(latched[b]){latched[b]=false;emit(b);}}
  }
 }

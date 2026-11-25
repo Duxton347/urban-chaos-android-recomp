@@ -35,6 +35,19 @@ public final class TouchLayoutTest {
   check(compact.find("y")!=null&&compact.find("rt")!=null);
   Control aux=compact.find("black");check(compact.hit(aux.x*1280,aux.y*800,1280,800,c->!TouchLayout.extra(c.id))!=aux);
   check(TouchLayout.extra("black")&&!TouchLayout.extra("a"));
+  router.toggleMode(6,true);router.toggleMode(14,true);router.commandWheel(true);
+  events.clear();Control shield=xbox.find("lt");
+  router.down(100,shield,0,0,1280,800);router.up(100);check(router.pressed(shield)&&events.get(events.size()-1).equals("6:true"));
+  router.down(101,shield,0,0,1280,800);router.down(102,shield,0,0,1280,800);router.up(101);router.up(102);check(!router.pressed(shield)&&events.get(events.size()-1).equals("6:false"));
+  router.down(103,xbox.find("ls"),0,0,1280,800);router.up(103);check(router.pressed(xbox.find("ls")));router.clear();check(!router.pressed(xbox.find("ls")));
+  Control orders=xbox.find("down");float ox=orders.x*1280,oy=orders.y*800;
+  router.down(104,orders,ox,oy,1280,800);check(router.pressed(orders));check(!router.down(105,orders,ox,oy,1280,800));
+  router.move(104,ox+200,oy,1280,800);check(router.pressed(xbox.find("right"))&&router.pressed(orders));
+  router.down(106,xbox.find("rt"),0,0,1280,800);router.up(104);check(!router.pressed(xbox.find("right"))&&router.pressed(xbox.find("rt")));router.clear();check(!router.pressed(xbox.find("rt")));
+  events.clear();router.down(110,orders,ox+30,oy,1280,800);router.move(110,ox+30,oy,1280,800);check(events.equals(Arrays.asList("9:true")));
+  router.move(110,ox+30,oy-200,1280,800);check(router.pressed(xbox.find("up"))&&router.pressed(orders));
+  router.move(110,ox-200,oy,1280,800);check(router.pressed(xbox.find("left"))&&!router.pressed(xbox.find("up")));
+  router.up(110);check(!router.pressed(orders)&&!router.pressed(xbox.find("left")));router.up(110);router.clear();
   System.out.println("HUD layout/multitouch checks passed: "+checks+"; no game execution");
  }
 }
