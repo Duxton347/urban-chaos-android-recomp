@@ -11,10 +11,16 @@ int ReferenceVisibilitySelfTest(bool,bool);
 void ProgrammableFogSelfTest();
 void NativeVertexInputsSelfTest();
 void DepthColourAliasSelfTest();
+void SignedTextureSelfTest();
+void ConditionalAlphaTestSelfTest();
+void RenderTargetTexelCentresSelfTest();
 int main(){
     if(ReferenceVisibilitySelfTest(false)||ReferenceVisibilitySelfTest(false,true))return 2;
+    ConditionalAlphaTestSelfTest();
     ProgrammableFogSelfTest();
     NativeVertexInputsSelfTest();
+    SignedTextureSelfTest();
+    RenderTargetTexelCentresSelfTest();
     DepthColourAliasSelfTest();
     auto backend=gpu::CreateBackend();
     if(!backend->Init(8,8))return 3;

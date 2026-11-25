@@ -154,7 +154,7 @@ void DepthColourAliasSelfTest() {
  const int32_t top[]={0,0,8,4},bottom[]={0,4,8,8};
  b->Clear(s,1,reinterpret_cast<const uint8_t*>(top),3,0,float(0x010000)/16777215.f,0x20);
  b->Clear(s,1,reinterpret_cast<const uint8_t*>(bottom),3,0,float(0x020000)/16777215.f,0xE0);
- float filtered[18];std::memcpy(filtered,triangle,sizeof(filtered));for(unsigned v=0;v<3;v++)filtered[v*6+5]=4.5f;
+ float filtered[18];std::memcpy(filtered,triangle,sizeof(filtered));for(unsigned v=0;v<3;v++)filtered[v*6+5]=4.0f; // boundary between row centres 3.5 and 4.5, raw position program
  std::memcpy(kernel::HostPtr(vertices),filtered,sizeof(filtered));
  b->Draw(s,5,0,3,nullptr);b->Sync(s.rt.data,512);
  auto* pixel=static_cast<unsigned char*>(kernel::HostPtr(s.rt.data))+2*64+2*4;

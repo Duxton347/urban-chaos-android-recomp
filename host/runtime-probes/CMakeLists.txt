@@ -8,7 +8,7 @@ if(NOT EXISTS "${URBAN_OVERLAY}/runtime/gpu/state.h")
 endif()
 add_executable(runtime_gpu_probes main.cpp gpu_probes.cpp visibility.cpp
  "${URBAN_OVERLAY}/harness/reference_renderer.cpp" "${URBAN_OVERLAY}/harness/null_backend.cpp"
- "${SDK}/runtime/gpu/shaders.cpp"
+ "${URBAN_OVERLAY}/runtime/gpu/shaders.cpp"
  "${SDK}/runtime/kernel/memory.cpp" "${SDK}/runtime/core/log.cpp"
  "${SDK}/runtime/gpu/texture.cpp" "${SDK}/harness/app_headless.cpp"
  "${URBAN_OVERLAY}/runtime/gpu/vertex.cpp" "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp")

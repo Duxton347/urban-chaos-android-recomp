@@ -80,6 +80,7 @@ def main():
         receipt['runtime_patches']=prepare(output/'sdk',context=True,android=True)
         renderer=prepare_renderer(output/'vulkan',android=True)
         receipt['renderer_source_sha256']=sha(renderer)
+        receipt['renderer_headers']={'native/gpu/signed_texels.h':sha(ROOT/'native/gpu/signed_texels.h')}
         with (output/'build.log').open('w') as log:
             subprocess.run([str(cmake),'-S',str(ROOT/'native/android'),'-B',str(output/'cmake'),'-G','Ninja',
                 '-DCMAKE_MAKE_PROGRAM='+str(cmake.parent/'ninja'),'-DCMAKE_TOOLCHAIN_FILE='+str(ndk/'build/cmake/android.toolchain.cmake'),

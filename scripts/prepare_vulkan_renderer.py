@@ -50,4 +50,8 @@ def prepare_renderer(destination, android=False):
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     patch = ROOT / 'patches/black/vulkan-depth-colour-alias.patch'
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
+    patch = ROOT / 'patches/black/vulkan-signed-textures.patch'
+    subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
+    patch = ROOT / 'patches/black/vulkan-render-target-texel-centres.patch'
+    subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     return destination / 'vulkan.cpp'

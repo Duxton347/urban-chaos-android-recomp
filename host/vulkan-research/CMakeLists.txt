@@ -33,14 +33,14 @@ if(URBAN_ANDROID_WINDOW)
 endif()
 if(NOT ANDROID)
  set(SDK "${REPO}/vendor/runtime")
- add_executable(vulkan_renderer_fixture fixture_main.cpp "${REPO}/host/runtime-probes/visibility.cpp" "${REPO}/host/runtime-probes/fog.cpp" "${REPO}/host/runtime-probes/vertex_inputs.cpp"
-  "${SDK}/runtime/gpu/shaders.cpp" "${SDK}/runtime/gpu/texture.cpp"
+ add_executable(vulkan_renderer_fixture fixture_main.cpp "${REPO}/host/runtime-probes/visibility.cpp" "${REPO}/host/runtime-probes/fog.cpp" "${REPO}/host/runtime-probes/vertex_inputs.cpp" "${REPO}/host/runtime-probes/signed_textures.cpp" "${REPO}/host/runtime-probes/texel_centres.cpp" "${REPO}/host/runtime-probes/alpha_test.cpp"
+  "${URBAN_OVERLAY}/runtime/gpu/shaders.cpp" "${SDK}/runtime/gpu/texture.cpp"
   "${URBAN_OVERLAY}/runtime/gpu/vertex.cpp" "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp"
   "${SDK}/runtime/kernel/memory.cpp" "${SDK}/runtime/core/log.cpp" "${SDK}/harness/app_headless.cpp")
  target_compile_features(vulkan_renderer_fixture PRIVATE cxx_std_20)
  target_compile_options(vulkan_renderer_fixture PRIVATE -O1 -UNDEBUG -march=x86-64-v2 -fsigned-char -fno-strict-aliasing)
  target_compile_definitions(vulkan_renderer_fixture PRIVATE XBE_RAW_VERTICES=1 XBE_NATIVE_COMPONENT_ALIGNMENT=1)
- target_include_directories(vulkan_renderer_fixture PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness" "${SDK}/harness/compat" "${REPO}/native")
+ target_include_directories(vulkan_renderer_fixture PRIVATE "${URBAN_OVERLAY}/runtime" "${SDK}/runtime" "${SDK}/harness" "${SDK}/harness/compat" "${REPO}/native" "${REPO}/vendor/black-shader/native")
  find_library(URBAN_VULKAN_LOADER NAMES vulkan libvulkan.so.1 REQUIRED)
  target_link_libraries(vulkan_renderer_fixture PRIVATE urban_vulkan_renderer_contract
   "${REPO}/build/vulkan-shaders/liburban_black_shader.a"

@@ -253,5 +253,23 @@
     "runtime_patch": "patches/runtime/android-host-portability.patch",
     "runtime_patch_sha256": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
     "role": "real SDL Android window and private complete runtime build; on-device behavior unverified"
-  }
+  },
+  "runtime_backports": [
+    {
+      "source_commit": "09f0a371ecc47e4210273c85f6719a9b22e89451",
+      "source_url": "https://github.com/TGP482/XboxXBERecomp/commit/09f0a371ecc47e4210273c85f6719a9b22e89451",
+      "patch": "patches/runtime/render-target-texel-centres.patch",
+      "patch_sha256": "86e38d7260a8781c5cc6cabf070c60d6f5213862563351f4cd8d1b64a0bc3983",
+      "license": "MIT; licenses/XboxXBERecomp-MIT.txt",
+      "scope": "Shader ABI/texel coordinates only; Vulkan backend adapted separately"
+    },
+    {
+      "source_commit": "7beac8cd24073281b6a134dfb3de2b591686ae97",
+      "source_url": "https://github.com/TGP482/XboxXBERecomp/commit/7beac8cd24073281b6a134dfb3de2b591686ae97",
+      "patch": "patches/runtime/conditional-alpha-test.patch",
+      "patch_sha256": "e761b1c7f2620ff7b7a2e98ffba417994a4ce187d388046b95d0b1374520b380",
+      "license": "MIT; licenses/XboxXBERecomp-MIT.txt",
+      "scope": "Specialize disabled alpha tests; preserve actual alpha/texture clip rejection"
+    }
+  ]
 }

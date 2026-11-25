@@ -1,0 +1,56 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -866,11 +866,8 @@
+ void FillTexelConstants(int i, const TextureDesc& d, const DrawTextures& stages, DrawConstants& c) {
+     c.texsize[i][0] = float(d.width);
+     c.texsize[i][1] = float(d.height);
+-    // the console samples pixels at integer positions, the host half a pixel on: targets are read half a texel back
+     if (!stages.rt[i]) return;
+     float k = stages.k[i];
+-    c.texsize[i][2] = -0.5f / (float(d.width) * k);
+-    c.texsize[i][3] = -0.5f / (float(d.height) * k);
+     if (stages.wide[i] > 0) {
+         bool blur = stages.blur[i];
+         float fw = blur ? kBlurTapTexels : kGlowBoxTexels;
+@@ -882,10 +879,11 @@
+     }
+ }
+ 
+-void FillTextureConstants(const State& s, const DrawTextures& stages, DrawConstants& c) {
++void FillTextureConstants(const State& s, const DrawTextures& stages, float rtshift, DrawConstants& c) {
+     for (int i = 0; i < 4; i++) {
+         TextureDesc d;
+         if (s.textures[size_t(i)] && Describe(s.textures[size_t(i)], d)) FillTexelConstants(i, d, stages, c);
++        if(stages.rt[i]) c.rtshift[i] = rtshift;
+         const auto& t = s.tss[size_t(i)];
+         c.bump[i][0] = Bits(t[kTssBumpEnvMat00]);
+         c.bump[i][1] = Bits(t[kTssBumpEnvMat01]);
+@@ -2724,6 +2722,7 @@
+     if (&t == draw_ds_) return VK_NULL_HANDLE;
+     bool feedback = &t == draw_rt_;
+     stages.rt[stage] = true;
++    info.flags |= kTexTarget;
+     stages.gw[stage] = t.depth ? 0 : t.gw;
+     if (!t.depth && LatchCpuWrite(t)) {
+         Surface su;
+@@ -2889,7 +2888,7 @@
+         urban::progress::depth_colour_conversions.fetch_add(1, std::memory_order_relaxed);
+     }
+     auto& info = stages.info[stage];
+-    info.kind = kTex2D; info.rect = true; info.shadow = 0;
++    info.kind = kTex2D; info.rect = true; info.shadow = 0; info.flags |= kTexTarget;
+     stages.rt[stage] = true; stages.gw[stage] = depth.gw; stages.fmt[stage] = kBgra;
+     Transition(depth.depth_colour, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+     urban::progress::depth_colour_binds.fetch_add(1, std::memory_order_relaxed);
+@@ -3063,7 +3062,10 @@
+     FillSurfaceConstants(s, size, c);
+     FillFogConstants(s, sh.prog, c);
+     FillCombinerConstants(s, c);
+-    FillTextureConstants(s, stages, c);
++    const Target* shift_target=draw_rt_?draw_rt_:draw_ds_;
++    const float target_scale=shift_target?float(shift_target->w)/shift_target->gw:1.0f;
++    const float rtshift=(!sh.prog || ReadsViewportOffset(s.vs->program))?-0.5f*target_scale:0.0f;
++    FillTextureConstants(s, stages, rtshift, c);
+     if (sh.fixed_transform) {
+         FillTransformConstants(s, size, c);
+         FillLightConstants(s, sh.fk, c);

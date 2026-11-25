@@ -1,0 +1,140 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -6,5 +6,6 @@
+ #include "gpu/vulkan_visibility.h"
+ #include "diagnostics/progress.h"
++#include "gpu/signed_texels.h"
+ #include "gpu/visibility_report.h"
+ 
+ #include <algorithm>
+@@ -564,6 +565,7 @@
+     Image img;
+     TextureDesc d;
+     VkFormat fmt = VK_FORMAT_UNDEFINED;
++    uint32_t colour_sign = 0;
+     bool decode = false;  // DXT decoded on the CPU
+     uint32_t levels = 1;
+     uint64_t sig = 0;
+@@ -1184,7 +1186,7 @@
+                                   DrawTextures& stages);
+     VkImageView BindGuestTexture(const State& s, int stage, const TextureDesc& d, const FormatInfo& fi,
+                                  DrawTextures& stages);
+-    bool CreateTexture(Tex& tx, const TextureDesc& d, const FormatInfo& fi, uint64_t key);
++    bool CreateTexture(Tex& tx, const TextureDesc& d, const FormatInfo& fi, uint64_t key, uint32_t sign);
+     void UploadTexture(Tex& tx, const TextureDesc& d, const FormatInfo& fi, const uint8_t* p, const uint32_t* colours);
+     void BuildPipelineKey(const State& s, const Assembled& a, const DrawShaders& sh, PsoKey& k);
+     void KeyDepthStencil(const State& s, const Assembled& a, PsoKey& k);
+@@ -1272,6 +1274,7 @@
+     std::unordered_map<uint64_t, Target> targets_;
+     uint64_t target_write_serial_ = 0;
+     std::unordered_map<uint64_t, Tex> textures_;
++    std::array<std::unordered_map<uint64_t,Tex>,15> signed_textures_;
+     Image lut_;
+     Image dummy_[3];  // 2D, 3D, cube
+     VkSampler linear_ = VK_NULL_HANDLE, point_ = VK_NULL_HANDLE;
+@@ -2746,10 +2749,10 @@
+     return t.img.view;
+ }
+ 
+-bool VulkanBackend::CreateTexture(Tex& tx, const TextureDesc& d, const FormatInfo& fi, uint64_t key) {
++bool VulkanBackend::CreateTexture(Tex& tx, const TextureDesc& d, const FormatInfo& fi, uint64_t key, uint32_t sign) {
+     Retire(tx.img);
+     tx = Tex{};
+-    tx.d = d;
++    tx.d = d; tx.colour_sign = sign;
+     bool bc = fi.compressed;
+     tx.decode = bc && !bc_;
+     switch (fi.host) {
+@@ -2760,6 +2763,13 @@
+         default: tx.fmt = kBgra; break;
+     }
+     if (tx.decode) tx.fmt = kBgra;
++    if(sign){
++        if(!urban::gpu::ByteColourFormat(d.format))throw std::runtime_error("UC-VK-008: signed texture component format unsupported");
++        tx.fmt=VK_FORMAT_R16G16B16A16_SNORM;
++        VkFormatProperties properties;vkGetPhysicalDeviceFormatProperties(pd_,tx.fmt,&properties);
++        constexpr VkFormatFeatureFlags needed=VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT|VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
++        if((properties.optimalTilingFeatures&needed)!=needed)throw std::runtime_error("UC-VK-008: signed texture filtering format unsupported");
++    }
+     uint32_t w = d.width, h = d.height;
+     tx.levels = d.levels;
+     if (bc && ((w & 3) || (h & 3))) {
+@@ -2770,7 +2780,6 @@
+     VkImageViewType vt = d.cube ? VK_IMAGE_VIEW_TYPE_CUBE : d.depth > 1 ? VK_IMAGE_VIEW_TYPE_3D : VK_IMAGE_VIEW_TYPE_2D;
+     if (!CreateImage(tx.img, tx.fmt, w, h, d.cube ? 1 : d.depth, d.cube ? 6 : 1, tx.levels,
+                      VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, vt, d.cube)) {
+-        textures_.erase(key);
+         return false;
+     }
+     return true;
+@@ -2780,7 +2789,7 @@
+                                   const uint32_t* colours) {
+     Transition(tx.img, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+     uint32_t faces = d.cube ? 6 : 1;
+-    std::vector<uint8_t> px, decoded;
++    std::vector<uint8_t> px, decoded, signed_pixels;
+     bool bc = fi.compressed && !tx.decode;
+     uint32_t block = fi.host == Host::BC1 ? 8 : 16;
+     for (uint32_t f = 0; f < faces; f++)
+@@ -2794,8 +2803,12 @@
+                 pitch = mw * 4;
+                 src = &decoded;
+             }
++            if(tx.colour_sign){
++                urban::gpu::SignedTexels(*src,tx.colour_sign,signed_pixels);
++                pitch=mw*8;src=&signed_pixels;urban::progress::signed_texture_upload_bytes.fetch_add(signed_pixels.size(),std::memory_order_relaxed);
++            }
+             // rows as Vulkan reads them packed: block rows for DXT, texel rows else
+-            uint32_t row = bc ? std::max(1u, (mw + 3) / 4) * block : mw * 4;
++            uint32_t row = bc ? std::max(1u, (mw + 3) / 4) * block : mw * (tx.colour_sign?8:4);
+             uint32_t rows = bc ? std::max(1u, (mh + 3) / 4) : mh;
+             size_t src_rows = pitch ? src->size() / pitch / md : 0;
+             Alloc a = Upload(VkDeviceSize(row) * rows * md, 16);
+@@ -2818,10 +2831,13 @@
+     StagePalette palette;
+     ReadStagePalette(s, stage, d, palette);
+     const uint64_t key = uint64_t(palette.va) << 32 | d.data;
+-    Tex& tx = textures_[key];
++    const uint32_t sign=urban::gpu::ColourSign(s.tss[stage][kTssColorSign]);
++    if(sign)urban::progress::signed_texture_binds.fetch_add(1,std::memory_order_relaxed);
++    auto& cache=sign?signed_textures_[(sign>>28)-1]:textures_;
++    Tex& tx = cache[key];
+     bool same = SameTexture(tx, d);
+-    if (!same && !CreateTexture(tx, d, fi, key)) return VK_NULL_HANDLE;
+-    Tex& t = textures_[key];
++    if (!same && !CreateTexture(tx, d, fi, key, sign)) {cache.erase(key);return VK_NULL_HANDLE;}
++    Tex& t = cache[key];
+     uint64_t epoch = DirtyEpoch(d.data);
+     if (t.frame != presents_ + 1 || !same || t.palette != palette.hash || t.dirty_epoch != epoch) {
+         if (same && t.frame == presents_ + 1 && t.dirty_epoch != epoch)
+@@ -2892,6 +2908,7 @@
+     TextureDesc d;
+     if (!s.textures[size_t(stage)] || !Describe(s.textures[size_t(stage)], d)) return VK_NULL_HANDLE;
+     const FormatInfo& fi = Format(d.format);
++    if(urban::gpu::ColourSign(s.tss[stage][kTssColorSign]) && (fi.depth || targets_.contains(TargetMapKey(d.data,false))))throw std::runtime_error("UC-VK-008: signed GPU surface sampling unsupported");
+     info.kind = TextureKind(d);
+     info.rect = d.linear;
+     // A colour-format alias can refer to the currently authoritative GPU depth storage.
+@@ -3476,15 +3493,13 @@
+     constexpr uint64_t kSweepEvery = 60;
+     constexpr size_t kTexturesKept = 1024;  // a phone has less memory than a PC: fewer kept
+     constexpr uint64_t kIdleFrames = 600;
+-    if (presents_ % kSweepEvery != 0 || textures_.size() <= kTexturesKept) return;
+-    for (auto it = textures_.begin(); it != textures_.end();) {
+-        if (it->second.frame + kIdleFrames < presents_) {
+-            Retire(it->second.img);
+-            it = textures_.erase(it);
+-        } else {
+-            ++it;
+-        }
+-    }
++    if (presents_ % kSweepEvery != 0) return;
++    size_t total=textures_.size();for(auto& cache:signed_textures_)total+=cache.size();
++    if(total<=kTexturesKept)return;
++    auto sweep=[&](auto& cache){for(auto it=cache.begin();it!=cache.end();){
++        if(it->second.frame+kIdleFrames<presents_){Retire(it->second.img);it=cache.erase(it);}else ++it;
++    }};
++    sweep(textures_);for(auto& cache:signed_textures_)sweep(cache);
+ }
+ 
+ void VulkanBackend::ApplySettings() {
