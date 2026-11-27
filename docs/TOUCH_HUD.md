@@ -48,3 +48,11 @@ O proprietário entrou na missão com a versão 0.3; ela continua lenta e com de
 No modo **Navegação de menus**, as quatro setas foram substituídas pelo joystick esquerdo, testado no menu original Linux. Layouts antigos preservam A/B/X/START/BACK e recebem o joystick padrão; o modo **Controle Xbox completo** mantém o D-pad além dos dois analógicos. A sensibilidade da mira se ajusta dentro de **Options → Controller → Horizontal/Vertical Sensitivity**, sem outro menu no launcher.
 
 A versão 0.4 também permite selecionar o dicionário privado de português parcial antes de iniciar. Habilitar **Options → General → Subtitles/Legendas** no jogo para mostrar as legendas nativas. A tradução das cenas e a resposta touch no tablet ainda precisam de teste. [Escopo e limitações](NATIVE_SUBTITLES.md).
+
+## Tiro automático opcional — integração 13
+
+Em ⋯ → Tiro automático, a opção persistente começa desligada. O gatilho usa
+o alvo da mira original, não reconhecimento visual ou movimento automático.
+TIRO continua disponível e prevalece sobre o pedido automático; o escudo bloqueia
+o automático. Diálogos, edição e perda de foco cancelam a autorização. Ainda
+depende da confirmação de disparos na missão real; [contratos e limites](MISSION_OPTIMIZATION_13.md).

@@ -1,5 +1,7 @@
 # Arquitetura — Urban Chaos Android Recomp
 
+Investigação 13: cache de módulos SPIR-V limitado, validado e separado dos recursos/saves; namespace derivado do compilador e tradutor pinados. União de uma função de desenho mantém chamadas reais e entradas externas. Gatilho opcional observa o raio original antes da assistência de mira e acrescenta pulsos à ação nativa de tiro, com classificação/identidade revalidadas e prioridade manual. Worker gráfico permanece desligado por padrão. [Contratos e limites](MISSION_OPTIMIZATION_13.md).
+
 Investigação 12: componentes assinados são convertidos antes de filtrar; variantes de textura compartilham origem, preservando estados de sinal distintos. Leituras de targets seguem o contrato de coordenadas do vertex program; `DrawConstants`/HLSL usam o mesmo overlay. Alpha test participa da chave de shader para eliminar discard quando desligado. [Contratos e evidência](RENDERING_CONTRACTS_12.md).
 
 0.10: views lineares de cor sobre o D24S8 atualmente vinculado recebem bytes derivados do attachment GPU, com serial de escrita e autoridade CPU/GPU. A conversão acontece antes da filtragem. Entrada nativa de vértices consulta suporte de formatos do dispositivo e preserva a conversão portátil e o endereçamento declarado. [Contrato e validação](RENDERING_INVESTIGATION_10.md).
