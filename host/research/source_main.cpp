@@ -2,6 +2,7 @@
 #include "app/app.h"
 #include "core/log.h"
 #include "game/source.h"
+#include "input/automatic_fire.h"
 #include "diagnostics/journal.h"
 #include "diagnostics/progress.h"
 #ifdef URBAN_SDL_OUTPUT
@@ -63,6 +64,7 @@ int main(int argc,char** argv) {
         }
         LOGI("source: kind=%s revision=%s title=%08X version=%u sha256=%s",source.is_iso?"iso":"folder",
             source.metadata.exact_revision?"expected":"experimental",source.metadata.title_id,source.metadata.version,source.metadata.sha256.c_str());
+        urban::autofire::Configure(source.metadata.sha256.c_str());
         source.Activate(experimental);
         if(check_only){LOGI("source: validated and mounted; game boot was not requested");report.Finish();logx::Flush();return 0;}
         if(app::kGame.window)app::kGame.window(nullptr);
@@ -79,7 +81,7 @@ int main(int argc,char** argv) {
             audio::PollOutputDiagnostics();
 #endif
             logx::Flush();
-            if(++progress_ticks%10==0)urban::progress::Poll(report);
+            if(++progress_ticks%10==0){urban::progress::Poll(report);auto a=urban::autofire::Snapshot();report.Emit(urban::diagnostics::Code::AutomaticFire,{{"enabled",a.enabled},{"traces",a.traces},{"requests",a.requests},{"manual",a.manual},{"blocked",a.blocked},{"queries",a.queries},{"fresh",a.fresh},{"hostile",a.hostile},{"friendly",a.friendly},{"cone_blocked",a.coneBlocked},{"state_blocked",a.stateBlocked},{"life_blocked",a.lifeBlocked},{"shield_blocked",a.shieldBlocked},{"identity_blocked",a.identityBlocked},{"controls_blocked",a.controlsBlocked}});}
         }
     } catch(const urban::game::SourceError& error) {
         report.Emit(urban::diagnostics::SourceCode(error.code));

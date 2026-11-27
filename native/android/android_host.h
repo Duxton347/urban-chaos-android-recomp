@@ -1,8 +1,10 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <cstdint>
+#include <filesystem>
 #include "display/viewport.h"
 namespace host {
+std::filesystem::path ShaderCacheRoot();
 SDL_Window* Window();
 bool Foreground();
 uint32_t SurfaceEpoch();

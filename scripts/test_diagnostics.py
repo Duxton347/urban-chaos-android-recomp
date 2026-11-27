@@ -43,7 +43,7 @@ def main():
         touch_host=out/'touch_host'
         subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-pthread',
             '-I'+str(ROOT/'native'),'-I'+str(ROOT/'native/android'),'-I'+str(ROOT/'vendor/runtime/runtime'),'-I'+str(ROOT/'vendor/SDL/include'),
-            '-I'+str(jdk/'include'),'-I'+str(jdk/'include/linux'),str(ROOT/'tests/android_touch_host_fixture.cpp'),str(ROOT/'native/android/input.cpp'),'-o',str(touch_host)],check=True)
+            '-I'+str(jdk/'include'),'-I'+str(jdk/'include/linux'),str(ROOT/'tests/android_touch_host_fixture.cpp'),str(ROOT/'native/android/input.cpp'),str(ROOT/'native/input/automatic_fire.cpp'),'-o',str(touch_host)],check=True)
         subprocess.run([str(touch_host)],check=True)
         assert sum(item['code']=='UC-CPU-003' for item in progress_records)==64
         io=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-002')
@@ -52,7 +52,7 @@ def main():
         completion=next(item['detail'] for item in progress_records if item['code']=='UC-DISC-003')
         assert completion['offset']==1024 and completion['requested']==8 and completion['completed']==3
         sync=next(item['detail'] for item in progress_records if item['code']=='UC-GPU-006')
-        assert sync=={'visibility_polls':7,'visibility_submits':3,'idle_flushes':5,'same_present_texture_updates':2,'two_sided_draws':11,'native_vertex_draws':17,'converted_vertex_draws':19,'vertex_upload_bytes':123456,'depth_colour_conversions':5,'depth_colour_binds':23,'signed_texture_binds':29,'signed_texture_upload_bytes':16384}
+        assert sync=={'visibility_polls':7,'visibility_submits':3,'idle_flushes':5,'same_present_texture_updates':2,'two_sided_draws':11,'native_vertex_draws':17,'converted_vertex_draws':19,'vertex_upload_bytes':123456,'depth_colour_conversions':5,'depth_colour_binds':23,'shader_cache_hits':31,'shader_cache_rejected':2,'shader_compilations':37,'signed_texture_binds':29,'signed_texture_upload_bytes':16384}
         assert 'SENTINEL_' not in json.dumps(progress_records)
         subprocess.run(['c++','-std=c++20','-O2','-DNDEBUG','-pthread',
             '-I'+str(ROOT/'native'),'-I'+str(overlay/'runtime'),'-I'+str(ROOT/'vendor/runtime/runtime'),

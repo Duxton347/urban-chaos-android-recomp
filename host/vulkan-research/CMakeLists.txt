@@ -22,7 +22,7 @@ if(URBAN_ANDROID_WINDOW)
  file(WRITE "${PROFILE}/image_symbols.h" "#pragma once\n#define IMAGE_RESUMABLE_GUEST 1\n#define IMAGE_XBE \"AuthoredNotAGame.xbe\"\n")
  file(WRITE "${PROFILE}/build_source_profile.h" "#pragma once\n#define URBAN_BUILD_ID \"authored-contract\"\n#define URBAN_BUILD_XBE_SHA256 \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n#define URBAN_BUILD_TITLE_ID 1u\n")
  add_library(urban_android_host_contract STATIC
-  "${REPO}/native/android/main.cpp" "${REPO}/native/android/input.cpp" "${REPO}/native/android/bridge.cpp"
+  "${REPO}/native/input/automatic_fire.cpp" "${REPO}/native/android/main.cpp" "${REPO}/native/android/input.cpp" "${REPO}/native/android/bridge.cpp"
   "${REPO}/native/audio/sdl_output.cpp" "${REPO}/native/diagnostics/android_bridge.cpp"
   "${URBAN_OVERLAY}/runtime/gpu/render_thread.cpp" "${URBAN_OVERLAY}/runtime/cpu/dispatch.cpp")
  target_compile_features(urban_android_host_contract PRIVATE cxx_std_20)

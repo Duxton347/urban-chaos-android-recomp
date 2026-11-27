@@ -1,0 +1,43 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -6,6 +6,7 @@
+ #include "gpu/vulkan_visibility.h"
+ #include "diagnostics/progress.h"
+ #include "gpu/signed_texels.h"
++#include "gpu/shader_cache.h"
+ #include "gpu/visibility_report.h"
+ 
+ #include <algorithm>
+@@ -1253,6 +1254,7 @@
+ 
+     VkDescriptorSetLayout set_layout_ = VK_NULL_HANDLE;
+     VkPipelineLayout layout_ = VK_NULL_HANDLE;
++    urban::gpu::ShaderCache shader_cache_;
+     VkPipelineCache cache_ = VK_NULL_HANDLE;
+     size_t cache_saved_ = 0;
+     VkSemaphore timeline_ = VK_NULL_HANDLE;
+@@ -1312,7 +1314,8 @@
+ bool VulkanBackend::Init(uint32_t width, uint32_t height) {
+     guest_w_ = width;
+     guest_h_ = height;
+-    vkshader::Init({});
++    vkshader::Init({}); // Pinned translator disk cache stays off; use the bounded validated cache.
++    shader_cache_.Open(host::ShaderCacheRoot(), "@URBAN_SHADER_CACHE_COMPILER_ID@");
+     if (!CreateInstance() || !CreateSurface() || !PickDevice() || !CreateDevice()) return false;
+     alloc_.Init(pd_, dev_);
+     if (!CreateLayouts() || !CreateFrames() || !CreateSwapchain() || !CreateFixedImages()) return false;
+@@ -2238,7 +2241,13 @@
+     if (auto it = modules_.find(hash); it != modules_.end()) return it->second;
+     std::vector<uint32_t> spirv;
+     VkShaderModule m = VK_NULL_HANDLE;
+-    if (vkshader::Compile(src, entry, stage, hash, spirv)) {
++    auto cached=shader_cache_.Load(src,entry,unsigned(stage),spirv);
++    const bool hit=cached==urban::gpu::ShaderCache::Result::Hit;
++    if(hit)urban::progress::shader_cache_hits.fetch_add(1,std::memory_order_relaxed);
++    if(cached==urban::gpu::ShaderCache::Result::Invalid)urban::progress::shader_cache_rejected.fetch_add(1,std::memory_order_relaxed);
++    if(!hit)urban::progress::shader_compilations.fetch_add(1,std::memory_order_relaxed);
++    if (hit || vkshader::Compile(src, entry, stage, hash, spirv)) {
++        if(!hit)shader_cache_.Store(src,entry,unsigned(stage),spirv);
+         VkShaderModuleCreateInfo ci{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
+         ci.codeSize = spirv.size() * 4;
+         ci.pCode = spirv.data();

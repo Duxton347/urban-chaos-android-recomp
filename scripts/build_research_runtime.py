@@ -64,7 +64,7 @@ def main():
         cmake = ROOT/'.toolchain/cmake/cmake-3.31.6-linux-x86_64/bin/cmake'
         out.mkdir(parents=True)
         overlay = out/'source-overlay'
-        sources = list((ROOT/'host/research').glob('*')) + [ROOT/'host/runtime-probes/gpu_probes.cpp', ROOT/'host/audio-device/test_device_lifetime.cpp', ROOT/'native/gpu/recorded_push.h', ROOT/'native/gpu/signed_texels.h', ROOT/'native/audio/cone.h', ROOT/'native/audio/spatial.h']
+        sources = list((ROOT/'host/research').glob('*')) + [ROOT/'host/runtime-probes/gpu_probes.cpp', ROOT/'host/audio-device/test_device_lifetime.cpp', ROOT/'native/gpu/recorded_push.h', ROOT/'native/gpu/signed_texels.h', ROOT/'native/gpu/shader_cache.h', ROOT/'native/input/automatic_fire.h', ROOT/'native/input/automatic_fire.cpp', ROOT/'native/audio/cone.h', ROOT/'native/audio/spatial.h']
         sources += list((ROOT/'native/game').glob('*')) + list((ROOT/'native/diagnostics').glob('*'))
         sources += list((ROOT/'native/audio').glob('*'))
         host_sources = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources if path.is_file()}

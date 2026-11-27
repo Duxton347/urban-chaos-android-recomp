@@ -47,5 +47,6 @@ int main(){
     backend->Present(empty);
     backend->Flush();
     if(harness::g_frames.load()!=1)throw std::runtime_error("Research input clock did not advance with presentation");
+    std::printf("SHADER_CACHE_RESULT: hits=%llu compiled=%llu rejected=%llu\n",(unsigned long long)urban::progress::shader_cache_hits.load(),(unsigned long long)urban::progress::shader_compilations.load(),(unsigned long long)urban::progress::shader_cache_rejected.load());
     std::puts("VULKAN_RENDERER_CONTRACT: real SDK Draw/Clear/Flush/reports, threaded mode and presentation/input clock passed; no game data");
 }

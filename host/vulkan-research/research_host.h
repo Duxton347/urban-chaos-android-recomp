@@ -10,6 +10,7 @@
 #include "core/log.h"
 #include "harness.h"
 namespace host {
+inline std::filesystem::path ShaderCacheRoot(){const char* path=std::getenv("URBAN_SHADER_CACHE_ROOT");return path?std::filesystem::path(path):std::filesystem::path();}
 inline bool Foreground(){return true;}
 inline uint32_t SurfaceEpoch(){return 1;}
 inline void Presented(uint64_t frame){harness::g_frames.store(frame);}

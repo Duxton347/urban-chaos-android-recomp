@@ -28,13 +28,16 @@ final class TouchHudView extends View {
  private int display;
  private float dragX,dragY,originX,originY;private int insetLeft,insetRight,insetTop,insetBottom;
  private final float density;
+ private boolean autoFire; private int dialogDepth;
+ private void autoGate(){NativeGame.autoFireAllowed(full&&!editing&&dialogDepth==0);}
+ private AlertDialog.Builder dialogBuilder(){++dialogDepth;autoGate();return new AlertDialog.Builder(activity).setOnDismissListener(d->{dialogDepth=Math.max(0,dialogDepth-1);autoGate();});}
  TouchHudView(Activity activity,Runnable export,ReportSession reports){
   super(activity);this.activity=activity;this.export=export;this.reports=reports;density=getResources().getDisplayMetrics().density;
   tablet=getResources().getConfiguration().smallestScreenWidthDp>=600;
   JSONObject settings=read("settings.json");
-  if(settings!=null){tablet=settings.optBoolean("tablet",tablet);full=settings.optBoolean("combatControls7",false)?settings.optBoolean("full",true):true;swipe=settings.optBoolean("swipe",true);lookLeft=settings.optBoolean("lookLeft",true);display=Math.max(0,Math.min(2,settings.optInt("display",0)));}
+  if(settings!=null){tablet=settings.optBoolean("tablet",tablet);full=settings.optBoolean("combatControls7",false)?settings.optBoolean("full",true):true;swipe=settings.optBoolean("swipe",true);lookLeft=settings.optBoolean("lookLeft",true);display=Math.max(0,Math.min(2,settings.optInt("display",0)));autoFire=settings.optBoolean("autoFire",false);}
   router.toggleMode(6,true);router.toggleMode(14,true);router.commandWheel(true);
-  loadLayout();settings();NativeGame.displayMode(display);setFocusable(true);profileChanged("loaded");
+  loadLayout();settings();NativeGame.autoFire(autoFire);autoGate();NativeGame.displayMode(display);setFocusable(true);profileChanged("loaded");
   setContentDescription("Controles Xbox. Menu de ajustes no canto superior direito.");
   setOnApplyWindowInsetsListener((view,insets)->{
    if(android.os.Build.VERSION.SDK_INT>=30){android.graphics.Insets safe=insets.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout());
@@ -63,7 +66,7 @@ final class TouchHudView extends View {
   }catch(Exception failure){if(output!=null)file.failWrite(output);notice("Não foi possível salvar o HUD.");return false;}
  }
  private void profileChanged(String reason){if(reports!=null)reports.event(ReportSession.Event.INPUT_PROFILE,ReportSession.detail("profile",tablet?"tablet":"phone","mode",full?"xbox":"menu","state","display_"+display,"reason",reason));}
- private void settings(){try{write("settings.json",new JSONObject().put("schema",1).put("tablet",tablet).put("full",full).put("combatControls7",true).put("swipe",swipe).put("lookLeft",lookLeft).put("display",display));profileChanged("settings");}catch(JSONException impossible){throw new IllegalStateException(impossible);}}
+ private void settings(){try{write("settings.json",new JSONObject().put("schema",1).put("tablet",tablet).put("full",full).put("combatControls7",true).put("swipe",swipe).put("lookLeft",lookLeft).put("display",display).put("autoFire",autoFire));profileChanged("settings");}catch(JSONException impossible){throw new IllegalStateException(impossible);}}
  private TouchLayout defaultLayout(){
   TouchLayout result=full?TouchLayout.mobile(tablet):TouchLayout.defaults(tablet,false);
   if(full){result.find("down").configure(.32f,.48f,.055f,.50f);result.find("black").configure(.72f,.20f,.045f,.5f);result.find("ls").configure(.29f,.86f,.045f,.5f);result.find("rs").configure(.73f,.47f,.045f,.5f);}
@@ -196,11 +199,11 @@ final class TouchHudView extends View {
   invalidate();return true;
  }
  private void notice(String message){Toast.makeText(activity,message,Toast.LENGTH_SHORT).show();}
- private void help(){new AlertDialog.Builder(activity).setTitle("Como usar").setMessage("Menus: o joystick esquerdo navega, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nMira por arrasto: deslize na área livre da tela. Não precisa tocar em um joystick direito. Ao parar o dedo, a mira para. Os botões têm prioridade sobre a área de mira.\n\nHUD mobile: joystick move; A/B/X/Y mantêm as letras do controle. O ícone de escudo é LT, o de agachar é L3, a mira é R3 e a lanterna é Aux 1. TIRO mantém o disparo manual/ataque do escudo. O respirador térmico (Aux 2) fica no painel extra (+) e depende da disponibilidade na missão. Essas ações correspondem ao esquema relatado; mudanças no esquema original podem alterar suas funções.\n\nEscudo e agachar: toque para manter, toque novamente para soltar. R3 é mira e Aux 1 é lanterna no esquema relatado. ORDENS: segure e arraste para a direção desejada; soltar encerra o comando. START/BACK por toque e perda de foco limpam as ações mantidas. Use vários dedos para as demais ações. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA sensibilidade e a inversão da mira ficam no próprio jogo: Options → Controller → Horizontal/Vertical Sensitivity. O desempenho e os defeitos gráficos da missão continuam em investigação.").setPositiveButton("Entendi",null).show();}
+ private void help(){dialogBuilder().setTitle("Como usar").setMessage("Menus: o joystick esquerdo navega, A seleciona, B volta e X apaga um perfil quando a tela indicar. START abre a pausa.\n\nMira por arrasto: deslize na área livre da tela. Não precisa tocar em um joystick direito. Ao parar o dedo, a mira para. Os botões têm prioridade sobre a área de mira.\n\nHUD mobile: joystick move; A/B/X/Y mantêm as letras do controle. O ícone de escudo é LT, o de agachar é L3, a mira é R3 e a lanterna é Aux 1. TIRO mantém o disparo manual/ataque do escudo. O respirador térmico (Aux 2) fica no painel extra (+) e depende da disponibilidade na missão. Essas ações correspondem ao esquema relatado; mudanças no esquema original podem alterar suas funções.\n\nEscudo e agachar: toque para manter, toque novamente para soltar. R3 é mira e Aux 1 é lanterna no esquema relatado. ORDENS: segure e arraste para a direção desejada; soltar encerra o comando. START/BACK por toque e perda de foco limpam as ações mantidas. Use vários dedos para as demais ações. No menu ⋯, Tiro automático ativa pulsos apenas sobre inimigos identificados pela mira original. TIRO manual continua disponível e tem prioridade. O automático para ao usar escudo, editar ou sair do aplicativo. O menu ⋯ ajusta a tela e o HUD. O editor não envia comandos ao jogo. Pause com START antes de editar durante uma missão.\n\nA sensibilidade e a inversão da mira ficam no próprio jogo: Options → Controller → Horizontal/Vertical Sensitivity. O desempenho e os defeitos gráficos da missão continuam em investigação.").setPositiveButton("Entendi",null).show();}
  private void showMenu(){
   String[] items=editing?new String[]{"Salvar layout","Cancelar edição","Tamanho do controle selecionado","Opacidade do controle selecionado","Restaurar posições padrão"}:
-   new String[]{"Enquadramento da tela","Modo de controle","Editar HUD","Perfil: "+(tablet?"tablet":"celular"),hidden?"Mostrar controles":"Ocultar controles","Como usar","Exportar relatório","Mira: "+(swipe?"arrastar na tela":"joystick direito"),extras?"Recolher controles extras":"Mostrar controles extras"};
-  new AlertDialog.Builder(activity).setTitle(editing?"Editar HUD":"Tela e controles").setItems(items,(dialog,which)->{
+   new String[]{"Enquadramento da tela","Modo de controle","Editar HUD","Perfil: "+(tablet?"tablet":"celular"),hidden?"Mostrar controles":"Ocultar controles","Como usar","Exportar relatório","Mira: "+(swipe?"arrastar na tela":"joystick direito"),extras?"Recolher controles extras":"Mostrar controles extras","Tiro automático: "+(autoFire?"inimigos":"desligado")};
+  dialogBuilder().setTitle(editing?"Editar HUD":"Tela e controles").setItems(items,(dialog,which)->{
    if(editing){switch(which){
     case 0:if(saveLayout()){editing=false;snapshot=null;selected=null;}break;
     case 1:layout=snapshot;editing=false;snapshot=null;selected=null;break;
@@ -208,20 +211,21 @@ final class TouchHudView extends View {
     case 4:layout=defaultLayout();confine();selected=null;break;
    }}else switch(which){
     case 0:displayOptions();break;
-    case 1:new AlertDialog.Builder(activity).setTitle("Modo de controle").setSingleChoiceItems(new String[]{"Navegação de menus","Controle Xbox completo"},full?1:0,(d,n)->{releaseAll();full=n==1;loadLayout();settings();d.dismiss();invalidate();}).show();break;
+    case 1:dialogBuilder().setTitle("Modo de controle").setSingleChoiceItems(new String[]{"Navegação de menus","Controle Xbox completo"},full?1:0,(d,n)->{releaseAll();full=n==1;loadLayout();settings();d.dismiss();invalidate();}).show();break;
     case 2:releaseAll();snapshot=layout.copy();editing=true;hidden=false;selected=null;notice("Arraste um controle; use ⋯ para tamanho, opacidade e salvar.");break;
-    case 3:new AlertDialog.Builder(activity).setTitle("Perfil independente").setSingleChoiceItems(new String[]{"Celular","Tablet"},tablet?1:0,(d,n)->{releaseAll();tablet=n==1;loadLayout();settings();d.dismiss();invalidate();}).show();break;
+    case 3:dialogBuilder().setTitle("Perfil independente").setSingleChoiceItems(new String[]{"Celular","Tablet"},tablet?1:0,(d,n)->{releaseAll();tablet=n==1;loadLayout();settings();d.dismiss();invalidate();}).show();break;
     case 4:releaseAll();hidden=!hidden;break;
     case 5:help();break;
     case 6:if(export!=null)export.run();break;
     case 8:releaseAll();extras=!extras;break;
-    case 7:new AlertDialog.Builder(activity).setTitle("Mira por toque").setSingleChoiceItems(new String[]{"Arrastar área livre da tela","Joystick direito"},swipe?0:1,(d,n)->{releaseAll();swipe=n==0;settings();d.dismiss();invalidate();}).show();break;
+    case 9:autoFire=!autoFire;NativeGame.autoFire(autoFire);settings();notice(autoFire?"Disparo automático apenas sobre alvo inimigo reconhecido. TIRO manual continua disponível.":"Disparo automático desligado.");break;
+    case 7:dialogBuilder().setTitle("Mira por toque").setSingleChoiceItems(new String[]{"Arrastar área livre da tela","Joystick direito"},swipe?0:1,(d,n)->{releaseAll();swipe=n==0;settings();d.dismiss();invalidate();}).show();break;
    }
    invalidate();
   }).setNegativeButton("Fechar",null).show();
  }
  private void displayOptions(){
-  new AlertDialog.Builder(activity).setTitle("Enquadramento da tela").setSingleChoiceItems(new String[]{"Ajustar — imagem inteira, proporção original","Preencher — ocupa a tela e recorta bordas","Esticar — ocupa a tela e altera proporções"},display,(dialog,n)->{display=n;NativeGame.displayMode(n);settings();dialog.dismiss();}).setNegativeButton("Cancelar",null).show();
+  dialogBuilder().setTitle("Enquadramento da tela").setSingleChoiceItems(new String[]{"Ajustar — imagem inteira, proporção original","Preencher — ocupa a tela e recorta bordas","Esticar — ocupa a tela e altera proporções"},display,(dialog,n)->{display=n;NativeGame.displayMode(n);settings();dialog.dismiss();}).setNegativeButton("Cancelar",null).show();
  }
  private void adjust(boolean size){
   if(selected==null){notice("Selecione um controle no editor primeiro.");return;}
@@ -230,6 +234,6 @@ final class TouchHudView extends View {
    public void onProgressChanged(SeekBar bar,int value,boolean user){if(user){if(size){c.radius=(value+25)/1000f;clamp(c);}else c.alpha=(value+15)/100f;invalidate();}}
    public void onStartTrackingTouch(SeekBar bar){}public void onStopTrackingTouch(SeekBar bar){}
   });
-  new AlertDialog.Builder(activity).setTitle(c.label+(size?" — tamanho":" — opacidade")).setView(seek).setPositiveButton("OK",null).show();
+  dialogBuilder().setTitle(c.label+(size?" — tamanho":" — opacidade")).setView(seek).setPositiveButton("OK",null).show();
  }
 }

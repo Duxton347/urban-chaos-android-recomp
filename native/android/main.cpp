@@ -8,6 +8,7 @@
 #include "diagnostics/journal.h"
 #include "diagnostics/progress.h"
 #include "game/source.h"
+#include "input/automatic_fire.h"
 #include "game/sha256.h"
 #include <fstream>
 #include <sstream>
@@ -31,6 +32,7 @@ std::atomic<bool> foreground{true};
 std::atomic<uint32_t> epoch{1};
 std::filesystem::path root;
 void Focus(bool active){
+ urban::autofire::Foreground(active);
  {std::lock_guard lock(focus_mutex);if(active&&!foreground.load())++epoch;foreground=active;}
  if(!active)host::ClearInput();
  audio::SetOutputPaused(!active);
@@ -38,6 +40,7 @@ void Focus(bool active){
 }
 }
 namespace host {
+std::filesystem::path ShaderCacheRoot(){return root/"cache/shaders/modules";}
 SDL_Window* Window(){return window;}
 bool Foreground(){return foreground.load();}
 uint32_t SurfaceEpoch(){return epoch.load();}
@@ -55,7 +58,7 @@ bool OpenSplash(){return false;}void SplashFirstFrame(){}void CloseSplash(){}voi
 bool StartHandover(){return false;}bool HandingOver(){return false;}void FinishHandover(){}
 std::recursive_mutex& UiLock(){static std::recursive_mutex mutex;return mutex;}
 void Pace(){}
-const GameInfo kGame={.title=L"Urban Chaos",.short_title=L"Urban Chaos",.name=L"UrbanChaos",.log="UrbanChaos",.settings="runtime.toml"};
+const GameInfo kGame={.title=L"Urban Chaos",.short_title=L"Urban Chaos",.name=L"UrbanChaos",.log="UrbanChaos",.settings="runtime.toml",.pad=urban::autofire::Pad};
 }
 int main(int argc,char** argv){
  if(argc!=2&&argc!=3){LOGE("android: launch source missing");return 2;}
@@ -94,6 +97,7 @@ int main(int argc,char** argv){
    locale_archives=uint32_t(seen.size());
    report.Emit(urban::diagnostics::Code::LocaleReady,{{"archives",locale_archives}});
   }
+  urban::autofire::Configure(source.metadata.sha256.c_str());
   source.Activate(false); // Only the exact compiled revision is accepted in this first Android integration.
   input::Init();
   report.Emit(urban::diagnostics::Code::BootStart);

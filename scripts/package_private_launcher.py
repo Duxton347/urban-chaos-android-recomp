@@ -27,7 +27,7 @@ def main():
     if output.exists() or output in native.parents or native in output.parents:raise ValueError('New private output required')
     receipt=json.loads((native/'receipt.json').read_text())
     if receipt['status']!='PRIVATE_ANDROID_LIBRARY_LINKED':raise ValueError('Actual linked game runtime required')
-    for name in ('native/gpu/signed_texels.h',):
+    for name in ('native/gpu/signed_texels.h','native/gpu/shader_cache.h','native/input/automatic_fire.h','native/input/automatic_fire.cpp'):
         if receipt.get('renderer_headers',{}).get(name)!=sha(ROOT/name):
             raise ValueError('Native renderer header changed or missing from build receipt; rebuild the runtime: '+name)
     sdk=ROOT/'.toolchain/android-sdk';ndk=sdk/'ndk/28.2.13676358';tools=sdk/'build-tools/34.0.0'

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Create a reviewed renderer build overlay, preserving the pinned MIT Black source."""
+import hashlib
+import json
 import pathlib
 import shutil
 import subprocess
@@ -54,4 +56,12 @@ def prepare_renderer(destination, android=False):
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
     patch = ROOT / 'patches/black/vulkan-render-target-texel-centres.patch'
     subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
-    return destination / 'vulkan.cpp'
+    patch = ROOT / 'patches/black/vulkan-shader-cache.patch'
+    subprocess.run(['git', 'apply', '--directory=' + str(destination.relative_to(ROOT)), str(patch)], cwd=ROOT, check=True)
+    lock=json.loads((ROOT/'dependencies.lock.json').read_text())
+    identity=hashlib.sha256((lock['repositories']['glslang']['commit']+''.join(lock['shader_compiler']['files'][name] for name in ('native/vk_shader.cpp','native/vk_shader.h'))+'urban-spv-cache-v1').encode()).hexdigest()
+    result=destination/'vulkan.cpp'
+    text=result.read_text()
+    if text.count('@URBAN_SHADER_CACHE_COMPILER_ID@')!=1:raise ValueError('Shader cache namespace marker mismatch')
+    result.write_text(text.replace('@URBAN_SHADER_CACHE_COMPILER_ID@',identity))
+    return result

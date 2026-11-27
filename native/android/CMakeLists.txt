@@ -31,10 +31,11 @@ foreach(SOURCE IN LISTS SDK_SOURCES)
 endforeach()
 add_library(main SHARED ${RUNTIME_SOURCES} main.cpp input.cpp bridge.cpp
  "${URBAN_VULKAN_SOURCE}" "${REPO}/native/gpu/vulkan_visibility.cpp"
- "${REPO}/native/game/source.cpp" "${REPO}/native/audio/sdl_output.cpp" "${REPO}/native/diagnostics/android_bridge.cpp")
+ "${REPO}/native/input/automatic_fire.cpp" "${REPO}/native/game/source.cpp" "${REPO}/native/audio/sdl_output.cpp" "${REPO}/native/diagnostics/android_bridge.cpp")
 target_compile_features(main PRIVATE cxx_std_20)
 target_compile_options(main PRIVATE -O2 -g0 -fsigned-char -fno-strict-aliasing -include "${CMAKE_CURRENT_LIST_DIR}/platform_compat.h")
-target_compile_definitions(main PRIVATE XBE_RAW_VERTICES=1 XBE_NATIVE_COMPONENT_ALIGNMENT=1 XBE_RENDER_THREAD=0)
+option(URBAN_GPU_WORKER "Record GPU work on a dedicated worker" OFF)
+target_compile_definitions(main PRIVATE XBE_RAW_VERTICES=1 XBE_NATIVE_COMPONENT_ALIGNMENT=1 XBE_RENDER_THREAD=$<BOOL:${URBAN_GPU_WORKER}>)
 target_include_directories(main PRIVATE "${CMAKE_CURRENT_LIST_DIR}" "${URBAN_OVERLAY}/runtime" "${SDK}/runtime"
  "${SDK}/harness/compat" "${REPO}/native" "${REPO}/host/vulkan-research" "${REPO}/vendor/black-shader/native" "${URBAN_GENERATED}" "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(main PRIVATE "${URBAN_GUEST_ARCHIVE}" SDL3::SDL3-shared

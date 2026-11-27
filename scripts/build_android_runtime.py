@@ -24,6 +24,7 @@ def main():
         parser.add_argument('--'+name,required=True)
     parser.add_argument('--profile',type=pathlib.Path,default=ROOT/'config/research/user-xbe-resumable.json')
     parser.add_argument('--resume',action='store_true',help='Preserve failed attempt logs and rebuild the same verified inputs')
+    parser.add_argument('--gpu-worker',action='store_true',help='Explicit renderer worker experiment; requires separate device qualification')
     parser.add_argument('--rebuild',action='store_true',help='Replace a superseded linked library while preserving receipts and source overlays')
     parser.add_argument('--guest-transform-receipt',type=pathlib.Path,help='Reviewed private archive transition receipt, only with rebuild')
     args=parser.parse_args()
@@ -73,18 +74,18 @@ def main():
     output.mkdir(parents=True,exist_ok=True)
     receipt={'status':'BUILDING','sdk':PIN,'xbe_sha256':info['sha256'],'profile_sha256':sha(args.profile),
              'guest_optimization':int(optimized.group(1)),'guest_build_cache_sha256':sha(archive.parent/'CMakeCache.txt'),
-             'guest_archive_sha256':sha(archive),'guest_objects':len(machines),'apk_created':False,
+             'gpu_worker':args.gpu_worker,'guest_archive_sha256':sha(archive),'guest_objects':len(machines),'apk_created':False,
              'android_device_tested':False,'game_boot_tested':False,'g1_qualified':False}
     if args.guest_transform_receipt:receipt['guest_archive_transition']=transition
     try:
         receipt['runtime_patches']=prepare(output/'sdk',context=True,android=True)
         renderer=prepare_renderer(output/'vulkan',android=True)
         receipt['renderer_source_sha256']=sha(renderer)
-        receipt['renderer_headers']={'native/gpu/signed_texels.h':sha(ROOT/'native/gpu/signed_texels.h')}
+        receipt['renderer_headers']={name:sha(ROOT/name) for name in ('native/gpu/signed_texels.h','native/gpu/shader_cache.h','native/input/automatic_fire.h','native/input/automatic_fire.cpp')}
         with (output/'build.log').open('w') as log:
             subprocess.run([str(cmake),'-S',str(ROOT/'native/android'),'-B',str(output/'cmake'),'-G','Ninja',
                 '-DCMAKE_MAKE_PROGRAM='+str(cmake.parent/'ninja'),'-DCMAKE_TOOLCHAIN_FILE='+str(ndk/'build/cmake/android.toolchain.cmake'),
-                '-DANDROID_ABI=arm64-v8a','-DANDROID_PLATFORM=android-29','-DANDROID_STL=c++_shared','-DCMAKE_BUILD_TYPE=Release',
+                '-DURBAN_GPU_WORKER='+('ON' if args.gpu_worker else 'OFF'),'-DANDROID_ABI=arm64-v8a','-DANDROID_PLATFORM=android-29','-DANDROID_STL=c++_shared','-DCMAKE_BUILD_TYPE=Release',
                 '-DURBAN_GENERATED='+str(generated),'-DURBAN_GUEST_ARCHIVE='+str(archive),'-DURBAN_OVERLAY='+str(output/'sdk'),
                 '-DURBAN_VULKAN_SOURCE='+str(renderer),'-DURBAN_PROFILE='+str(args.profile.resolve()),'-DURBAN_TITLE_ID='+info['certificate']['title_id'],
                 '-DURBAN_SHADER_BUILD='+str(ROOT/'build/vulkan-shaders-arm64')],check=True,stdout=log,stderr=subprocess.STDOUT)

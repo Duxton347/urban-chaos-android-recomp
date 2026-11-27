@@ -18,6 +18,7 @@ struct Slot {
 };
 inline std::atomic<uint64_t> native_vertex_draws{0},converted_vertex_draws{0},vertex_upload_bytes{0};
 inline std::atomic<uint64_t> depth_colour_conversions{0},depth_colour_binds{0};
+inline std::atomic<uint64_t> shader_cache_hits{0},shader_cache_rejected{0},shader_compilations{0};
 inline std::atomic<uint64_t> signed_texture_binds{0},signed_texture_upload_bytes{0};
 inline std::array<Slot,64> slots;
 inline std::atomic<uint32_t> allocated{0};
@@ -125,7 +126,7 @@ inline void Poll(diagnostics::Journal& journal) {
  auto read=last_read_id.load(std::memory_order_relaxed);
  journal.Emit(diagnostics::Code::IoCompletion,{{"queued_apcs",apcs_queued.load()},{"delivered_apcs",apcs_delivered.load()},
   {"resource_id",read>>32},{"requested",uint32_t(read)},{"offset",last_read_offset.load()},{"completed",last_read_bytes.load()}});
- journal.Emit(diagnostics::Code::GpuSynchronization,{{"visibility_polls",visibility_polls.load()},{"visibility_submits",visibility_submits.load()},{"idle_flushes",idle_flushes.load()},{"same_present_texture_updates",same_present_texture_updates.load()},{"two_sided_draws",two_sided_draws.load()},{"native_vertex_draws",native_vertex_draws.load()},{"converted_vertex_draws",converted_vertex_draws.load()},{"vertex_upload_bytes",vertex_upload_bytes.load()},{"depth_colour_conversions",depth_colour_conversions.load()},{"depth_colour_binds",depth_colour_binds.load()},{"signed_texture_binds",signed_texture_binds.load()},{"signed_texture_upload_bytes",signed_texture_upload_bytes.load()}});
+ journal.Emit(diagnostics::Code::GpuSynchronization,{{"visibility_polls",visibility_polls.load()},{"visibility_submits",visibility_submits.load()},{"idle_flushes",idle_flushes.load()},{"same_present_texture_updates",same_present_texture_updates.load()},{"two_sided_draws",two_sided_draws.load()},{"native_vertex_draws",native_vertex_draws.load()},{"converted_vertex_draws",converted_vertex_draws.load()},{"vertex_upload_bytes",vertex_upload_bytes.load()},{"depth_colour_conversions",depth_colour_conversions.load()},{"depth_colour_binds",depth_colour_binds.load()},{"shader_cache_hits",shader_cache_hits.load()},{"shader_cache_rejected",shader_cache_rejected.load()},{"shader_compilations",shader_compilations.load()},{"signed_texture_binds",signed_texture_binds.load()},{"signed_texture_upload_bytes",signed_texture_upload_bytes.load()}});
  for(uint32_t n=0;n<gpu.size();++n)journal.Emit(diagnostics::Code::GpuTiming,
   {{"operation",n},{"calls",gpu[n].calls.load()},{"total_us",gpu[n].us.load()},{"max_us",gpu[n].max_us.load()}});
 }

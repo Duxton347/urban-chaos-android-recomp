@@ -1,5 +1,7 @@
 // Host metadata and diagnostics only; no replacement functions for title logic.
 #include "app/app.h"
+#include "input/automatic_fire.h"
+#include "build_source_profile.h"
 #include <execinfo.h>
 #include <signal.h>
 #include <unistd.h>
@@ -22,6 +24,7 @@ static void Crash(int signal, siginfo_t* info, void*) {
     _exit(128 + signal);
 }
 static void Init() {
+    urban::autofire::Enable(std::getenv("URBAN_AUTOFIRE")&&std::strcmp(std::getenv("URBAN_AUTOFIRE"),"1")==0);
     void* frames[1];
     backtrace(frames, 1);
     struct sigaction action{};
@@ -42,5 +45,5 @@ static void Init() {
 const app::GameInfo app::kGame = {
     .title=L"Urban Chaos research runtime", .short_title=L"Urban Chaos", .name=L"UrbanChaosResearch",
     .log="urban_research", .settings="research.toml", .splash=L"", .missing=L"Private Xbox game files required",
-    .images={{"Default.xbe", "urban_research"}}, .options={}, .load=nullptr, .save=nullptr, .init=Init,
+    .images={{"Default.xbe", "urban_research"}}, .options={}, .load=nullptr, .save=nullptr, .init=Init, .pad=urban::autofire::Pad,
 };

@@ -17,3 +17,5 @@ TASK_JDK="${JAVA_HOME:-$PWD/.toolchain/jdk/jdk-17.0.17+10}/bin"
 python3 scripts/test_diagnostics.py
 
 python3 scripts/test_subtitles.py
+
+python3 scripts/test_mission_controls.py

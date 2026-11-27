@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import pathlib
 import subprocess
 import tempfile
@@ -77,13 +78,13 @@ def main():
                 host=build/'liburban_android_host_contract.a'
                 headers=subprocess.check_output([str(reader),'-h',str(host)],text=True)
                 values=[line.split(':',1)[1].strip() for line in headers.splitlines() if 'Machine:' in line]
-                if len(values)!=7 or any(value!='AArch64' for value in values):raise RuntimeError('Android host contract architecture mismatch')
+                if len(values)!=8 or any(value!='AArch64' for value in values):raise RuntimeError('Android host contract architecture mismatch')
                 receipt['architectures']['android-host']={'sha256':digest(host),'objects':len(values),'authored_profile_only':True,'game_linked':False}
             if not android:
                 icd = software_headless_icd()
                 receipt['software_icd_sha256'] = digest(icd)
                 env = dict(os.environ,VK_ICD_FILENAMES=str(icd),VK_DRIVER_FILES=str(icd))
-                for key in ('VK_INSTANCE_LAYERS','URBAN_VK_CAPTURE_EVERY','URBAN_VK_CAPTURE_FROM'):
+                for key in ('VK_INSTANCE_LAYERS','URBAN_VK_CAPTURE_EVERY','URBAN_VK_CAPTURE_FROM','URBAN_SHADER_CACHE_ROOT'):
                     env.pop(key,None)
                 fixture = subprocess.run([str(build/'vulkan_renderer_fixture')],cwd=output,env=env,
                     capture_output=True,text=True,timeout=60)
@@ -97,6 +98,20 @@ def main():
                 receipt['authored_renderer_fixture_passed'] = True
                 if name=='host-fence':receipt['authored_fence_renderpass_fixture_passed']=True
                 receipt['fixture_executable_sha256'] = digest(build/'vulkan_renderer_fixture')
+                if name=='host':
+                    cache_env=dict(env,URBAN_SHADER_CACHE_ROOT=str(source/'authored-shader-cache'))
+                    cache_results={}
+                    for phase in ('cold','warm'):
+                        cached=subprocess.run([str(build/'vulkan_renderer_fixture')],cwd=output,env=cache_env,capture_output=True,text=True,timeout=60)
+                        log_text=cached.stdout+cached.stderr
+                        (output/('shader-cache-'+phase+'.log')).write_text(log_text)
+                        cached.check_returncode()
+                        match=re.search(r'SHADER_CACHE_RESULT: hits=(\d+) compiled=(\d+) rejected=(\d+)',log_text)
+                        if not match or 'VULKAN_RENDERER_CONTRACT:' not in log_text:raise RuntimeError('Incomplete cached renderer fixture')
+                        cache_results[phase]=dict(zip(('hits','compiled','rejected'),map(int,match.groups())))
+                    if not cache_results['cold']['compiled'] or not cache_results['warm']['hits'] or cache_results['warm']['compiled'] or cache_results['warm']['rejected']:raise RuntimeError('Warm shader cache did not eliminate compilation')
+                    receipt['authored_shader_cache']=cache_results
+
     receipt['status'] = 'PASS'
     (output/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(receipt))

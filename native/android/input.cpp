@@ -3,6 +3,7 @@
 #include "app/app.h"
 #include "core/input.h"
 #include "input/touch_state.h"
+#include "input/automatic_fire.h"
 #include "diagnostics/journal.h"
 #include <algorithm>
 #include <array>
@@ -30,12 +31,14 @@ void Snapshot() {
 }
 }
 namespace host {
-void ClearInput(){std::lock_guard lock(mutex);for(auto& p:state)p={};touch.Clear();}
+void ClearInput(){urban::autofire::Cancel();std::lock_guard lock(mutex);for(auto& p:state)p={};touch.Clear();}
 urban::display::Mode DisplayMode(){return urban::display::Mode(display_mode.load());}
 void PollInputDiagnostics(){
+ auto automatic=urban::autofire::Snapshot();
  urban::touch::Stats stats;{std::lock_guard lock(mutex);stats=touch.Snapshot();}
  urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::InputLatency,
   {{"presses",stats.presses},{"delivered",stats.delivered},{"total_us",stats.total_us},{"max_us",stats.max_us},{"look_events",stats.look_events},{"look_delivered",stats.look_delivered}});
+ urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::AutomaticFire,{{"enabled",automatic.enabled},{"traces",automatic.traces},{"requests",automatic.requests},{"manual",automatic.manual},{"blocked",automatic.blocked},{"queries",automatic.queries},{"fresh",automatic.fresh},{"hostile",automatic.hostile},{"friendly",automatic.friendly},{"cone_blocked",automatic.coneBlocked},{"state_blocked",automatic.stateBlocked},{"life_blocked",automatic.lifeBlocked},{"shield_blocked",automatic.shieldBlocked},{"identity_blocked",automatic.identityBlocked},{"controls_blocked",automatic.controlsBlocked}});
 }
 void PadEvent(const SDL_Event& event){
  std::lock_guard lock(mutex);
@@ -60,7 +63,10 @@ extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_menuBu
 }
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padButton(JNIEnv*,jclass,jint key,jboolean down){std::lock_guard lock(mutex);touch.Set(key,down,NowUs());}
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padStick(JNIEnv*,jclass,jint stick,jfloat x,jfloat y,jboolean active){std::lock_guard lock(mutex);touch.Axis(stick,x,y,active);}
-extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_clearTouch(JNIEnv*,jclass){std::lock_guard lock(mutex);touch.Clear();}
+extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_clearTouch(JNIEnv*,jclass){urban::autofire::Cancel();std::lock_guard lock(mutex);touch.Clear();}
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_displayMode(JNIEnv*,jclass,jint mode){if(mode>=0&&mode<=2)display_mode=mode;}
 
 extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_padLookDelta(JNIEnv*,jclass,jfloat x,jfloat y){std::lock_guard lock(mutex);touch.LookDelta(x,y);}
+
+extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_autoFire(JNIEnv*,jclass,jboolean enabled){urban::autofire::Enable(enabled);}
+extern "C" JNIEXPORT void JNICALL Java_org_urbanchaos_launcher_NativeGame_autoFireAllowed(JNIEnv*,jclass,jboolean allowed){urban::autofire::UiAllowed(allowed);}
