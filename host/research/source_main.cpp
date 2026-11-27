@@ -81,7 +81,7 @@ int main(int argc,char** argv) {
             audio::PollOutputDiagnostics();
 #endif
             logx::Flush();
-            if(++progress_ticks%10==0){urban::progress::Poll(report);auto a=urban::autofire::Snapshot();report.Emit(urban::diagnostics::Code::AutomaticFire,{{"enabled",a.enabled},{"traces",a.traces},{"requests",a.requests},{"manual",a.manual},{"blocked",a.blocked},{"queries",a.queries},{"fresh",a.fresh},{"hostile",a.hostile},{"friendly",a.friendly},{"cone_blocked",a.coneBlocked},{"state_blocked",a.stateBlocked},{"life_blocked",a.lifeBlocked},{"shield_blocked",a.shieldBlocked},{"identity_blocked",a.identityBlocked},{"controls_blocked",a.controlsBlocked}});}
+            if(++progress_ticks%10==0){urban::progress::Poll(report);auto a=urban::autofire::Snapshot();report.Emit(urban::diagnostics::Code::AutomaticFire,{{"input_route",2},{"enabled",a.enabled},{"traces",a.traces},{"requests",a.requests},{"manual",a.manual},{"blocked",a.blocked},{"queries",a.queries},{"fresh",a.fresh},{"hostile",a.hostile},{"friendly",a.friendly},{"cone_blocked",a.coneBlocked},{"state_blocked",a.stateBlocked},{"life_blocked",a.lifeBlocked},{"shield_blocked",a.shieldBlocked},{"identity_blocked",a.identityBlocked},{"controls_blocked",a.controlsBlocked}});}
         }
     } catch(const urban::game::SourceError& error) {
         report.Emit(urban::diagnostics::SourceCode(error.code));

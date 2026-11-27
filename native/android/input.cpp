@@ -38,7 +38,7 @@ void PollInputDiagnostics(){
  urban::touch::Stats stats;{std::lock_guard lock(mutex);stats=touch.Snapshot();}
  urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::InputLatency,
   {{"presses",stats.presses},{"delivered",stats.delivered},{"total_us",stats.total_us},{"max_us",stats.max_us},{"look_events",stats.look_events},{"look_delivered",stats.look_delivered}});
- urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::AutomaticFire,{{"enabled",automatic.enabled},{"traces",automatic.traces},{"requests",automatic.requests},{"manual",automatic.manual},{"blocked",automatic.blocked},{"queries",automatic.queries},{"fresh",automatic.fresh},{"hostile",automatic.hostile},{"friendly",automatic.friendly},{"cone_blocked",automatic.coneBlocked},{"state_blocked",automatic.stateBlocked},{"life_blocked",automatic.lifeBlocked},{"shield_blocked",automatic.shieldBlocked},{"identity_blocked",automatic.identityBlocked},{"controls_blocked",automatic.controlsBlocked}});
+ urban::diagnostics::ProcessJournal().Emit(urban::diagnostics::Code::AutomaticFire,{{"input_route",2},{"enabled",automatic.enabled},{"traces",automatic.traces},{"requests",automatic.requests},{"manual",automatic.manual},{"blocked",automatic.blocked},{"queries",automatic.queries},{"fresh",automatic.fresh},{"hostile",automatic.hostile},{"friendly",automatic.friendly},{"cone_blocked",automatic.coneBlocked},{"state_blocked",automatic.stateBlocked},{"life_blocked",automatic.lifeBlocked},{"shield_blocked",automatic.shieldBlocked},{"identity_blocked",automatic.identityBlocked},{"controls_blocked",automatic.controlsBlocked}});
 }
 void PadEvent(const SDL_Event& event){
  std::lock_guard lock(mutex);
