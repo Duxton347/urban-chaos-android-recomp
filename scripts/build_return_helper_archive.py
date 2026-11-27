@@ -8,6 +8,7 @@ sys.path.insert(0,str(ROOT/'tools'))
 from relocate_return_helpers import transform
 from fuse_tail_fragments import fuse
 from fuse_tail_cfg import fuse_cfg
+from fuse_frame_cfg import fuse_frame
 
 def sha(p):return hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
 def main():
@@ -30,7 +31,11 @@ def main():
  if sha(base)!=a.expected_base:raise ValueError('Baseline digest mismatch')
  review=json.loads(a.review.read_text());source=generated/review['source_file'];text=source.read_text()
  if sha(source)!=review['source_sha256']:raise ValueError('Generated source changed')
- if review.get('mode')=='cfg-fusion':
+ if review.get('mode')=='frame-cfg-fusion':
+  rewritten,proof=fuse_frame(text,review['root'],int(review['end'],16))
+  if (proof['blocks'],proof['edges'])!=(review['expected_blocks'],review['expected_edges']):raise ValueError('Unexpected frame CFG')
+  changes=proof['edges']
+ elif review.get('mode')=='cfg-fusion':
   rewritten,proof=fuse_cfg(text,review['roots'])
   if proof['graphs']!=review['expected_graphs']:raise ValueError('Unexpected closed tail CFG')
   changes=sum(g['edges'] for g in proof['graphs'])
