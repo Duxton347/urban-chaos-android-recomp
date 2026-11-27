@@ -29,10 +29,18 @@ def fuse_frame(source,root,end,max_blocks=128):
  prefix='urban_frame_'+root+'_'
  def labels(text,address):return re.sub(r'\bloc_[0-9A-Fa-f]+\b',lambda m:prefix+address+'_'+m[0],text)
  blocks=[]
- for address,(_,payload,_,_) in nodes.items():
+ for address,(entry,payload,_,_) in nodes.items():
   payload=labels(payload,address)
   payload=TAIL.sub(lambda m:'{ X86_SAVE_FLAGS(); goto '+prefix+m[1]+'; }' if m[1] in nodes else m[0],payload)
   reload='' if address==root else 'cf=ctx.cf;zf=ctx.zf;sf=ctx.sf;of=ctx.of;pf=ctx.pf;ca=cb=0;\n'
+  if address!=root:
+   expected=re.search(r'const uint32_t x86_expected_return\s*=\s*([^;]+);',entry)
+   if not expected:raise ValueError('Unknown original fragment return value')
+   reload+='const uint32_t urban_fragment_slot=ctx.esp, urban_fragment_return='+re.sub(r'\bx86_resuming\b','false',expected[1])+';\n'
+   # A removed transfer used to serialize flags before unwinding. Preserve that
+   # context write even when the enclosing machine function can now return locally.
+   guard=r'if\s*\(\s*x86_resuming\s*\|\|\s*ctx\.return_target\s*!=\s*x86_expected_return\s*\|\|\s*ctx\.return_slot\s*!=\s*x86_expected_slot\s*\)'
+   payload=re.sub(guard,lambda m:'if(ctx.return_target!=urban_fragment_return||ctx.return_slot!=urban_fragment_slot){X86_SAVE_FLAGS();}\n'+m[0],payload)
   blocks.append(prefix+address+': {\n'+reload+payload+'\nreturn;\n}')
  head,payload,suffix,_=nodes[root];rewritten=labels(head,root)+'\n'+'\n'.join(blocks)+suffix
  m=functions[root];source=source[:m.start(3)]+rewritten+source[m.end(3):]

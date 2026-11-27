@@ -23,7 +23,7 @@ PAYLOAD
 X86_WEAK_FUNC(sub_ADDR,__imp__sub_ADDR)
 '''.replace('ADDR',address).replace('PAYLOAD',payload).replace('CONT',continuation)
   def tail(a):return '{ X86_SAVE_FLAGS(); sub_'+a+'(ctx, base); return; }'
-  ret='''++ctx.esp;if(ctx.alter)ctx.mem[ctx.esp]=0x9999;
+  ret='''cf=1;zf=1;++ctx.esp;if(ctx.alter)ctx.mem[ctx.esp]=0x9999;
  ctx.return_slot=ctx.esp;ctx.return_target=ctx.mem[ctx.esp++];
  if(x86_resuming||ctx.return_target!=x86_expected_return||ctx.return_slot!=x86_expected_slot){X86_SAVE_FLAGS();if(!x86_resuming)throw X86Transfer{ctx.return_target,ctx.esp};}return;'''
   source=function('00001000','ctx.mem[--ctx.esp]=77;\n'+tail('00001100'))
@@ -45,7 +45,7 @@ void sub_00002000(C& c,uint8_t*){++c.calls;if(c.escape)throw X86Resume{40};asser
 '''
   for optimized,code in [(False,source),(True,changed)]:
    main='''int main(){for(bool alter:{false,true}){C c;c.mem[32]=0x1234;c.alter=alter;bool threw=false;try{sub_00001000(c,nullptr);}catch(const X86Transfer&){threw=true;}
-assert(c.calls==3&&c.iter==3&&c.esp==33&&c.return_slot==32&&c.return_target==(alter?0x9999:0x1234));assert(threw==(alter||!OPT));}
+assert(c.calls==3&&c.iter==3&&c.esp==33&&c.return_slot==32&&c.return_target==(alter?0x9999:0x1234));assert(c.cf==1&&c.zf==1);assert(threw==(alter||!OPT));}
  C c;c.mem[32]=0x1234;c.escape=true;bool escape=false;try{sub_00001000(c,nullptr);}catch(const X86Resume&){escape=true;}assert(escape&&c.calls==1);
  C external;external.mem[32]=77;external.mem[33]=0x4567;bool threw=false;try{sub_00001200(external,nullptr);}catch(const X86Transfer&){threw=true;}assert(threw&&external.return_target==0x4567);
  C resumed;resumed.mem[32]=77;resumed.mem[33]=0x7654;resumed.resume_pc=0x1105;try{sub_00001100(resumed,nullptr);}catch(const X86Transfer&){}assert(resumed.iter==3&&resumed.calls==2&&resumed.return_target==0x7654);}
