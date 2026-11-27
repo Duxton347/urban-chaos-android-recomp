@@ -1,0 +1,157 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -2,7 +2,9 @@
+ // translated shaders are HLSL, which glslang turns into SPIR-V (vk_shader.cpp).
+ #include <vulkan/vulkan.h>
+ 
+-#include "research_host.h"
++#include "android_host.h"
++#include <SDL3/SDL.h>
++#include <SDL3/SDL_vulkan.h>
+ #include "gpu/vulkan_visibility.h"
+ #include "gpu/visibility_report.h"
+ 
+@@ -986,6 +988,8 @@
+ bool HasStencil(VkFormat f) {
+     return f == VK_FORMAT_D24_UNORM_S8_UINT || f == VK_FORMAT_D32_SFLOAT_S8_UINT || f == VK_FORMAT_D16_UNORM_S8_UINT;
+ }
++
++[[noreturn]] void CountedFailure(uint32_t operation) { LOGE("vulkan-count-failure: operation %u", operation); throw std::runtime_error("UC-VK-008: counted draw cannot be implemented"); }
+ 
+ class VulkanBackend final : public Backend {
+ public:
+@@ -1272,7 +1276,9 @@
+ }
+ 
+ bool VulkanBackend::CreateInstance() {
+-    std::vector<const char*> exts = {VK_KHR_SURFACE_EXTENSION_NAME, VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME};
++    uint32_t n = 0;
++    const char* const* sdl = SDL_Vulkan_GetInstanceExtensions(&n);
++    std::vector<const char*> exts(sdl, sdl + n);
+     uint32_t loader = VK_API_VERSION_1_1;
+     vkEnumerateInstanceVersion(&loader);
+     VkApplicationInfo ai{VK_STRUCTURE_TYPE_APPLICATION_INFO};
+@@ -1289,11 +1295,23 @@
+ 
+ // the epoch is taken only once the surface is made: until then each present tries again
+ bool VulkanBackend::CreateSurface() {
+-    auto create = reinterpret_cast<PFN_vkCreateHeadlessSurfaceEXT>(vkGetInstanceProcAddr(instance_, "vkCreateHeadlessSurfaceEXT"));
+-    if (!create) { LOGE("UC-VK-006: no headless surface extension"); return false; }
+-    VkHeadlessSurfaceCreateInfoEXT info{VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT};
+-    VK_CHECK(create(instance_, &info, nullptr, &surface_));
+-    surface_epoch_ = host::SurfaceEpoch();surface_lost_ = false;
++    uint32_t epoch = host::SurfaceEpoch();
++    // Android has not handed the window back yet (resuming, or a surface change): wait for it without asking SDL,
++    // which only fails, and log the outage once, not every present
++    SDL_PropertiesID props = SDL_GetWindowProperties(host::Window());
++    if (!SDL_GetPointerProperty(props, SDL_PROP_WINDOW_ANDROID_WINDOW_POINTER, nullptr)) {
++        if (surface_failures_++ == 0) LOGI("vulkan: waiting for Android's window");
++        return false;
++    }
++    if (!SDL_Vulkan_CreateSurface(host::Window(), instance_, nullptr, &surface_)) {
++        surface_ = VK_NULL_HANDLE;
++        if (surface_failures_++ == 0) LOGE("vulkan: no surface: %s", SDL_GetError());
++        return false;
++    }
++    if (surface_failures_) LOGI("vulkan: surface made after %u tries", surface_failures_ + 1);
++    surface_failures_ = 0;
++    surface_epoch_ = epoch;
++    surface_lost_ = false;
+     return true;
+ }
+ 
+@@ -1373,6 +1391,7 @@
+     };
+     VkPhysicalDeviceFeatures2 f2{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, chain()};
+     vkGetPhysicalDeviceFeatures2(pd_, &f2);
++    LOGI("vulkan-device: vendor %u device %u api %u driver %u precise %u phase %u", props_.vendorID, props_.deviceID, api_, props_.driverVersion, unsigned(f2.features.occlusionQueryPrecise), 0u);
+     if (timeline_ok_ && !ts.timelineSemaphore) {
+         LOGR("vulkan: timeline semaphores not supported, using fences");
+         timeline_ok_ = false;
+@@ -1404,6 +1423,7 @@
+     ci.ppEnabledExtensionNames = dev_exts_.data();
+     VK_CHECK(vkCreateDevice(pd_, &ci, nullptr, &dev_));
+     vkGetDeviceQueue(dev_, qfam_, 0, &queue_);
++    LOGI("vulkan-device: vendor %u device %u api %u driver %u precise %u phase %u", props_.vendorID, props_.deviceID, api_, props_.driverVersion, unsigned(feats_.occlusionQueryPrecise), 1u);
+     visibility_ = std::make_unique<urban::vulkan::VisibilityQueries>(dev_, true);
+     bool core13 = api_ >= VK_API_VERSION_1_3, core12 = api_ >= VK_API_VERSION_1_2;
+     begin_rendering_ = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(
+@@ -2815,14 +2835,14 @@
+     if (!count) return;
+     if (!counted && DepthCopy(s)) return;
+     Assembled& a = asm_;
+-    if (!Assemble(s, prim, start, count, indices, a)) { if(counted) throw std::runtime_error("UC-VK-008: counted geometry unsupported"); return; }
++    if (!Assemble(s, prim, start, count, indices, a)) { if(counted) CountedFailure(1); return; }
+ 
+     // the targets, CPU writes to them first
+     Target* rt = EnsureTarget(s.rt, false);
+     Target* ds = s.rs[kRsZEnable] || s.rs[kRsStencilEnable] ? EnsureTarget(s.zs, true) : nullptr;
+-    if (counted && ((s.rs[kRsZEnable] && !ds) || (rt && ds && (rt->w != ds->w || rt->h != ds->h)))) throw std::runtime_error("UC-VK-008: counted depth target unavailable or mismatched");
++    if (counted && ((s.rs[kRsZEnable] && !ds) || (rt && ds && (rt->w != ds->w || rt->h != ds->h)))) CountedFailure(2);
+     if (rt && ds && (rt->w != ds->w || rt->h != ds->h)) ds = nullptr;
+-    if (!rt && !ds) { if(counted) throw std::runtime_error("UC-VK-008: counted target unavailable"); return; }
++    if (!rt && !ds) { if(counted) CountedFailure(3); return; }
+     if (counted_draws_ >= 4096) Submit(true, false);
+     if (rt && LatchCpuWrite(*rt)) UploadTarget(*rt, s.rt);
+     draw_rt_ = rt;
+@@ -2834,17 +2854,17 @@
+     EnsureVertexShader(s, a, sh);
+ 
+     DrawTextures stages;
+-    if (!BindStageTextures(s, stages) || (!draw_rt_ && !draw_ds_)) { if(counted) throw std::runtime_error("UC-VK-008: counted textures unavailable"); return; }
++    if (!BindStageTextures(s, stages) || (!draw_rt_ && !draw_ds_)) { if(counted) CountedFailure(4); return; }
+     if (!game::Opt().bloom && GlowComposite(s, stages)) return;
+     PixelKey pk = MakePixelKey(s, stages.info);
+     sh.pkey = Hash(&pk, sizeof(pk));
+     EnsurePixelShader(pk, sh);
+-    if (!sh.vs || !sh.ps) { if(counted) throw std::runtime_error("UC-VK-008: counted shader unavailable"); return; }
++    if (!sh.vs || !sh.ps) { if(counted) CountedFailure(5); return; }
+ 
+     PsoKey k;
+     BuildPipelineKey(s, a, sh, k);
+     VkPipeline pipe = EnsurePipeline(k, sh.vs, sh.ps);
+-    if (!pipe) { if(counted) throw std::runtime_error("UC-VK-008: counted pipeline unavailable"); return; }
++    if (!pipe) { if(counted) CountedFailure(6); return; }
+ 
+     // everything uploaded before the rendering: a full ring flushes
+     VkDeviceSize need = 2 * kUboRange + 1024;
+@@ -3305,19 +3325,12 @@
+ }
+ 
+ void VulkanBackend::Present(const Surface& front) {
++    host::WaitForeground();
+     Target* t = EnsureTarget(front, false);
+     if (t && LatchCpuWrite(*t)) UploadTarget(*t, front);
+     if (ramp_dirty_) UploadGammaRamp();
+     if (!skin_tried_) UploadSkin();
+-    if (t && host::CaptureDue(presents_)) {
+-        Image down;
+-        Image* source = CopySource(*t, down);
+-        std::vector<uint8_t> pixels;
+-        if (!source || !ReadBack(*source, t->gw, t->gh, pixels)) throw std::runtime_error("UC-VK-004: capture readback failed");
+-        Destroy(down);
+-        host::Capture(pixels, t->gw, t->gh, presents_);
+-    }
+-    if (presents_ % 60 == 0) LOGI("renderer: frame %llu (Vulkan headless)", (unsigned long long)presents_);
++    if (presents_ % 60 == 0) LOGI("renderer: frame %llu (Vulkan Android)", (unsigned long long)presents_);
+     uint32_t index = 0;
+     bool shown = AcquireImage(index);
+     if (shown) {
+@@ -3338,7 +3351,7 @@
+         if (r == VK_ERROR_SURFACE_LOST_KHR) surface_lost_ = true;
+     }
+     presents_++;
+-    host::Presented(presents_);
++
+     presents_seen_.store(presents_);
+     frame_++;
+     Frame& next = CurrentFrame();
+@@ -3355,7 +3368,7 @@
+         fps_t_ = now;
+     }
+     if (presents_ % 600 == 0) SavePipelineCache();
+-    dynres::Frame();
++    // Dynamic resolution remains disabled until measured on the target GPU.
+     ApplySettings();
+ }
+ 

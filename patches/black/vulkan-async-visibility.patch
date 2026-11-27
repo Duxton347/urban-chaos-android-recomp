@@ -1,0 +1,77 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -1006,9 +1006,11 @@
+     bool DeliverLate(uint32_t data) override;
+     void RecordLate(uint32_t data) override;
+-    void Flush() override { Submit(true, false); }
++    void Flush() override;
++    void FlushVisibilityReports() override;
+     bool SupportsVisibilityReports() const override { return bool(visibility_); }
+     void ClearReport() override { visibility_->Clear(); }
+     void GetReport(uint32_t report) override {
+         visibility_->Report(report, uint64_t(std::chrono::steady_clock::now().time_since_epoch().count()));
++        reports_pending_ = gpu_work_ = true;
+     }
+     void PollReports() {
+@@ -1058,5 +1060,7 @@
+ 
+     Frame& CurrentFrame() { return frames_[frame_ % kFrames]; }
+-    VkCommandBuffer Cb() { return CurrentFrame().cb; }
++    bool gpu_work_ = false, reports_pending_ = false;
++    void AdvanceCommands();
++    VkCommandBuffer Cb() { gpu_work_ = true; return CurrentFrame().cb; }
+ 
+     // Init, in order
+@@ -1788,4 +1792,5 @@
+     rendering_ = false;
+     rend_color_ = rend_depth_ = nullptr;
++    gpu_work_ = reports_pending_ = false;
+ }
+ 
+@@ -1846,4 +1851,30 @@
+     wi.pValues = &v;
+     wait_semaphores_(dev_, &wi, UINT64_MAX);
++}
++
++// A result read must not idle the entire GPU or submit an empty command buffer each time it polls.
++void VulkanBackend::FlushVisibilityReports() {
++    urban::progress::GpuOperation timing(9);
++    urban::progress::visibility_polls.fetch_add(1, std::memory_order_relaxed);
++    PollReports();
++    if (!reports_pending_) return;
++    Submit(false, false);
++    urban::progress::visibility_submits.fetch_add(1, std::memory_order_relaxed);
++    AdvanceCommands();
++}
++
++void VulkanBackend::Flush() {
++    if (gpu_work_ || reports_pending_) { Submit(true, false); return; }
++    urban::progress::idle_flushes.fetch_add(1, std::memory_order_relaxed);
++    WaitValue(value_);
++    PollReports();
++}
++
++void VulkanBackend::AdvanceCommands() {
++    ++frame_;
++    Frame& next = CurrentFrame();
++    ResetFrame(next);
++    vkResetCommandPool(dev_, next.pool, 0);
++    Begin();
+ }
+ 
+@@ -1902,4 +1933,5 @@
+         LOGE("vulkan: submit %llu%s failed (%d)", (unsigned long long)signal, present ? " (present)" : "", int(r));
+     f.value = signal;
++    gpu_work_ = reports_pending_ = false;
+     if (wait) {
+         ResetFrame(f);
+@@ -3365,8 +3398,4 @@
+     presents_seen_.store(presents_);
+-    frame_++;
+-    Frame& next = CurrentFrame();
+-    ResetFrame(next);
+-    vkResetCommandPool(dev_, next.pool, 0);
+-    Begin();
++    AdvanceCommands();
+     ReleaseOldTextures();
+     fps_n_++;

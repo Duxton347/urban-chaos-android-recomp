@@ -1,0 +1,29 @@
+{
+  "scope": "synthetic context switching only; no game data",
+  "reference": {
+    "engine": "Unicorn",
+    "version": "2.1.4",
+    "result": 42,
+    "scope": "authored synthetic fixture only"
+  },
+  "results": {
+    "legacy": {
+      "exit": 1,
+      "output": "SYNTHETIC_CONTEXT_RESULT=2989 ESP=0001FFF0 ESI=00001357"
+    },
+    "resumable": {
+      "exit": 0,
+      "output": "SYNTHETIC_CONTEXT_RESULT=42 ESP=0001FFF0 ESI=00001357"
+    },
+    "nested_callback": {
+      "exit": 0,
+      "output": "SYNTHETIC_CONTEXT_RESULT=42 ESP=0001FFF0 ESI=00001357"
+    }
+  },
+  "deterministic": true,
+  "default_cpp_unchanged": true,
+  "sdk": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "patches": {
+    "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd"
+  }
+}

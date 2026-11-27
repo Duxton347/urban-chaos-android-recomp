@@ -1,0 +1,10 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -3011,6 +3011,7 @@
+     bool count_visibility = SimpleState(s, kMCountEnable) != 0;
+     visibility_->BeginDraw(count_visibility, (double(bt.w)/size.w)*(double(bt.h)/size.h));
+     if (count_visibility) ++counted_draws_;
++    if (pk.two_sided) urban::progress::two_sided_draws.fetch_add(1, std::memory_order_relaxed);
+     if (a.index_count) {
+         vkCmdBindIndexBuffer(Cb(), ib.buf, ib.off, a.index16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
+         vkCmdDrawIndexed(Cb(), a.index_count, 1, 0, a.base_vertex, 0);

@@ -1,0 +1,356 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -2,8 +2,9 @@
+ // translated shaders are HLSL, which glslang turns into SPIR-V (vk_shader.cpp).
+ #include <vulkan/vulkan.h>
+ 
+-#include <SDL3/SDL.h>
+-#include <SDL3/SDL_vulkan.h>
++#include "research_host.h"
++#include "gpu/vulkan_visibility.h"
++#include "gpu/visibility_report.h"
+ 
+ #include <algorithm>
+ #include <array>
+@@ -21,8 +22,7 @@
+ #include <vector>
+ 
+ #include <dxgiformat.h>
+-#include <imgui.h>
+-#include <backends/imgui_impl_vulkan.h>
++
+ 
+ #include "app/app.h"
+ #include "common/aspect.h"
+@@ -1001,6 +1001,20 @@
+     bool DeliverLate(uint32_t data) override;
+     void RecordLate(uint32_t data) override;
+     void Flush() override { Submit(true, false); }
++    bool SupportsVisibilityReports() const override { return bool(visibility_); }
++    void ClearReport() override { visibility_->Clear(); }
++    void GetReport(uint32_t report) override {
++        visibility_->Report(report, uint64_t(std::chrono::steady_clock::now().time_since_epoch().count()));
++    }
++    void PollReports() {
++        if (!visibility_) return;
++        visibility_->Poll(Completed(), [](const urban::vulkan::VisibilityReport& report) {
++            if (report.address > UINT32_MAX-15 || !mem::IsCommitted(report.address) || !mem::IsCommitted(report.address+15))
++                throw std::runtime_error("UC-VK-003: report mapping is not committed");
++            urban::vulkan::PublishReport({static_cast<uint8_t*>(kernel::HostPtr(report.address)),16},report.timestamp,report.pixels);
++            LOG_FIRST(16,"vulkan: visibility report completed, samples=%u",report.pixels);
++        });
++    }
+     void SetGamma(const uint8_t* ramp) override {
+         std::memcpy(ramp_, ramp, sizeof(ramp_));
+         ramp_dirty_ = true;
+@@ -1008,6 +1022,8 @@
+     void WaitGpuFrame(uint64_t n);
+ 
+ private:
++    std::unique_ptr<urban::vulkan::VisibilityQueries> visibility_;
++    uint32_t counted_draws_ = 0;
+     struct Frame {
+         VkCommandPool pool = VK_NULL_HANDLE;
+         VkCommandBuffer cb = VK_NULL_HANDLE;
+@@ -1244,11 +1260,10 @@
+ bool VulkanBackend::Init(uint32_t width, uint32_t height) {
+     guest_w_ = width;
+     guest_h_ = height;
+-    vkshader::Init(app::ExeDir() / "shadercache");
++    vkshader::Init({});
+     if (!CreateInstance() || !CreateSurface() || !PickDevice() || !CreateDevice()) return false;
+     alloc_.Init(pd_, dev_);
+     if (!CreateLayouts() || !CreateFrames() || !CreateSwapchain() || !CreateFixedImages()) return false;
+-    Begin();
+     ui_ = InitUi();
+     scale_ = app::RenderScale(guest_h_);
+     LOGI("vulkan: %ux%u guest, %ux%u screen, render scale %.3f", width, height, swap_extent_.width,
+@@ -1257,9 +1272,7 @@
+ }
+ 
+ bool VulkanBackend::CreateInstance() {
+-    uint32_t n = 0;
+-    const char* const* sdl = SDL_Vulkan_GetInstanceExtensions(&n);
+-    std::vector<const char*> exts(sdl, sdl + n);
++    std::vector<const char*> exts = {VK_KHR_SURFACE_EXTENSION_NAME, VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME};
+     uint32_t loader = VK_API_VERSION_1_1;
+     vkEnumerateInstanceVersion(&loader);
+     VkApplicationInfo ai{VK_STRUCTURE_TYPE_APPLICATION_INFO};
+@@ -1276,23 +1289,11 @@
+ 
+ // the epoch is taken only once the surface is made: until then each present tries again
+ bool VulkanBackend::CreateSurface() {
+-    uint32_t epoch = host::SurfaceEpoch();
+-    // Android has not handed the window back yet (resuming, or a surface change): wait for it without asking SDL,
+-    // which only fails, and log the outage once, not every present
+-    SDL_PropertiesID props = SDL_GetWindowProperties(host::Window());
+-    if (!SDL_GetPointerProperty(props, SDL_PROP_WINDOW_ANDROID_WINDOW_POINTER, nullptr)) {
+-        if (surface_failures_++ == 0) LOGI("vulkan: waiting for Android's window");
+-        return false;
+-    }
+-    if (!SDL_Vulkan_CreateSurface(host::Window(), instance_, nullptr, &surface_)) {
+-        surface_ = VK_NULL_HANDLE;
+-        if (surface_failures_++ == 0) LOGE("vulkan: no surface: %s", SDL_GetError());
+-        return false;
+-    }
+-    if (surface_failures_) LOGI("vulkan: surface made after %u tries", surface_failures_ + 1);
+-    surface_failures_ = 0;
+-    surface_epoch_ = epoch;
+-    surface_lost_ = false;
++    auto create = reinterpret_cast<PFN_vkCreateHeadlessSurfaceEXT>(vkGetInstanceProcAddr(instance_, "vkCreateHeadlessSurfaceEXT"));
++    if (!create) { LOGE("UC-VK-006: no headless surface extension"); return false; }
++    VkHeadlessSurfaceCreateInfoEXT info{VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT};
++    VK_CHECK(create(instance_, &info, nullptr, &surface_));
++    surface_epoch_ = host::SurfaceEpoch();surface_lost_ = false;
+     return true;
+ }
+ 
+@@ -1380,7 +1381,9 @@
+         LOGR("vulkan: dynamic rendering listed but not supported, using render passes");
+         dynamic_ = false;
+     }
++    if (!f2.features.occlusionQueryPrecise) { LOGE("UC-VK-001: precise occlusion unsupported"); return false; }
+     feats_ = {};
++    feats_.occlusionQueryPrecise = VK_TRUE;
+     feats_.samplerAnisotropy = f2.features.samplerAnisotropy;
+     feats_.fillModeNonSolid = f2.features.fillModeNonSolid;
+     feats_.textureCompressionBC = f2.features.textureCompressionBC;
+@@ -1401,6 +1404,7 @@
+     ci.ppEnabledExtensionNames = dev_exts_.data();
+     VK_CHECK(vkCreateDevice(pd_, &ci, nullptr, &dev_));
+     vkGetDeviceQueue(dev_, qfam_, 0, &queue_);
++    visibility_ = std::make_unique<urban::vulkan::VisibilityQueries>(dev_, true);
+     bool core13 = api_ >= VK_API_VERSION_1_3, core12 = api_ >= VK_API_VERSION_1_2;
+     begin_rendering_ = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(
+         vkGetDeviceProcAddr(dev_, core13 ? "vkCmdBeginRendering" : "vkCmdBeginRenderingKHR"));
+@@ -1565,8 +1569,7 @@
+     VK_CHECK(vkCreatePipelineLayout(dev_, &pi, nullptr, &layout_));
+     // pipelines from earlier runs: building them is what stutters on a phone
+     std::vector<char> blob;
+-    std::ifstream f(app::ExeDir() / "shadercache" / "pipelines.bin", std::ios::binary);
+-    if (f) blob.assign(std::istreambuf_iterator<char>(f), {});
++    // Qualification does not trust or publish driver pipeline cache data.
+     VkPipelineCacheCreateInfo ci{VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO};
+     ci.initialDataSize = blob.size();
+     ci.pInitialData = blob.data();
+@@ -1631,39 +1634,12 @@
+     for (int i = 0; i < 768; i++) ramp_[i] = uint8_t(i & 255);
+     UploadGammaRamp();
+     Submit(true, false);
+-    // Submit(true) began the next recording; Init begins once more
+-    vkEndCommandBuffer(Cb());
+-    vkResetCommandPool(dev_, CurrentFrame().pool, 0);
++    // Submit(true) already began the next recording, including its query reset.
+     return true;
+ }
+ 
+ bool VulkanBackend::InitUi() {
+-    VkDescriptorPoolSize ps{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 16};
+-    VkDescriptorPoolCreateInfo pi{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
+-    pi.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+-    pi.maxSets = 16;
+-    pi.poolSizeCount = 1;
+-    pi.pPoolSizes = &ps;
+-    if (vkCreateDescriptorPool(dev_, &pi, nullptr, &ui_pool_) != VK_SUCCESS) return false;
+-    std::lock_guard lock(app::UiLock());
+-    if (!ImGui::GetCurrentContext()) return false;
+-    ImGui_ImplVulkan_InitInfo ii{};
+-    ii.Instance = instance_;
+-    ii.PhysicalDevice = pd_;
+-    ii.Device = dev_;
+-    ii.QueueFamily = qfam_;
+-    ii.Queue = queue_;
+-    ii.DescriptorPool = ui_pool_;
+-    ii.MinImageCount = 2;
+-    ii.ImageCount = uint32_t(std::max<size_t>(swap_images_.size(), 2));
+-    ii.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+-    ii.UseDynamicRendering = dynamic_;
+-    ii.PipelineRenderingCreateInfo = {VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR};
+-    ii.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
+-    ii.PipelineRenderingCreateInfo.pColorAttachmentFormats = &swap_fmt_;
+-    if (!dynamic_) ii.RenderPass = Pass(swap_fmt_, VK_FORMAT_UNDEFINED);
+-    ImGui::GetIO().BackendRendererName = "vulkan";
+-    return ImGui_ImplVulkan_Init(&ii);
++    return false; // Only the host overlay is omitted; original guest HUD draws remain.
+ }
+ 
+ // ---- memory and objects
+@@ -1783,7 +1759,11 @@
+ void VulkanBackend::Begin() {
+     VkCommandBufferBeginInfo bi{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+     bi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+-    vkBeginCommandBuffer(Cb(), &bi);
++    if (vkBeginCommandBuffer(Cb(), &bi) != VK_SUCCESS) throw std::runtime_error("UC-VK-004: begin commands failed");
++    if (value_ >= 3) WaitValue(value_-2);
++    PollReports();
++    visibility_->BeginCommands(Cb(), value_+1);
++    counted_draws_ = 0;
+     rendering_ = false;
+     rend_color_ = rend_depth_ = nullptr;
+ }
+@@ -1848,6 +1828,7 @@
+ // the frame's garbage freed and its pools reset, once the GPU is past it
+ void VulkanBackend::ResetFrame(Frame& f) {
+     WaitValue(f.value);
++    PollReports();
+     for (Image& im : f.images) Destroy(im);
+     for (Buffer& b : f.buffers) Destroy(b);
+     f.images.clear();
+@@ -1862,6 +1843,7 @@
+ void VulkanBackend::Submit(bool wait, bool present) {
+     EndRender();
+     Frame& f = CurrentFrame();
++    visibility_->SealCommands();
+     vkEndCommandBuffer(f.cb);
+     uint64_t signal = ++value_;
+     // without the timeline only the present semaphore is signalled, and a fence tells when the GPU is past
+@@ -2829,15 +2811,19 @@
+ }
+ 
+ void VulkanBackend::Draw(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices) {
+-    if (DepthCopy(s)) return;
++    const bool counted = SimpleState(s, kMCountEnable) != 0;
++    if (!count) return;
++    if (!counted && DepthCopy(s)) return;
+     Assembled& a = asm_;
+-    if (!Assemble(s, prim, start, count, indices, a)) return;
++    if (!Assemble(s, prim, start, count, indices, a)) { if(counted) throw std::runtime_error("UC-VK-008: counted geometry unsupported"); return; }
+ 
+     // the targets, CPU writes to them first
+     Target* rt = EnsureTarget(s.rt, false);
+     Target* ds = s.rs[kRsZEnable] || s.rs[kRsStencilEnable] ? EnsureTarget(s.zs, true) : nullptr;
++    if (counted && ((s.rs[kRsZEnable] && !ds) || (rt && ds && (rt->w != ds->w || rt->h != ds->h)))) throw std::runtime_error("UC-VK-008: counted depth target unavailable or mismatched");
+     if (rt && ds && (rt->w != ds->w || rt->h != ds->h)) ds = nullptr;
+-    if (!rt && !ds) return;
++    if (!rt && !ds) { if(counted) throw std::runtime_error("UC-VK-008: counted target unavailable"); return; }
++    if (counted_draws_ >= 4096) Submit(true, false);
+     if (rt && LatchCpuWrite(*rt)) UploadTarget(*rt, s.rt);
+     draw_rt_ = rt;
+     draw_ds_ = ds;
+@@ -2848,17 +2834,17 @@
+     EnsureVertexShader(s, a, sh);
+ 
+     DrawTextures stages;
+-    if (!BindStageTextures(s, stages) || !draw_rt_ && !draw_ds_) return;
++    if (!BindStageTextures(s, stages) || (!draw_rt_ && !draw_ds_)) { if(counted) throw std::runtime_error("UC-VK-008: counted textures unavailable"); return; }
+     if (!game::Opt().bloom && GlowComposite(s, stages)) return;
+     PixelKey pk = MakePixelKey(s, stages.info);
+     sh.pkey = Hash(&pk, sizeof(pk));
+     EnsurePixelShader(pk, sh);
+-    if (!sh.vs || !sh.ps) return;
++    if (!sh.vs || !sh.ps) { if(counted) throw std::runtime_error("UC-VK-008: counted shader unavailable"); return; }
+ 
+     PsoKey k;
+     BuildPipelineKey(s, a, sh, k);
+     VkPipeline pipe = EnsurePipeline(k, sh.vs, sh.ps);
+-    if (!pipe) return;
++    if (!pipe) { if(counted) throw std::runtime_error("UC-VK-008: counted pipeline unavailable"); return; }
+ 
+     // everything uploaded before the rendering: a full ring flushes
+     VkDeviceSize need = 2 * kUboRange + 1024;
+@@ -2923,12 +2909,16 @@
+     vkCmdSetBlendConstants(Cb(), bf);
+     vkCmdSetStencilReference(Cb(), VK_STENCIL_FACE_FRONT_AND_BACK, SimpleState(s, kMStencilRef) & 0xFF);
+     if (a.buffer_count) vkCmdBindVertexBuffers(Cb(), 0, a.buffer_count, vbufs, voffs);
++    bool count_visibility = SimpleState(s, kMCountEnable) != 0;
++    visibility_->BeginDraw(count_visibility, (double(bt.w)/size.w)*(double(bt.h)/size.h));
++    if (count_visibility) ++counted_draws_;
+     if (a.index_count) {
+         vkCmdBindIndexBuffer(Cb(), ib.buf, ib.off, a.index16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
+         vkCmdDrawIndexed(Cb(), a.index_count, 1, 0, a.base_vertex, 0);
+     } else {
+         vkCmdDraw(Cb(), a.draw_count, 1, 0, 0);
+     }
++    visibility_->EndDraw();
+ }
+ 
+ VkRect2D ScaledRect(const Target& t, int x0, int y0, int x1, int y1) {
+@@ -3254,15 +3244,7 @@
+ }
+ 
+ void VulkanBackend::RenderUi() {
+-    if (!ui_) return;
+-    std::lock_guard lock(app::UiLock());
+-    ImGui_ImplVulkan_NewFrame();
+-    ui::NewFrame(float(swap_extent_.width), float(swap_extent_.height));
+-    ImGui::NewFrame();
+-    if (app::kGame.ui) app::kGame.ui(fps_);
+-    touch::Draw();
+-    ImGui::Render();
+-    ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), Cb());
++    // No ImGui host overlay in cloud research.
+ }
+ 
+ void VulkanBackend::UploadGammaRamp() {
+@@ -3286,25 +3268,7 @@
+ 
+ // the touch controls' skins as an ImGui texture; without them the controls keep their drawn icons
+ void VulkanBackend::UploadSkin() {
+-    skin_tried_ = true;
+-    std::vector<uint8_t> rgba;
+-    uint32_t w = 0, h = 0;
+-    if (!ui_ || !touch::LoadSkin(rgba, w, h)) return;
+-    constexpr VkImageUsageFlags kSampled = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+-    if (!CreateImage(skin_, VK_FORMAT_R8G8B8A8_UNORM, w, h, 1, 1, 1, kSampled, VK_IMAGE_VIEW_TYPE_2D)) return;
+-    Alloc a = Upload(rgba.size(), 16);
+-    if (!a.cpu) {
+-        Destroy(skin_);
+-        return;
+-    }
+-    std::memcpy(a.cpu, rgba.data(), rgba.size());
+-    Transition(skin_, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+-    VkBufferImageCopy c{a.off, 0, 0, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1}, {0, 0, 0}, {w, h, 1}};
+-    vkCmdCopyBufferToImage(Cb(), a.buf, skin_.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &c);
+-    Transition(skin_, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+-    std::lock_guard lock(app::UiLock());
+-    VkDescriptorSet set = ImGui_ImplVulkan_AddTexture(linear_, skin_.view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+-    touch::SetSkinTexture(uint64_t(reinterpret_cast<uintptr_t>(set)));
++    skin_tried_ = true; // No Black touch assets are loaded.
+ }
+ 
+ void VulkanBackend::ReleaseOldTextures() {
+@@ -3337,19 +3301,7 @@
+ }
+ 
+ void VulkanBackend::SavePipelineCache() {
+-    size_t size = 0;
+-    if (vkGetPipelineCacheData(dev_, cache_, &size, nullptr) != VK_SUCCESS || size == cache_saved_) return;
+-    std::vector<char> blob(size);
+-    if (vkGetPipelineCacheData(dev_, cache_, &size, blob.data()) != VK_SUCCESS) return;
+-    std::filesystem::path p = app::ExeDir() / "shadercache" / "pipelines.bin", tmp = p;
+-    tmp += ".tmp";
+-    {
+-        std::ofstream f(tmp, std::ios::binary);
+-        f.write(blob.data(), std::streamsize(size));
+-    }
+-    std::error_code ec;
+-    std::filesystem::rename(tmp, p, ec);
+-    cache_saved_ = size;
++    // Driver caches remain disabled during qualification.
+ }
+ 
+ void VulkanBackend::Present(const Surface& front) {
+@@ -3357,6 +3309,15 @@
+     if (t && LatchCpuWrite(*t)) UploadTarget(*t, front);
+     if (ramp_dirty_) UploadGammaRamp();
+     if (!skin_tried_) UploadSkin();
++    if (t && host::CaptureDue(presents_)) {
++        Image down;
++        Image* source = CopySource(*t, down);
++        std::vector<uint8_t> pixels;
++        if (!source || !ReadBack(*source, t->gw, t->gh, pixels)) throw std::runtime_error("UC-VK-004: capture readback failed");
++        Destroy(down);
++        host::Capture(pixels, t->gw, t->gh, presents_);
++    }
++    if (presents_ % 60 == 0) LOGI("renderer: frame %llu (Vulkan headless)", (unsigned long long)presents_);
+     uint32_t index = 0;
+     bool shown = AcquireImage(index);
+     if (shown) {
+@@ -3377,6 +3338,7 @@
+         if (r == VK_ERROR_SURFACE_LOST_KHR) surface_lost_ = true;
+     }
+     presents_++;
++    host::Presented(presents_);
+     presents_seen_.store(presents_);
+     frame_++;
+     Frame& next = CurrentFrame();

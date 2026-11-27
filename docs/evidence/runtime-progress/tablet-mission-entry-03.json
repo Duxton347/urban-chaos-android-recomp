@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source_report_sha256": "d8697a15751b0c313b58db4a97eb05fb5497f827bde16084c3c2af8af59d57f6",
+  "source_build": "experimental-40f8853d42ba3884",
+  "owner_reports_mission_entry": true,
+  "playable_mission_verified": false,
+  "campaign_verified": false,
+  "tablet_test_of_04": false,
+  "last_io": {
+    "reads": 1873,
+    "bytes": 165687264,
+    "short_reads": 37,
+    "inflight": 0,
+    "total_us": 322218,
+    "max_us": 4191,
+    "stream_empty_blocks": 2325,
+    "thread_slots_dropped": 0
+  },
+  "last_audio_callback_timing": {
+    "callbacks": 28521,
+    "render_us": 11503868,
+    "max_render_us": 1935,
+    "slow_blocks": 0,
+    "limited": 0
+  },
+  "last_touch_delivery": {
+    "presses": 100,
+    "delivered": 100,
+    "total_us": 2723099,
+    "max_us": 1663000
+  },
+  "last_presentation_interval": {
+    "from_frame": 18120,
+    "to_frame": 18180,
+    "elapsed_ms": 51510,
+    "presentations_per_second": 1.165
+  },
+  "visibility_reports": 16,
+  "first_visibility_elapsed_ms": 470186,
+  "runtime_error_events": 0
+}

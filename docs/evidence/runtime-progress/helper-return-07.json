@@ -1,0 +1,15 @@
+{
+  "baseline_exceptions_at_first_snapshot": 105816,
+  "optimized_exceptions_at_first_snapshot": 2174,
+  "baseline_helper_exceptions_at_first_snapshot": 103789,
+  "optimized_helper_exceptions_at_first_snapshot": 0,
+  "instrumented": true,
+  "fps_benchmark": false,
+  "reproduced_archive_sha256": "35e2fbf9a5e06ad347ebbf1a1301733d480e7d7656301fe56619a2d5b7e0a974",
+  "game_run_seconds": 180.039,
+  "last_present": 1800,
+  "native_fatal_observed": false,
+  "missing_requests": 0,
+  "mission_playable_verified": false,
+  "concurrent_build_load": true
+}

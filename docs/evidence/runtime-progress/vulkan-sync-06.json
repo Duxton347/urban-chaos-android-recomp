@@ -1,0 +1,26 @@
+{
+  "software_vulkan_only": true,
+  "single_bounded_comparison": true,
+  "same_guest_archive": true,
+  "baseline_wait_metric_at_110s": {
+    "operation": 0,
+    "calls": 49740,
+    "total_us": 32015542,
+    "max_us": 340425
+  },
+  "candidate_wait_metric_at_110s": {
+    "operation": 0,
+    "calls": 5547,
+    "total_us": 28701087,
+    "max_us": 752449
+  },
+  "candidate_sync_at_110s": {
+    "visibility_polls": 63189,
+    "visibility_submits": 81,
+    "idle_flushes": 0,
+    "same_present_texture_updates": 0
+  },
+  "overall_game_fps_gain_demonstrated": false,
+  "tablet_06_tested": false,
+  "note": "Candidate comparison preceded the final command-stream-ordering patch; final build has a separate acceptance run."
+}

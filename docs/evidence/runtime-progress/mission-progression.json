@@ -1,0 +1,31 @@
+{
+  "scope": "Private clean Linux research run; not a mission completion or Android benchmark",
+  "host_sha256": "8afad4ce57e3dcdb1fdfd001cb172999c72d85b6dc05e7f569bd247a8f57df57",
+  "pad_script_sha256": "f1fe5cbbdf71251fe71eb50df552e1577c823cc38a9c2216b98db3f79dbfa7b3",
+  "result": {
+    "timeout_seconds": 600,
+    "elapsed_seconds": 600.027,
+    "exit_code": -15,
+    "timed_out": true,
+    "last_present_counter": 1920,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 8,
+    "exception_recorded": false
+  },
+  "visual_inspection": {
+    "frame_1800": "Opening scene, Hope Street Police Station",
+    "frame_1920": "Original PAUSED: HOPE STREET menu, Return To Game / Restart Mission / Options / Objectives / Quit",
+    "capture_1920_sha256": "28f6cc61edee111794c98e2e6dc61dd8a8d7edd3451ff72f2b5d0c08a5d59a4a"
+  },
+  "input_observed": [
+    "START pause during the opening scene"
+  ],
+  "scheduled_but_not_reached": [
+    "left-stick movement at frame 2280",
+    "right trigger at frame 2400"
+  ],
+  "gameplay_validated": false,
+  "audible_music_validated": false,
+  "checkpoint_validated": false,
+  "android_validated": false
+}

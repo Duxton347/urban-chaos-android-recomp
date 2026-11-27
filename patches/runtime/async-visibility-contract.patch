@@ -1,0 +1,7 @@
+--- a/runtime/gpu/backend.h
++++ b/runtime/gpu/backend.h
+@@ -39,2 +39,4 @@
+     virtual void SetGamma(const uint8_t* ramp /*3 x 256*/) = 0;
++    // Poll/submit actual visibility work. Other backends retain their synchronous contract.
++    virtual void FlushVisibilityReports() { Flush(); }
+     // visibility tests: draws count passing pixels while simple[kMCountEnable / 4] is set, ClearReport zeroes the

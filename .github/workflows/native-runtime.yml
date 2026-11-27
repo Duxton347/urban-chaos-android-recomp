@@ -1,0 +1,41 @@
+name: Native tools and recompilation smoke
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      attempt_game_build:
+        description: 'Require the real game gate (currently fails with BLOCKED)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            vendor
+            .toolchain/downloads
+            .toolchain/cmake
+          key: native-${{ runner.os }}-${{ hashFiles('dependencies.lock.json') }}
+      - run: python3 scripts/ci_bootstrap.py --component host
+      - run: scripts/build_host.sh
+      - run: python3 scripts/native_smoke.py
+      - run: scripts/build_pc_runtime_core.sh
+      - run: python3 scripts/build_runtime_probes.py
+      - run: python3 scripts/build_source_probes.py
+      - run: python3 scripts/build_sdl_audio.py
+      - run: python3 scripts/build_context_tools.py
+      - run: python3 scripts/context_smoke.py
+      - run: python3 scripts/runtime_gate.py >> "$GITHUB_STEP_SUMMARY"
+      - name: Require original game build when explicitly requested
+        if: ${{ inputs.attempt_game_build == true }}
+        run: python3 scripts/runtime_gate.py --require-game

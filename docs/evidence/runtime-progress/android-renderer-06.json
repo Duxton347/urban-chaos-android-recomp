@@ -1,0 +1,29 @@
+{
+  "build_id": "experimental-bef2a30e191f2ccc",
+  "apk_bytes": 28252088,
+  "apk_sha256": "b91a03bd8db270f5b0870b4cd25e3f5d615464411df5fdff86d25b5a9a2d0411",
+  "native_library_sha256": "2af0e5ef354f959aa2b72266505e7a36c38c2cd5ea92f944c692b98cc9f16fec",
+  "private_locale_pack_sha256": "a548223b6aff8cfba67ad9f686b9a531f623826eeceebca5440c0b7f2d44b9cc",
+  "version": "0.6-experimental",
+  "version_code": 6,
+  "signature_matches_05": true,
+  "android_device_tested": false,
+  "mission_playable_verified": false,
+  "public_upload_authorized": false,
+  "original_disc_assets_bundled": false,
+  "transport_verified": true,
+  "parts": [
+    {
+      "name": "UrbanChaos-v06.zip.001",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v06.zip.002",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v06.zip.003",
+      "bytes": 9252238
+    }
+  ]
+}

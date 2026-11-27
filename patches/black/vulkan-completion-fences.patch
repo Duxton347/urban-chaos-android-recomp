@@ -1,0 +1,36 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -1004,4 +1004,8 @@
+     void Flush() override;
+     void FlushVisibilityReports() override;
++    uint32_t Fence() override;
++    bool FencePending(uint32_t fence) override;
++    void WaitFence(uint32_t fence) override;
++    bool DeviceBusy() override;
+     bool SupportsVisibilityReports() const override { return bool(visibility_); }
+     void ClearReport() override { visibility_->Clear(); }
+@@ -1842,4 +1846,24 @@
+     urban::progress::visibility_submits.fetch_add(1, std::memory_order_relaxed);
+     AdvanceCommands();
++}
++
++uint32_t VulkanBackend::Fence() {
++    if (gpu_work_ || reports_pending_) { Submit(false, false); AdvanceCommands(); }
++    if (value_ > UINT32_MAX) throw std::runtime_error("UC-VK-003: fence serial exceeds guest range");
++    return uint32_t(value_);
++}
++bool VulkanBackend::FencePending(uint32_t fence) {
++    if (fence > value_) throw std::runtime_error("UC-VK-003: unknown GPU fence");
++    return Completed() < fence;
++}
++void VulkanBackend::WaitFence(uint32_t fence) {
++    if (fence > value_) throw std::runtime_error("UC-VK-003: unknown GPU fence");
++    WaitValue(fence);
++    PollReports();
++}
++bool VulkanBackend::DeviceBusy() {
++    if (gpu_work_ || reports_pending_) { Submit(false, false); AdvanceCommands(); }
++    PollReports();
++    return Completed() < value_;
+ }
+ 

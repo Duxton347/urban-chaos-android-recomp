@@ -1,0 +1,43 @@
+--- a/runtime/xdk/d3d8.cpp
++++ b/runtime/xdk/d3d8.cpp
+@@ -480,23 +480,34 @@
+     return 0;
+ }
+ 
++// Returned views require the retail public retain operation, including parent ownership.
++static uint32_t KeepSurfaceAlive(X86Context& ctx, uint32_t surface) {
++    if (!surface) return 0;
++#if HAS_D3D_PublicAddRef
++    GUEST_CALL(D3D_PublicAddRef, ctx, {surface});
++#else
++    x86_trap(ctx, R32(ctx.esp), "public resource retain API is required");
++#endif
++    return surface;
++}
++
+ HLE_STDCALL(D3DDevice_GetBackBuffer2, 1) {
++    std::lock_guard<std::recursive_mutex> guard(g_lock);
+     int32_t i = int32_t(a[0]);
+     uint32_t s = i < 0 ? g_buffers[0] : g_buffers[std::min<uint32_t>(uint32_t(i) + 1, g_buffer_count - 1)];
+-    W32(s, R32(s) + 1);
+-    return s;
++    return KeepSurfaceAlive(ctx, s);
+ }
+ 
+ HLE_STDCALL(D3DDevice_GetRenderTarget2, 0) {
++    std::lock_guard<std::recursive_mutex> guard(g_lock);
+     uint32_t s = Dev(kDevRenderTarget);
+-    if (s) W32(s, R32(s) + 1);
+-    return s;
++    return KeepSurfaceAlive(ctx, s);
+ }
+ 
+ HLE_STDCALL(D3DDevice_GetDepthStencilSurface2, 0) {
++    std::lock_guard<std::recursive_mutex> guard(g_lock);
+     uint32_t s = Dev(kDevDepth);
+-    if (s) W32(s, R32(s) + 1);
+-    return s;
++    return KeepSurfaceAlive(ctx, s);
+ }
+ 
+ namespace {

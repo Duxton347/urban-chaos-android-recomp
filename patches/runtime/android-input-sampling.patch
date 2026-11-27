@@ -1,0 +1,25 @@
+--- a/runtime/xdk/xapi.cpp
++++ b/runtime/xdk/xapi.cpp
+@@ -5,6 +5,10 @@
+ #include "xdk/hle.h"
+ #include "xdk/layout.h"
+ 
++// Port discovery must not consume touch edges intended for XInputGetState.
++#ifdef __ANDROID__
++namespace input { bool Connected(int port); }
++#endif
+ using namespace kernel;
+ 
+ namespace {
+@@ -20,7 +24,11 @@
+     std::lock_guard<std::mutex> lock(g_ports_lock);
+     uint32_t cur = 0;
+     for (int p = 0; p < 4; p++)
++#ifdef __ANDROID__
++        if (input::Connected(p)) cur |= 1u << p;
++#else
+         if (input::Poll(p).connected) cur |= 1u << p;
++#endif
+     uint32_t old = R32(kGamepadType + XDK_XPP_Current);
+     if (cur != old) {
+         W32(kGamepadType + XDK_XPP_Changed, R32(kGamepadType + XDK_XPP_Changed) | (cur ^ old));

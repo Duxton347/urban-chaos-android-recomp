@@ -1,0 +1,114 @@
+--- a/runtime/kernel/disc.h
++++ b/runtime/kernel/disc.h
+@@ -40,6 +40,9 @@
+ 
+     intptr_t file_ = -1;  // HANDLE or fd
+     std::filesystem::path path_;
++    uint64_t file_size_ = 0, table_bytes_ = 0;
++    size_t entry_count_ = 0;
++    std::vector<uint64_t> active_dirs_;
+     uint64_t base_ = 0;  // the game partition
+     uint64_t time_ = 0;
+     Entry root_;
+--- a/runtime/kernel/disc.cpp
++++ b/runtime/kernel/disc.cpp
+@@ -15,6 +15,7 @@
+ #else
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <sys/stat.h>
+ #endif
+ 
+ namespace kernel {
+@@ -60,6 +61,7 @@
+ 
+ // each read carries its own position, so threads reading at once do not queue on one handle
+ uint32_t Disc::ReadAt(uint64_t at, void* out, uint32_t len) const {
++    if (at > file_size_ || uint64_t(len) > file_size_ - at) return 0;
+ #ifdef _WIN32
+     thread_local HANDLE event = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+     OVERLAPPED o{};
+@@ -77,16 +79,26 @@
+ }
+ 
+ bool Disc::Open(const std::filesystem::path& path, std::string& error) {
++    if (file_ != -1) { error = "disc is already open"; return false; }
+     path_ = path;
+ #ifdef _WIN32
+     file_ = intptr_t(CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr));
+ #else
+-    file_ = open(path.c_str(), O_RDONLY);
++    file_ = open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+ #endif
+     if (file_ == -1) {
+         error = "cannot open the file";
+         return false;
+     }
++#ifdef _WIN32
++    LARGE_INTEGER bytes;
++    if (!GetFileSizeEx(HANDLE(file_), &bytes) || bytes.QuadPart < 0) { error = "cannot size the image"; return false; }
++    file_size_ = uint64_t(bytes.QuadPart);
++#else
++    struct stat st{};
++    if (fstat(int(file_), &st) || !S_ISREG(st.st_mode) || st.st_size < 0) { error = "image must be a regular file"; return false; }
++    file_size_ = uint64_t(st.st_size);
++#endif
+     for (uint64_t base : kPartitions) {
+         uint8_t volume[kSector];
+         if (ReadAt(base + kVolume, volume, kSector) != kSector || std::memcmp(volume, kMagic, kMagicSize) != 0 ||
+@@ -109,33 +121,48 @@
+ }
+ 
+ bool Disc::ReadDir(Entry& dir, int depth) {
++    if (dir.offset > file_size_ || uint64_t(dir.size) > file_size_ - dir.offset) return false;
+     if (!dir.size) return true;
+-    if (depth > 32 || dir.size > kMaxTable) return false;
++    if (depth > 32 || dir.size > kMaxTable || table_bytes_ + dir.size > (64u << 20)) return false;
++    if (std::find(active_dirs_.begin(), active_dirs_.end(), dir.offset) != active_dirs_.end()) return false;
++    active_dirs_.push_back(dir.offset);
++    struct Pop { std::vector<uint64_t>& stack; ~Pop() { stack.pop_back(); } } pop{active_dirs_};
++    table_bytes_ += dir.size;
+     std::vector<uint8_t> table(dir.size);
+     if (ReadAt(dir.offset, table.data(), dir.size) != dir.size) return false;
+-    std::vector<bool> seen(dir.size / 4 + 1);
++    if (std::all_of(table.begin(), table.end(), [](uint8_t b) { return b == 0xFF; })) return true;
++    std::vector<bool> seen(dir.size / 4 + 1), occupied(dir.size);
+     std::vector<uint32_t> todo{0};
+     while (!todo.empty()) {
+         uint32_t at = todo.back();
+         todo.pop_back();
+-        if (at + kEntryHead > dir.size || seen[at / 4]) continue;
++        if (at + kEntryHead > dir.size || seen[at / 4]) return false;
+         seen[at / 4] = true;
+         uint16_t left, right;
+         uint32_t sector, size;
+         std::memcpy(&left, &table[at], 2);
+         std::memcpy(&right, &table[at + 2], 2);
+-        if (left == 0xFFFF) continue;
++        if (left == 0xFFFF) return false;
+         std::memcpy(&sector, &table[at + 4], 4);
+         std::memcpy(&size, &table[at + 8], 4);
+         uint8_t attributes = table[at + 0xC], length = table[at + 0xD];
+-        if (at + kEntryHead + length > dir.size) continue;
++        if (!length || at + kEntryHead + length > dir.size) return false;
++        for (uint32_t i = at; i < at + kEntryHead + length; ++i) {
++            if (occupied[i]) return false;
++            occupied[i] = true;
++        }
++        std::string name(reinterpret_cast<const char*>(&table[at + kEntryHead]), length);
++        if (name == "." || name == ".." || name.find_first_of("/\\:\0", 0, 4) != std::string::npos) return false;
++        uint64_t offset = base_ + uint64_t(sector) * kSector;
++        if (offset > file_size_ || uint64_t(size) > file_size_ - offset || ++entry_count_ > 200000) return false;
+         if (left) todo.push_back(uint32_t(left) * 4);
+         if (right) todo.push_back(uint32_t(right) * 4);
+-        dir.children.push_back({std::string(reinterpret_cast<const char*>(&table[at + kEntryHead]), length),
+-                                base_ + uint64_t(sector) * kSector, size, (attributes & kFolder) != 0, {}});
++        dir.children.push_back({std::move(name), offset, size, (attributes & kFolder) != 0, {}});
+     }
+     std::sort(dir.children.begin(), dir.children.end(),
+               [](const Entry& a, const Entry& b) { return Upper(a.name) < Upper(b.name); });
++    for (size_t i = 1; i < dir.children.size(); ++i)
++        if (SameName(dir.children[i - 1].name, dir.children[i].name)) return false;
+     for (Entry& child : dir.children)
+         if (child.dir && !ReadDir(child, depth + 1)) return false;
+     return true;

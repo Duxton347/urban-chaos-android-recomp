@@ -1,0 +1,229 @@
+--- a/runtime/xdk/d3d8.cpp
++++ b/runtime/xdk/d3d8.cpp
+@@ -419,6 +419,15 @@
+     LOG_FIRST(16, "d3d: MakeRequestedSpace from %08X", R32(ctx.esp));
+     std::lock_guard<std::recursive_mutex> lock(g_lock);
+     return ScratchPush();
++}
++
++// Flush actual pending report commands before the original result reader checks its slot.
++HLE_WRAP(D3DDevice_GetVisibilityTestResult, 3) {
++    std::lock_guard<std::recursive_mutex> lock(g_lock);
++    if(!g_backend || !g_backend->SupportsVisibilityReports())
++        x86_trap(ctx,SYM(D3DDevice_GetVisibilityTestResult),"backend does not support visibility reports");
++    Walk(Dev(kDevPush));
++    g_backend->FlushVisibilityReports();
+ }
+
+ HLE_STDCALL(D3DDevice_BlockUntilVerticalBlank, 0) {
+--- a/runtime/gpu/backend.h
++++ b/runtime/gpu/backend.h
+@@ -39,6 +39,7 @@
+     virtual void SetGamma(const uint8_t* ramp /*3 x 256*/) = 0;
+     // visibility tests: draws count passing pixels while simple[kMCountEnable / 4] is set, ClearReport zeroes the
+     // count, GetReport writes it to a 16 byte report once the GPU is past those draws; without them it stays pending
++    virtual bool SupportsVisibilityReports() const { return false; }
+     virtual void ClearReport() {}
+     virtual void GetReport(uint32_t /*report*/) {}
+
+--- a/runtime/gpu/render_thread.cpp
++++ b/runtime/gpu/render_thread.cpp
+@@ -212,6 +212,7 @@
+         cur_->cmds.push_back(c);
+     }
+
++    bool SupportsVisibilityReports() const override { return inner_->SupportsVisibilityReports(); }
+     void ClearReport() override { cur_->cmds.push_back(Cmd{Op::ClearReport}); }
+     void GetReport(uint32_t report) override {
+         Cmd c{Op::GetReport};
+--- a/runtime/gpu/d3d12.cpp
++++ b/runtime/gpu/d3d12.cpp
+@@ -417,6 +417,7 @@
+     void RecordLate(uint32_t data) override;
+     void Flush() override;
+     void SetGamma(const uint8_t* ramp) override;
++    bool SupportsVisibilityReports() const override { return true; }
+     void ClearReport() override { counted_.clear(); }
+     // done once the list being recorded, the next fence value, has run
+     void GetReport(uint32_t report) override { reports_.push_back({report, counted_, fence_value_ + 1}); }
+--- a/harness/reference_renderer.h
++++ b/harness/reference_renderer.h
+@@ -7,6 +7,8 @@
+ // can be looked at without a GPU. Follows the same decoding of the XDK state as the SDK's shader translator.
+ namespace reference {
+
++void ClearReport();
++uint32_t ReportCount();
+ void BeginFrame();  // drops decoded textures and restarts the draw count
+ void Clear(const gpu::State& s, uint32_t count, const uint8_t* rects, uint32_t flags, uint32_t color, float z, uint32_t stencil);
+ void Copy(const gpu::Surface& src, const gpu::Surface& dst, uint32_t count, uint32_t rects_va, uint32_t points_va);
+--- a/harness/reference_renderer.cpp
++++ b/harness/reference_renderer.cpp
+@@ -13,6 +13,7 @@
+ #include <map>
+ #include <memory>
+ #include <vector>
++#include <stdexcept>
+
+ #include "core/log.h"
+ #include "gpu/shaders.h"
+@@ -987,6 +988,10 @@
+
+ }  // namespace
+
++static uint32_t g_report_count = 0;
++void ClearReport() { g_report_count = 0; }
++uint32_t ReportCount() { return g_report_count; }
++
+ void BeginFrame() {
+     g_images.clear();
+     g_draws = 0;
+@@ -1061,7 +1066,10 @@
+ void Draw(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices) {
+     uint32_t draw = g_draws++;
+     Assembled as;
+-    if (!Assemble(s, prim, start, count, indices, as) || as.topology != Topology::Triangles) return;
++    if (!Assemble(s, prim, start, count, indices, as) || as.topology != Topology::Triangles) {
++        if(s.simple[kMCountEnable >> 2]) throw std::runtime_error("reference visibility requires supported triangle assembly");
++        return;
++    }
+     Plane rt = OpenPlane(s.rt);
+     Plane zs = s.rs[kRsZEnable] || s.rs[kRsStencilEnable] ? OpenPlane(s.zs) : Plane{};
+     if (!rt.ok && !zs.ok) return;
+@@ -1184,6 +1192,11 @@
+     bottom = std::min(bottom, int(gh));
+     const Probes& probes = Watch();
+     bool watched = probes.Watched(rt);
++    bool shader_can_kill = mat.key.alphakill != 0;
++    if(mat.key.programmable) for(unsigned stage=0;stage<4;stage++)
++        shader_can_kill |= ((mat.key.tex_modes>>(stage*5))&31)==5; // clip-plane texture mode
++    // Color shading cannot affect depth/count when neither alpha nor texture clip can reject a sample.
++    const bool depth_only = !cmask && !atest && !shader_can_kill && !watched;
+
+     const float near_w = 1e-6f;
+     for (size_t ti = 0; ti + 2 < as.indices.size(); ti += 3) {
+@@ -1244,23 +1257,25 @@
+                     if (b0 < 0 || b1 < 0 || b2 < 0) continue;
+                     float z = b0 * p0.z + b1 * p1.z + b2 * p2.z;
+                     if (z < 0 || z > s.zscale) continue;
+-                    float iw = b0 * p0.iw + b1 * p1.iw + b2 * p2.iw;
+-                    Vec attr[kAttrs];
+-                    for (int a = 0; a < kAttrs; a++)
+-                        for (int j = 0; j < 4; j++) attr[a][j] = (b0 * p0.attr[a][j] + b1 * p1.attr[a][j] + b2 * p2.attr[a][j]) / iw;
+-                    if (flat) std::copy(flat_colour, flat_colour + 4, attr);
+-                    Fragment frag;
+-                    bool back = two_sided && !front;
+-                    frag.v0 = attr[back ? kB0 : kD0];
+-                    frag.v1 = attr[back ? kB1 : kD1];
+-                    frag.fog = Unpack(s.rs[kRsFogColor]);
+-                    frag.fog[3] = Sat(attr[kFog][0]);
+-                    for (int t = 0; t < 4; t++) frag.tc[t] = attr[kT0 + t];
+-                    g_trace.on = watched && x == probes.trace.x && y == probes.trace.y;
+                     Vec col;
+-                    bool keep = mat.key.programmable ? Combiners{mat, frag}.Shade(col) : ShadeStages(mat, frag, col);
+-                    if (!keep) continue;
+-                    if (atest && !Passes(afunc, uint32_t(int(std::lround(Sat(col[3]) * 255))), aref)) continue;
++                    if(!depth_only) {
++                        float iw = b0 * p0.iw + b1 * p1.iw + b2 * p2.iw;
++                        Vec attr[kAttrs];
++                        for (int a = 0; a < kAttrs; a++)
++                            for (int j = 0; j < 4; j++) attr[a][j] = (b0 * p0.attr[a][j] + b1 * p1.attr[a][j] + b2 * p2.attr[a][j]) / iw;
++                        if (flat) std::copy(flat_colour, flat_colour + 4, attr);
++                        Fragment frag;
++                        bool back = two_sided && !front;
++                        frag.v0 = attr[back ? kB0 : kD0];
++                        frag.v1 = attr[back ? kB1 : kD1];
++                        frag.fog = Unpack(s.rs[kRsFogColor]);
++                        frag.fog[3] = Sat(attr[kFog][0]);
++                        for (int t = 0; t < 4; t++) frag.tc[t] = attr[kT0 + t];
++                        g_trace.on = watched && x == probes.trace.x && y == probes.trace.y;
++                        bool keep = mat.key.programmable ? Combiners{mat, frag}.Shade(col) : ShadeStages(mat, frag, col);
++                        if (!keep) continue;
++                        if (atest && !Passes(afunc, uint32_t(int(std::lround(Sat(col[3]) * 255))), aref)) continue;
++                    }
+                     uint32_t oz = 0, os = 0, zi = uint32_t(std::floor(z));
+                     if (zs.ok) zs.LoadDepth(uint32_t(x), uint32_t(y), oz, os);
+                     auto stencil_op = [&](uint32_t op) { return (os & ~swmask) | (StencilResult(op, os, sref) & swmask); };
+@@ -1272,6 +1287,7 @@
+                         if (stencil) zs.StoreDepth(uint32_t(x), uint32_t(y), oz, stencil_op(op_zfail));
+                         continue;
+                     }
++                    if (s.simple[kMCountEnable >> 2]) ++g_report_count;
+                     if (zs.ok && (zwrite || stencil)) zs.StoreDepth(uint32_t(x), uint32_t(y), zwrite ? zi : oz, stencil ? stencil_op(op_pass) : os);
+                     if (!rt.ok || !cmask) continue;
+                     for (int j = 0; j < 4; j++) col[j] = Sat(col[j]);
+--- a/harness/null_backend.cpp
++++ b/harness/null_backend.cpp
+@@ -3,6 +3,7 @@
+ // CAP=N: every Nth frame's draws listed in cap/draws_<frame>.txt
+ // snap in the run folder: the next two frames drawn and saved as snap_1.tga and snap_2.tga, then snap is removed
+ #include <cstdio>
++#include <algorithm>
+ #include <cstring>
+ #include <filesystem>
+ #include <string>
+@@ -23,12 +24,16 @@
+ class NullBackend final : public Backend {
+ public:
+     bool Init(uint32_t w, uint32_t h) override {
++        full_reference_ = harness::Env("REF_ALL") != 0;
++        reference_from_ = uint64_t(std::max(0L,harness::Env("REF_FROM_FRAME")));
++        drawing_ = FullReferenceActive();
+         LOGI("renderer: headless %ux%u", w, h);
+         std::filesystem::create_directories(app::ExeDir() / "cap");
+         return true;
+     }
+     void Clear(const State& s, uint32_t n, const uint8_t* rects, uint32_t flags, uint32_t color, float z, uint32_t stencil) override {
+         if (drawing_) reference::Clear(s, n, rects, flags, color, z, stencil);
++        if (FullReferenceActive() && (flags & 1)) reference_depth_valid_ = true;
+     }
+     void Draw(const State& s, uint32_t prim, uint32_t start, uint32_t count, const uint8_t* indices) override {
+         draws_++;
+@@ -40,13 +45,14 @@
+         else CopySurfaceMemory(src, dst, n, rects, points);
+     }
+     void Present(const Surface& front) override {
++        static const long every = harness::Env("REF"), cap = harness::Env("CAP");
+         if (list_) {
+             std::fclose(list_);
+             list_ = nullptr;
+         }
+         if (draws_ == last_draws_) empty_++;
+         last_draws_ = draws_;
+-        if (drawing_ && !snap_) reference::WriteTga(front, File("cap/ref_%05llu.tga", frames_).c_str());
++        if (drawing_ && !snap_ && (!full_reference_ || (every && frames_ % every == 0))) reference::WriteTga(front, File("cap/ref_%05llu.tga", frames_).c_str());
+         // snap asks for the next two frames drawn
+         std::string snap = (app::ExeDir() / "snap").string();
+         if (snap_ == 2) {
+@@ -60,8 +66,7 @@
+             std::fclose(f);
+             snap_ = 1;
+         }
+-        static const long every = harness::Env("REF"), cap = harness::Env("CAP");
+-        drawing_ = snap_ || (every && (frames_ + 1) % every == 0);
++        drawing_ = (full_reference_ && frames_ + 1 >= reference_from_) || snap_ || (every && (frames_ + 1) % every == 0);
+         if (drawing_) reference::BeginFrame();
+         harness::g_frames = frames_ + 1;
+         if (++frames_ % 60 == 0) LOGI("renderer: frame %llu, %llu draws, %llu empty frames", frames_, draws_, empty_);
+@@ -72,7 +77,21 @@
+     void Flush() override {}
+     void SetGamma(const uint8_t*) override {}
+
++    bool SupportsVisibilityReports() const override { return full_reference_; }
++    void ClearReport() override { reference::ClearReport(); }
++    void GetReport(uint32_t report) override {
++        if(!FullReferenceActive() || !reference_depth_valid_) { LOGE("reference: visibility requires complete rendering and a depth clear");std::abort(); }
++        kernel::W32(report,uint32_t(frames_));
++        kernel::W32(report+4,0);
++        kernel::W32(report+8,reference::ReportCount());
++        std::atomic_thread_fence(std::memory_order_release);
++        kernel::W32(report+12,0);
++        LOG_FIRST(8,"reference: visibility report completed, samples=%u",reference::ReportCount());
++    }
+ private:
++    bool FullReferenceActive() const { return full_reference_ && frames_ >= reference_from_; }
++    bool full_reference_ = false, reference_depth_valid_ = false;
++    uint64_t reference_from_ = 0;
+     static std::string File(const char* fmt, unsigned long long n) {
+         char name[64];
+         std::snprintf(name, sizeof name, fmt, n);

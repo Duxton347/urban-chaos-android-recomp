@@ -1,0 +1,104 @@
+{
+  "date_utc": "2026-11-16",
+  "sdk_pin": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "executable_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+  "baseline_trace": {
+    "exit": 139,
+    "guest_function": "0x00423B41",
+    "api": "IDirectSound_AddRef",
+    "export_id": "0xB0036",
+    "device_created_by_hle": true,
+    "device_word_zero": true,
+    "console_wrapper_adjustment": -8,
+    "adjusted_object_word_zero": true,
+    "fault_address": "0x100000004",
+    "resource_missing_before_fault": false
+  },
+  "experimental_patch": {
+    "path": "patches/runtime/directsound-device-lifetime.patch",
+    "applied_to_pinned_checkout": false,
+    "applied_to_private_source_copy": true,
+    "scope": "device object reference ownership only; original SDK mixer unchanged",
+    "build_exit": 0,
+    "selftest_exit": 0,
+    "selftest_hle_calls": 8,
+    "selftest_checks": [
+      "create reference",
+      "AddRef increment",
+      "Release decrement",
+      "shared ownership across repeated creation",
+      "final object disposal",
+      "recreation after disposal",
+      "stdcall stack balance"
+    ],
+    "selftest_guest_title_instructions": 0,
+    "production_qualified": false,
+    "tracked_patch_applied_to_private_copy_and_compiled": true,
+    "tracked_probe_compiled_and_run": true,
+    "final_game_retest_exit": 139
+  },
+  "progression": [
+    {
+      "configuration": "patched device; 79 LST resources",
+      "exit": 124,
+      "timeout_seconds": 12,
+      "first_audio_fault_recurred": false,
+      "next_requested_resource": "AudioData.bin"
+    },
+    {
+      "configuration": "patched device; 79 LST plus AudioData.bin",
+      "exit": 139,
+      "effects_metadata_entries": 9,
+      "missing_resource": "Movies/dolby.xmv",
+      "next_fault_guest_function": "0x003E7F70",
+      "next_fault_section": "D3D"
+    },
+    {
+      "configuration": "patched device; 79 LST plus AudioData.bin and Movies/dolby.xmv",
+      "exit": 139,
+      "first_audio_fault_recurred": false,
+      "missing_disc_resource_reported_before_fault": false,
+      "next_fault_guest_function": "0x003E7F70",
+      "caller_guest_function": "0x003E5230",
+      "device": "0x003F4240",
+      "device_vertex_shader_field": "0x794",
+      "vertex_shader_field_value": 0,
+      "fault_guest_instruction": "0x003E82A6",
+      "fault_address": "0x100000004",
+      "interpretation": "D3D code reads current vertex shader object through zero device field; raw scanner config has no D3D_FvfShader entry"
+    }
+  ],
+  "new_resources": [
+    {
+      "path": "AudioData.bin",
+      "bytes": 18608,
+      "sha256_matches_public_manifest": true
+    },
+    {
+      "path": "Movies/dolby.xmv",
+      "bytes": 1815040,
+      "sha256_matches_public_manifest": true
+    }
+  ],
+  "probe_setup_failures": {
+    "initial_probe_exit": -11,
+    "declaration_compile_error": true,
+    "final_probe_exit": 0,
+    "note": "Synthetic probe harness setup and image pointer declaration corrected before final successful build; failed logs preserved privately."
+  },
+  "known_unqualified_areas": [
+    "other unhooked DSOUND exports",
+    "kernel ordinal 232 NtUserIoApcDispatcher",
+    "D3D device/shader mirroring",
+    "full disc resource reads",
+    "audio output/DSP/streams/callback fidelity",
+    "real frame presentation/menu",
+    "Android ARM64 runtime/Vulkan/lifecycle/saves"
+  ],
+  "windows_required_for_android": false,
+  "linux_research_only": true,
+  "verified_frames": false,
+  "verified_menu": false,
+  "verified_audio_output": false,
+  "protected_artifacts_published": false
+}

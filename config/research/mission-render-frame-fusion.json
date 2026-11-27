@@ -1,0 +1,10 @@
+{
+  "mode": "frame-cfg-fusion",
+  "source_file": "x86_recomp.14.cpp",
+  "source_sha256": "7d2d3a2a6e7b800a855042b6856e71e4cd6b07604b2989daac0cc9815b0b169b",
+  "root": "0008FF30",
+  "end": "00090530",
+  "expected_blocks": 36,
+  "expected_edges": 61,
+  "scope": "Original machine function extent independently reviewed: entry frame/SEH and RET 0x10 remain; only intra-function tail transfers are joined; all real calls and independent dynamic mappings remain."
+}

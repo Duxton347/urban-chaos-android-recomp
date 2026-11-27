@@ -1,0 +1,26 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -793,8 +793,13 @@
+ constexpr float kAlphaTestAlways = 7.0f;
+ 
+ // FOG off leaves the constants as fog disabled: the shaders' fog factor is then 1, the colour as drawn
+-void FillFogConstants(const State& s, DrawConstants& c) {
++void FillFogConstants(const State& s, bool vertex_program, DrawConstants& c) {
+     if (!s.rs[kRsFogEnable] || !game::Opt().fog) return;
++    // Under a vertex program with no fog table, oFog is the blend factor.
++    if (vertex_program && s.rs[kRsFogTableMode] == 0) {
++        c.fog[0] = 1; c.fog[1] = 0; c.fog[2] = 0; c.fog[3] = 3;
++        return;
++    }
+     c.fog[0] = Bits(s.rs[kRsFogStart]);
+     c.fog[1] = Bits(s.rs[kRsFogEnd]);
+     c.fog[2] = Bits(s.rs[kRsFogDensity]);
+@@ -2944,7 +2949,7 @@
+     SurfaceSize(draw_rt_ ? s.rt : s.zs, size.w, size.h);
+     DrawConstants c{};
+     FillSurfaceConstants(s, size, c);
+-    FillFogConstants(s, c);
++    FillFogConstants(s, sh.prog, c);
+     FillCombinerConstants(s, c);
+     FillTextureConstants(s, stages, c);
+     if (sh.fixed_transform) {

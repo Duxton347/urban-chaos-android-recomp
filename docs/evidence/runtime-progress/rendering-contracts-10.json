@@ -1,0 +1,170 @@
+{
+  "status": "PARTIAL_RENDERER_FIX_VERIFIED",
+  "gameplay_validated": false,
+  "android_device_tested": false,
+  "python_tests": 61,
+  "original_report_build": "experimental-6671d1a3586443d4",
+  "native_input_formats_tested": 19,
+  "colour_alias_formats": [
+    18,
+    30,
+    63,
+    64,
+    65
+  ],
+  "alias_negative_control": "Previous renderer aborted the authored stale-storage assertion; retained private log hash below",
+  "negative_log_sha256": "0ca5df3d25053d60b46dd17b63ae06112f3c249d0aeb2a57282d6b60289ef247",
+  "real_title_observation": {
+    "same_storage_as_bound_depth": true,
+    "depth_gpu_written": true,
+    "cached_colour_target_existed": false,
+    "alias_format": 64,
+    "width": 640,
+    "height": 480,
+    "texture_modes": 513
+  },
+  "limited_clean_run": {
+    "instrumented": false,
+    "private_game_inputs": true,
+    "benchmark": false,
+    "host_sha256": "dfac1e552cd962407a75b26a05ce4ca060b643e5da3e2f1db16f37b845b33582",
+    "renderer_sha256": "d3fd8dd1532328d4e4e2ac87f9e6597988084fbcf6065382602ba3f68b3de3c5",
+    "android_validated": false,
+    "gameplay_validated": false,
+    "returncode": -15,
+    "elapsed_seconds": 300.0852230869996
+  },
+  "contract_receipt": {
+    "status": "PASS",
+    "game_data_used": false,
+    "game_execution_tested": false,
+    "android_device_tested": false,
+    "android_host_integrated": false,
+    "architectures": {
+      "host": {
+        "sha256": "b447b90b3ceceeca11108a5acc4384eec26d03e3778377d1920e1cbf734f5a6e",
+        "objects": 2
+      },
+      "host-fence": {
+        "sha256": "6d3ce69f375cbb499bf882d1e604e0b2c254add73548169faf0ed4938146f540",
+        "objects": 2
+      }
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+      "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+      "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73",
+      "command-stream-synchronization.patch": "5378158a2f353caa5c64af4badf96fc389a97fb22cb9f0a4e4f1bae1e8c54512",
+      "native-vertex-fallback.patch": "757165c60f8167527ca26ca92746c2376f29e5d4366bccc0632be1494418cb29"
+    },
+    "renderer_source_sha256": "5723370ab2cf7de4fb72df3a5fe215441cb94b27de4f8b42b0557f6a952d3b6c",
+    "renderer_patch_sha256": "2c3b44efa06f5a086b28ffa82ef774b334154d00d345fb8d56875f77e22f1bb2",
+    "software_icd_sha256": "c9eef28b6b984fec220ef0abfecc40b502d46946706e47bfe97707027cb818bd",
+    "authored_renderer_fixture_passed": true,
+    "fixture_executable_sha256": "044a9cc62658086d65697e2116f45e5dcbe16f0a456a725264c33758f13f996a",
+    "forced_fence_renderpass_source_sha256": "2fe2424aba89e52860dbff2ee027840cdd8b9d763851e549f16be1519f57f40d",
+    "authored_fence_renderpass_fixture_passed": true
+  },
+  "renderer_patches_sha256": {
+    "vulkan-native-vertices.patch": "8d7869c57394d0515bd7a89115c4051f595b2a7e36205f2ae79f4acd7314919a",
+    "vulkan-depth-colour-alias.patch": "91ddd6df53af7f03b35d7d2a97d9a5f1c2c878e951ac57a3a7ca4bd7d6449e49"
+  },
+  "private_precision_experiment": {
+    "upstream_shader_revision": "736608115966155115937723bce6b71764e2b6b5",
+    "integrated_in_android": false,
+    "conclusive_visual_fix": false,
+    "run": {
+      "instrumented": false,
+      "experimental_depth_encoding": true,
+      "benchmark": false,
+      "shadow_sampling_rejected": true,
+      "gameplay_validated": false,
+      "host_sha256": "b1801f1bf0e69f5378395f46d174ca14fd09344af29fab2f6f5dc2a5e9289308",
+      "returncode": -15,
+      "elapsed_seconds": 210.11491136
+    }
+  },
+  "native_input_compact_layouts_tested": 3,
+  "native_component_alignment_tested": true,
+  "indexed_dense_sparse_tested": true,
+  "packed_normal_bits_preserved_tested": true,
+  "prior_component_alignment_run": {
+    "schema": 1,
+    "started_utc": "2026-11-24T22:35:32.464666+00:00",
+    "host_sha256": "4948814c6064f25285f0db757f0fcf0a9ad79892ae8a015e53e5694a82e48280",
+    "build_receipt_sha256": "23496f9491e9fb8f9bd8af5fd401d42e9bd57988b1f2ff2a92660d5956632dd5",
+    "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+    "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+    "pad_script_sha256": "d32f9294bcb672e25f5118c8fe24133849b867349483f5f8612d0d1d277301a0",
+    "timeout_seconds": 135,
+    "status": "TIMED_OUT",
+    "gameplay_validated": false,
+    "android_validated": false,
+    "audio_output": "sdl",
+    "render_backend": "vulkan-headless",
+    "sdl_driver": "dummy",
+    "audible_output_verified": false,
+    "exit_code": -15,
+    "timed_out": true,
+    "interrupted": false,
+    "elapsed_seconds": 135.048,
+    "last_present_counter": 1860,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false
+  },
+  "prior_component_alignment_remaining_conversion": {
+    "type": 22,
+    "offset": 6,
+    "stride": 10,
+    "kind": "NORMPACKED3",
+    "resolved_by": "Aligned per-attribute bit-preserving copy; whole vertex conversion no longer required for this layout"
+  },
+  "final_packed_run": {
+    "schema": 1,
+    "started_utc": "2026-11-24T22:44:27.989430+00:00",
+    "host_sha256": "eccbcdc0c959445ecdeac7ad6c58e82ad66247a006c709dd238423bc533a357c",
+    "build_receipt_sha256": "97cecb332afb75c17c0c8a81b7afca52a3c903bbe864038f7295a08dfaa771e0",
+    "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+    "profile_sha256": "2399489ba9ab6708f3fac5e561ade05e2460b0cdcb6bdb9853bb493fb278cbd0",
+    "pad_script_sha256": "d32f9294bcb672e25f5118c8fe24133849b867349483f5f8612d0d1d277301a0",
+    "timeout_seconds": 135,
+    "status": "TIMED_OUT",
+    "gameplay_validated": false,
+    "android_validated": false,
+    "audio_output": "sdl",
+    "render_backend": "vulkan-headless",
+    "sdl_driver": "dummy",
+    "audible_output_verified": false,
+    "exit_code": -15,
+    "timed_out": true,
+    "interrupted": false,
+    "elapsed_seconds": 135.119,
+    "last_present_counter": 1860,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false
+  },
+  "final_packed_gpu_counters": {
+    "visibility_polls": 51030,
+    "visibility_submits": 0,
+    "idle_flushes": 0,
+    "same_present_texture_updates": 0,
+    "two_sided_draws": 0,
+    "native_vertex_draws": 244384,
+    "converted_vertex_draws": 0,
+    "vertex_upload_bytes": 832778182,
+    "depth_colour_conversions": 163,
+    "depth_colour_binds": 163
+  },
+  "remaining_known_limitation": "Stream-to-buffer bus routing warning occurred; visual defects and playable mission remain unqualified"
+}

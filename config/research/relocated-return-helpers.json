@@ -1,0 +1,9 @@
+{
+  "source_sha256": "b521980a3d1bd75e644170c6c07387cf1542a542b9dd9f9ddc2ff378c053438e",
+  "helpers": {
+    "002D7C78": "dd452c50f3b8934941f55b595863ea43b1286a962d893b90c134d8a8cf34dd54",
+    "002D7CB3": "13ca1c21fe406aa789f06929babb2e07c78ba6207e51bf6aecbe5ce40f6ee3e1"
+  },
+  "evidence": "Original instructions move their own saved return PC to another stack slot; matching PC returns locally, changed PC still transfers. No replacement of guest instructions.",
+  "source_file": "x86_recomp.78.cpp"
+}

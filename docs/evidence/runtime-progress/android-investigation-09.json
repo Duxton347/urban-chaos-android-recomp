@@ -1,0 +1,27 @@
+{
+  "build_id": "experimental-6671d1a3586443d4",
+  "apk_sha256": "c2530e0281ddefd53b497834c0bfc1a0cf24f8fa859179655f99876de5e41a43",
+  "apk_bytes": 28260280,
+  "native_library_sha256": "32dab66c3f74a5c78012a3a394189ee7f4aa629c61726420e5b5dbc504bda3e6",
+  "device_tested": false,
+  "mission_playable_verified": false,
+  "assets_bundled": false,
+  "version": "0.9-investigacao",
+  "version_code": 9,
+  "signature_matches_08": true,
+  "transport_verified": true,
+  "parts": [
+    {
+      "name": "UrbanChaos-v09.zip.001",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v09.zip.002",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v09.zip.003",
+      "bytes": 9260444
+    }
+  ]
+}

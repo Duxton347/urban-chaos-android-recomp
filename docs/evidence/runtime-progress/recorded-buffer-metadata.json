@@ -1,0 +1,22 @@
+{
+  "scope": "packet structure/counts only; no commercial payload or fixture",
+  "first_buffer_bytes": 660,
+  "packets": 5,
+  "parameter_words": 160,
+  "fixup_null": true,
+  "observed_methods": [
+    "BEGIN_END 0x17FC",
+    "ARRAY_ELEMENT16 0x1800",
+    "NO_OPERATION 0x0100"
+  ],
+  "first_indexed_buffer_submitted_draws": 1,
+  "next_unsupported_method": "ARRAY_ELEMENT32 0x1808",
+  "bounded_array_element32_implemented": true,
+  "submitted_buffers_observed_minimum": 8,
+  "current_failure": {
+    "kind": "old-style GPU jump",
+    "control_flags": 1,
+    "word": 165,
+    "handling": "explicit failure, not skipped"
+  }
+}

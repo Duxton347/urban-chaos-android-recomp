@@ -1,0 +1,42 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -310,3 +310,3 @@
+         case DXGI_FORMAT_B8G8R8A8_UNORM: return VK_FORMAT_B8G8R8A8_UNORM;
+-        default: return VK_FORMAT_R32G32B32A32_SFLOAT;
++        default: return VK_FORMAT_UNDEFINED;
+     }
+@@ -1187,2 +1187,3 @@
+     VkFormat depth_fmt_ = VK_FORMAT_D24_UNORM_S8_UINT;
++    std::array<bool, 256> vertex_formats_{};
+     bool depth_linear_ = false;
+@@ -1453,2 +1454,10 @@
+     r32f_linear_ = fp.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
++    // Vertex-buffer support is independent from image/sampler format support.
++    for (uint32_t i = 0; i < vertex_formats_.size(); ++i) {
++        const auto format = VertexFormat(i);
++        if (format == VK_FORMAT_UNDEFINED) continue;
++        VkFormatProperties properties{};
++        vkGetPhysicalDeviceFormatProperties(pd_, format, &properties);
++        vertex_formats_[i] = (properties.bufferFeatures & VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT) != 0;
++    }
+     LOGI("vulkan: depth %s, BC textures %s", depth_fmt_ == VK_FORMAT_D24_UNORM_S8_UINT ? "D24S8" : "D32S8",
+@@ -2898,2 +2907,14 @@
+ 
++    // Preserve the portable conversion for formats this physical device cannot fetch as vertices.
++    if (a.vertices.empty()) {
++        bool supported = true;
++        for (unsigned r = 0; r < 16; ++r)
++            if ((a.regs >> r) & 1) supported &= vertex_formats_[a.elements[r].format];
++        if (!supported && !AssemblePortable(s, prim, start, count, indices, a))
++            throw std::runtime_error("UC-VK-008: portable vertex fallback failed");
++    }
++    (a.vertices.empty() ? urban::progress::native_vertex_draws : urban::progress::converted_vertex_draws).fetch_add(1, std::memory_order_relaxed);
++    for (uint32_t i = 0; i < a.buffer_count; ++i)
++        urban::progress::vertex_upload_bytes.fetch_add(a.buffers[i].bytes, std::memory_order_relaxed);
++
+     // the targets, CPU writes to them first
+@@ -2960,3 +2981,3 @@
+     }
+-    bool clamp = AnyStageWraps(s) && UnitTexcoords(a);
++    bool clamp = false; // Preserve the declared Xbox address modes for native as well as expanded inputs.
+     VkSampler samplers[4];

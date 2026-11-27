@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "sdk_base": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "qualification": "CONTRACT_FIXES_AND_PRIVATE_SCENE_ONLY",
+  "playable_mission_verified": false,
+  "campaign_verified": false,
+  "new_apk_created": false,
+  "android_device_tested": false,
+  "negative_controls": [
+    {
+      "case": "signed RGB filtered before mapping",
+      "old_renderer_failed": true,
+      "actual": 255,
+      "expected": 128,
+      "log_sha256": "ad9e0d9e288d95efbe44a538fb767f955ab1f80669a75fb2fbbfbbb01ed5a0d6"
+    },
+    {
+      "case": "two raw screen-space render-target copies",
+      "old_renderer_failed": true,
+      "filter": "linear",
+      "first_differing_pixel": [
+        1,
+        0
+      ],
+      "log_sha256": "c1128f2dc0a115ffa02121d75265535083b5c6c7366aa236e85f7ac4770f89cf"
+    }
+  ],
+  "authored_vulkan_contracts": {
+    "status": "PASS",
+    "architectures": {
+      "host": {
+        "sha256": "aae8885d7372152f550c29d90a23b5c205ff91a392c50c0642e763fc437109c0",
+        "objects": 2
+      },
+      "host-fence": {
+        "sha256": "ed3afa6d885b4022547e1127826425a062418603601a10c1982f388d47dcfa06",
+        "objects": 2
+      },
+      "arm64": {
+        "sha256": "83b1e3a2aa6c6ab33b48330fe2266c920a39bd6717a2fae0103931bab9e3f75d",
+        "objects": 2
+      },
+      "android-window": {
+        "sha256": "218aacede6a128f64cf0d4bf98c41bc5ec6a32a6f1807b6c23b5dc988090b220",
+        "objects": 2
+      },
+      "android-host": {
+        "sha256": "482442f99900306c80a8aed8b2d9d5e67169b1291fc597986f63ef291ceb5e32",
+        "objects": 7,
+        "authored_profile_only": true,
+        "game_linked": false
+      }
+    },
+    "renderer_source_sha256": "e672fb4cce9ab34fdda207ade6d8594144da719f2affe46183cc3c95ef349004",
+    "android_renderer_source_sha256": "1fe43fa01a02e4620e0f5469fac07f28db72007684e62e71a8fdabbc627a17a1",
+    "timeline_and_dynamic_rendering": true,
+    "fences_and_renderpasses": true,
+    "signed_texture_filtering": true,
+    "render_target_texel_centres": true,
+    "conditional_alpha_spirv": true,
+    "logs_sha256": {
+      "host-fixture.log": "c4b2d5de989e8fcf12f1b2664d0d82846480b977061f3ed88ce10e6c9ac1c45e",
+      "host-fence-fixture.log": "7a15a2f811292fa1b0c7ee38fd4da1b6d724d59b92bf1c75a77d7f9abd4219db"
+    }
+  },
+  "android_integration": {
+    "status": "PRIVATE_ANDROID_LIBRARY_LINKED",
+    "library_sha256": "f654df1dc61ccc6d6d1762a5f0dd5336e6f15c13e696898ca048dad82024cc29",
+    "library_bytes": 82126544,
+    "guest_archive_sha256": "65add57039f2a13fa5ddc791191e520ca566f8d5e282d52883cae125fae35366",
+    "renderer_source_sha256": "1fe43fa01a02e4620e0f5469fac07f28db72007684e62e71a8fdabbc627a17a1",
+    "renderer_headers": {
+      "native/gpu/signed_texels.h": "394c5dacaaf0e0d9ed517511de987fca9e443fabecaa0749ce5be330412f40bb"
+    },
+    "runtime_patches": {
+      "directsound-device-lifetime.patch": "009a1eea9d9cf61b07b3baffa1ca5ed9726b918204944df23b9bcf65f4a39e34",
+      "d3d-device-initialization.patch": "27fa35841be196b77f468c5810ad55621e2b3b705a5281f84c7797267ea41073",
+      "io-apc-dispatch.patch": "953d08a412ac71acded96764d7850d6c4c17d3430093ebe6b669b440241029cc",
+      "reference-visibility.patch": "24a2eb1ec86096340a007323d61cb7e69d07ddec74740a73a7b74098e56b0dda",
+      "surface-ownership.patch": "0b28e3efbad6802e160e3777b28a87896d6a84c9263293f7ec1ddc3fc2b9c96e",
+      "directional-audio.patch": "3b026ffb5133f3272a8d3b9fe3ca85a4f31da34c73a80a8a0694ca8f13453126",
+      "bounded-disc-reader.patch": "33b641dd481e3ec5e87fa15801e9a0803cadb24d056340d0f12034335be4e405",
+      "diagnostic-observer.patch": "53aca9ba18f44f363abf1047b2568a848b9fa9d9753cb4fe4e77bb4bc727c75d",
+      "resumable-context.patch": "eaf3f5425b071cb0bbd4f1dc793d52d5e7c71e826d862e7849d21ff85b5997dd",
+      "android-host-portability.patch": "bb85309992c8feac692b027527edd463dcfa64edc6cbebe243628cd2f7b0888f",
+      "android-input-sampling.patch": "910238473233766f1e4c4349a07d67309cc7df7376279f5dd1b4824475c62bdf",
+      "progress-metadata.patch": "9b97534045083d5e83d04099c9b984c9febdbc7deec9535a1c1d805075574feb",
+      "native-text-overrides.patch": "7e88db8152c77abf4c8fb22fd606ab8cc1b130b6d8671d28baa8c3d349dff97d",
+      "async-visibility-contract.patch": "f36424258bd93f79e26ebe6089cfc361247c87aa3b8698900394c069ddc8ad73",
+      "command-stream-synchronization.patch": "5378158a2f353caa5c64af4badf96fc389a97fb22cb9f0a4e4f1bae1e8c54512",
+      "native-vertex-fallback.patch": "757165c60f8167527ca26ca92746c2376f29e5d4366bccc0632be1494418cb29",
+      "render-target-texel-centres.patch": "86e38d7260a8781c5cc6cabf070c60d6f5213862563351f4cd8d1b64a0bc3983",
+      "conditional-alpha-test.patch": "e761b1c7f2620ff7b7a2e98ffba417994a4ce187d388046b95d0b1374520b380",
+      "guest-transfer-metrics.patch": "40af3e71e1b86be93d3f4af93829c1676a3237c32394396b3efcd2bd3e1b9de9"
+    },
+    "g1_qualified": false,
+    "elf": "ELF64 AArch64"
+  },
+  "clean_linux_build": {
+    "status": "RESEARCH_HOST_COMPILED",
+    "binary_sha256": "ceb1d62f0f1e089424305600c3ca1ad2b91d4dd6a1cb61f3f86a5082ecc10ddb",
+    "guest_archive_sha256": "e6c4a1f25b837da061cf16f77edb1954200688d4cabe68c4bcb54d4a4328399c",
+    "renderer_source_sha256": "e672fb4cce9ab34fdda207ade6d8594144da719f2affe46183cc3c95ef349004",
+    "g1_qualified": false
+  },
+  "private_scene_comparison": {
+    "same_frozen_game_state": false,
+    "visual_observation": "Reduced banded/jagged edges after render-target coordinate correction; remaining bright/temporal effects not qualified",
+    "signed_fix_alone_was_insufficient": true,
+    "capture_digests": {
+      "signed-run": "3f2e6a6c24549d374112f3cc1d4f8145b37040e1ff806a3e77cfc5868aabb0fb",
+      "centres-run": "a01c914caa10b3a3808db0ff38a1a259fb2fdc52c105181918ee193e5bb427d9",
+      "alpha-long-run": "e6d2b61d30d0e683d743048ed0782d06e7568802dfbd3236dfaf8d3b641afada"
+    },
+    "screenshots_in_public_artifacts": false
+  },
+  "python_tests": {
+    "passed": 66,
+    "log_sha256": "d1a13df0c3be3a345ff8e9c48026ba8d4c872e09d4d06938957a20c936ae5a27",
+    "earlier_failure": "Four cases encountered the importer 64 MiB disk reserve during concurrent builds; freed obsolete regenerable build outputs and reran without lowering the guard"
+  },
+  "diagnostics": {
+    "status": "PASS",
+    "log_sha256": "07b368cbb6f019a9a5f628f1fa4a1b720509c3b0ee87b4c5f3fea4c1cc6da9c0",
+    "touch_and_java_jni": true
+  },
+  "ordered_private_depth_probe": {
+    "draws_compared": 986,
+    "all_clears_and_surfaces_mirrored": true,
+    "conformance_oracle": false,
+    "limits": "CPU quantization/interpolation and unsupported depth biases differ from the GPU; mismatches preserved"
+  },
+  "rejected_private_experiments": [
+    "Reverse depth with matching colour-alias conversion did not prove visual repair and was not integrated"
+  ],
+  "runtime_probes": {
+    "passed": 9,
+    "log_sha256": "d5eacdc00aefad372669cf6582f6c5affd2e3e3b488dd46c143fc899fab9bfc7",
+    "authored_data_only": true
+  },
+  "clean_private_run": {
+    "host_sha256": "ceb1d62f0f1e089424305600c3ca1ad2b91d4dd6a1cb61f3f86a5082ecc10ddb",
+    "elapsed_seconds": 300.042,
+    "last_present_counter": 2100,
+    "missing_disc_requests": 0,
+    "completed_visibility_reports": 16,
+    "exception_recorded": false,
+    "exit_code": -15,
+    "timed_out": true,
+    "gameplay_validated": false,
+    "first_person_weapon_and_native_hud_observed": true,
+    "movement_and_full_mission_verified": false,
+    "captures": {
+      "vulkan_1800": "b2baa08635e6f227e75439a9c1d7108d20b32b410646815fb851517b8917c8db",
+      "vulkan_1860": "7abf67e50c54075c3f319a1156bc58bbc20c45369c9364dde6a2748ca0aecc5d",
+      "vulkan_1920": "52436f7e62f207fa906e5e8d936354da2a913cdcac0ddc623daa47d2f4e65e72",
+      "vulkan_1980": "380d5a049c50fe36b9c753bf40c985676e0b18620bbfe205537285b06a2d48e3",
+      "vulkan_2040": "fc847fdd3b3d32413c1dc7ac485b5c2bc1cdf9d76cb5ebfdffa0cb8ff4757d72",
+      "vulkan_2100": "c79ff37ab8141a6cad3acc2320f70d78c9684d06b4ba502b2505220fb62c0b63"
+    }
+  }
+}

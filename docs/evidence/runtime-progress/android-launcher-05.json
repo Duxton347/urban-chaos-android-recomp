@@ -1,0 +1,32 @@
+{
+  "build_id": "experimental-737ee5c2bd1835cd",
+  "apk_bytes": 28252088,
+  "apk_sha256": "ecd32919763be60ff96cb097a94a7e849ab97c73b0d203a797ca97c34791c6f8",
+  "native_library_sha256": "5abbf63413b0cf598790269a287970aacd4e99eb390ec4530366d54b8dda59fa",
+  "private_locale_pack_sha256": "a548223b6aff8cfba67ad9f686b9a531f623826eeceebca5440c0b7f2d44b9cc",
+  "version": "0.5-experimental",
+  "version_code": 5,
+  "signature_matches_04": true,
+  "transport_parts": [
+    {
+      "name": "UrbanChaos-v05.zip.001",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v05.zip.002",
+      "bytes": 9500000
+    },
+    {
+      "name": "UrbanChaos-v05.zip.003",
+      "bytes": 9252238
+    }
+  ],
+  "transport_crc_and_apk_sha_verified": true,
+  "android_device_tested": false,
+  "mission_playable_verified": false,
+  "cutscene_subtitle_sync_verified": false,
+  "opening_movie_required_captions_translated": 19,
+  "stored_resource_cache_default": false,
+  "original_disc_assets_bundled": false,
+  "public_upload_authorized": false
+}

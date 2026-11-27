@@ -1,0 +1,73 @@
+{
+  "status": "RESEARCH_PARTIAL",
+  "cfg": {
+    "source_sha256": "a52497d2ab8d757ecb315c73a77cff57f09ce51760c70136aaa232b6fca2c0b6",
+    "output_sha256": "0342892f1dfd4771f0c57e297869a16d02f704d848cbb35b27063e4fcab63e1d",
+    "graphs": [
+      {
+        "root": "0004FFE0",
+        "blocks": 13,
+        "edges": 14
+      }
+    ]
+  },
+  "targets": {
+    "linux": {
+      "object_compiled": true,
+      "archive_sha256": "e6c4a1f25b837da061cf16f77edb1954200688d4cabe68c4bcb54d4a4328399c",
+      "review_sha256": "776519c9ab1cd107a36416bf74c8541b774169f0fcba1e06f2f9f3a3eb5e6b6a",
+      "modified_source_sha256": "0342892f1dfd4771f0c57e297869a16d02f704d848cbb35b27063e4fcab63e1d"
+    },
+    "arm64": {
+      "object_compiled": true,
+      "archive_sha256": "65add57039f2a13fa5ddc791191e520ca566f8d5e282d52883cae125fae35366",
+      "review_sha256": "776519c9ab1cd107a36416bf74c8541b774169f0fcba1e06f2f9f3a3eb5e6b6a",
+      "modified_source_sha256": "0342892f1dfd4771f0c57e297869a16d02f704d848cbb35b27063e4fcab63e1d"
+    }
+  },
+  "host_linked": true,
+  "android_runtime_relinked": false,
+  "new_apk_delivered": false,
+  "tablet_verified": false,
+  "rendering_fixed": false,
+  "autofire_integrated": false,
+  "tests": {
+    "real_callback_loop": "PASS: normal, continuation, function dispatch, missing target and foreign root; nonresumable overlay excluded",
+    "tail_cfg": "PASS: loop, shared join, flags, dynamic entry and nonlocal return",
+    "tail_fragment_labels": "PASS: same-name labels retain local targets",
+    "python_suite": "PASS: 66 tests",
+    "android_java": "PASS: compileDebugJavaWithJavac with validated private runtime receipt",
+    "touch_jni": "PASS: 33 HUD checks, 326 diagnostic checks, native input and JNI",
+    "arm64_diagnostic_header": "PASS: AArch64 object, lock-free uint64 counters"
+  },
+  "profile_comparison": {
+    "instrumented": true,
+    "seconds_limit_each": 180,
+    "baseline_last_snapshot_declared_throws": 371234,
+    "cfg_last_snapshot_declared_throws": 303740,
+    "two_fragment_origin_counts_before": [
+      67120,
+      5552
+    ],
+    "two_fragment_origin_counts_after": [
+      0,
+      0
+    ],
+    "same_exact_game_state_verified": false,
+    "on_device_fps_gain_verified": false,
+    "note": "Snapshots are cumulative and asynchronous, near the same presentation band. Per-origin counts and total are not atomic together. No quality/FPS qualification."
+  },
+  "clean_run": {
+    "duration_seconds": 135.057,
+    "returncode": -15,
+    "termination": "scheduled SIGTERM",
+    "last_present_counter": 1860,
+    "missing_disc_requests": 0,
+    "fatal_exception_recorded": false,
+    "private_observer": false,
+    "ld_preload": false,
+    "scene_capture_inspected": true,
+    "visual_result": "CORRUPTION_REMAINS",
+    "gameplay_validated": false
+  }
+}

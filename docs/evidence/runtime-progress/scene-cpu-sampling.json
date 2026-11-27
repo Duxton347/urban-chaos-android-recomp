@@ -1,0 +1,21 @@
+{
+  "scope": "Private diagnostic run with read-only native instruction sampling; no Android performance claim",
+  "duration_limit_seconds": 180,
+  "interval_seconds": 3,
+  "total_samples": 38,
+  "samples_after_second_90": 30,
+  "after_second_90_groups": {
+    "guest_or_runtime": 3,
+    "reference_cpu_renderer": 27
+  },
+  "observed_renderer_functions": [
+    "reference::Draw",
+    "reference combiner evaluation",
+    "reference blend-factor evaluation"
+  ],
+  "old_tree_spin_observed": false,
+  "game_logic_modified": false,
+  "native_observer_enabled": true,
+  "raw_addresses_maps_and_symbols_public": false,
+  "gameplay_validated": false
+}

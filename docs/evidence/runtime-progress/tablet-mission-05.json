@@ -1,0 +1,113 @@
+{
+  "build": "experimental-737ee5c2bd1835cd",
+  "capture_elapsed_ms": 660344,
+  "code_counts": {
+    "UC-SESSION-001": 1,
+    "UC-ANDROID-001": 1,
+    "UC-LOCALE-003": 1,
+    "UC-BOOT-001": 1,
+    "UC-BOOT-002": 1,
+    "UC-AUDIO-003": 13,
+    "UC-DISC-001": 1,
+    "UC-GPU-003": 2,
+    "UC-AUDIO-001": 62,
+    "UC-AUDIO-004": 66,
+    "UC-GPU-001": 183,
+    "UC-RUNTIME-001": 1,
+    "UC-CPU-003": 198,
+    "UC-CPU-004": 66,
+    "UC-DISC-002": 66,
+    "UC-DISC-003": 66,
+    "UC-GPU-005": 594,
+    "UC-LOCALE-005": 66,
+    "UC-INPUT-002": 66,
+    "UC-GPU-002": 16
+  },
+  "last_frame": 10920,
+  "first_visibility_elapsed_ms": 419367,
+  "last_io": {
+    "reads": 1399,
+    "bytes": 121256208,
+    "short_reads": 34,
+    "inflight": 0,
+    "total_us": 262468,
+    "max_us": 3296,
+    "stream_empty_blocks": 8823,
+    "thread_slots_dropped": 0
+  },
+  "last_io_completion": {
+    "queued_apcs": 319,
+    "delivered_apcs": 318,
+    "resource_id": 2836069715,
+    "requested": 22528,
+    "offset": 127535104,
+    "completed": 22528
+  },
+  "last_locale_state": {
+    "requested": 1,
+    "archives": 3
+  },
+  "last_gpu_synchronization": null,
+  "mission_playable_verified": false,
+  "last_presentations_per_second": 0.968,
+  "reads_progressed_in_last_io_interval": true,
+  "gpu_host_timing": {
+    "0": {
+      "operation": 0,
+      "calls": 156194,
+      "total_us": 61943515,
+      "max_us": 14724
+    },
+    "1": {
+      "operation": 1,
+      "calls": 10944,
+      "total_us": 1980579,
+      "max_us": 166939
+    },
+    "2": {
+      "operation": 2,
+      "calls": 70,
+      "total_us": 547593,
+      "max_us": 29448
+    },
+    "3": {
+      "operation": 3,
+      "calls": 681229,
+      "total_us": 24475670,
+      "max_us": 74438
+    },
+    "4": {
+      "operation": 4,
+      "calls": 681229,
+      "total_us": 2255149,
+      "max_us": 1128
+    },
+    "5": {
+      "operation": 5,
+      "calls": 681229,
+      "total_us": 14339519,
+      "max_us": 7956
+    },
+    "6": {
+      "operation": 6,
+      "calls": 681229,
+      "total_us": 1469445,
+      "max_us": 50496
+    },
+    "7": {
+      "operation": 7,
+      "calls": 78098,
+      "total_us": 96040213,
+      "max_us": 16478
+    },
+    "8": {
+      "operation": 8,
+      "calls": 1319,
+      "total_us": 11279625,
+      "max_us": 26628
+    }
+  },
+  "report_sha256": "68bf0589a8f79c009501a13921b2b3ab634821f164f0607185afdf920118c47b",
+  "owner_reported_mission_entry": true,
+  "owner_reported_visual_defects": true
+}

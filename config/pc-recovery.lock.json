@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "legacy_burner_commit": "c6581087c694afca0d5423da4c6ba7c38611aac3",
+  "legacy_runtime": {
+    "url": "https://github.com/sp00nznet/xboxrecomp.git",
+    "commit": "14522228d296a7004adb02d6aec8335eee268cae",
+    "license": "MIT",
+    "role": "historical chain inspection; no overlays redistributed"
+  },
+  "archives": {
+    "source-v0.01.zip": {
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.01/Urban-Chaos-Burner-Edition-0.01-Source.zip",
+      "sha256": "15ad8ceecea8f203a579aa8054fdd73115627adfdb6d00c48086b0a692179d11"
+    },
+    "source-v0.03.zip": {
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.03/UrbanChaos-BurnerEdition-0.03-Source.zip",
+      "sha256": "68a071bdac8bb2a8f55dfe60443ea38c1623999317997bd7506f82a07e222877"
+    },
+    "source-v0.18.zip": {
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.18/UrbanChaos-BurnerEdition-0.18-Source.zip",
+      "sha256": "d705d414c9f7096cdbc45815da4e01f3336a71a99187c880a11928e8e6e33d70"
+    },
+    "windows-v0.18.zip": {
+      "url": "https://github.com/linkssy2/UrbanChaosRiotResponseBurnerEdition/releases/download/v0.18/UrbanChaos-BurnerEdition-0.18-Windows-x64.zip",
+      "sha256": "49ba18d6ec44aea7d47b8b4574ed407ef3b016ed62f40cf9340a5dd9beea0ca6",
+      "role": "private binary inventory only; never public artifact"
+    },
+    "cmake-windows.zip": {
+      "url": "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-windows-x86_64.zip",
+      "sha256": "d163cd3ab4959b0a53fa8988f2ddbd2e6c501658201e6a154386bad9dbe4f836"
+    }
+  },
+  "python_ci": "3.12.8"
+}

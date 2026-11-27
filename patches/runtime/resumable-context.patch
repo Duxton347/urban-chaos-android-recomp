@@ -1,0 +1,245 @@
+--- a/runtime/cpu/dispatch.cpp
++++ b/runtime/cpu/dispatch.cpp
+@@ -4,6 +4,7 @@
+ #include <cstdlib>
+ #include <mutex>
+ #include <unordered_set>
++#include <unordered_map>
+ #include <vector>
+
+ #include "core/log.h"
+@@ -20,6 +21,9 @@
+
+ std::vector<X86Func*> g_table;  // one slot per code byte
+ std::vector<bool> g_continuation;
++#ifdef XBE_RESUMABLE_GUEST
++std::unordered_map<uint32_t, X86Func*> g_resumes;
++#endif
+ uint32_t g_lo = 0, g_hi = 0;
+
+ struct Export {
+@@ -46,6 +50,10 @@
+     g_continuation.assign(g_hi - g_lo, false);
+     for (const uint32_t* c = X86Continuations; *c; c++)
+         if (*c >= g_lo && *c < g_hi) g_continuation[*c - g_lo] = true;
++#ifdef XBE_RESUMABLE_GUEST
++    g_resumes.clear();
++    for (const X86FuncMapping* m = X86ResumeMappings; m->host; ++m) g_resumes.emplace(m->guest, m->host);
++#endif
+     LOGI("dispatch: %zu functions over %08X..%08X", n, g_lo, g_hi);
+ }
+
+@@ -73,7 +81,12 @@
+
+ void x86_icall(X86Context& ctx, uint8_t* base, uint32_t target) {
+     ctx.last_icall = target;
++#ifdef XBE_RESUMABLE_GUEST
++    if ((target >= g_lo && target < g_hi && g_continuation[target - g_lo]) || g_resumes.count(target))
++        throw X86Transfer{target, ctx.esp};
++#else
+     if (target >= g_lo && target < g_hi && g_continuation[target - g_lo]) throw X86Resume{target, ctx.esp};
++#endif
+     if (X86Func* f = dispatch::Find(target)) {
+         f(ctx, base);
+         return;
+@@ -151,7 +164,40 @@
+     }
+     ctx.esp -= 4;
+     W32(ctx.esp, 0xFFFFFFF0u);  // never used as a target, calls return through the host stack
++#ifdef XBE_RESUMABLE_GUEST
++    const uint32_t root_return_slot = ctx.esp;
++    ++ctx.transfer_depth;
++    try {
++        bool resuming = false;
++        uint32_t target = fn;
++        for (;;) {
++            try {
++                if (!resuming) { x86_icall(ctx, g_base, fn); break; }
++                if (target == 0xFFFFFFF0u) {
++                    if (ctx.return_slot != root_return_slot)
++                        { if (ctx.transfer_depth > 1) throw X86Transfer{target, ctx.esp}; x86_trap(ctx, target, "unmatched native callback return"); }
++                    break;
++                }
++                ctx.resume_pc = 0;
++                auto point = g_resumes.find(target);
++                if (point != g_resumes.end()) {
++                    ctx.resume_pc = target;
++                    point->second(ctx, g_base);
++                } else if (X86Func* function = dispatch::Find(target)) function(ctx, g_base);
++                else x86_trap(ctx, target, "missing guest continuation");
++                target = ctx.return_target;
++            } catch (const X86Transfer& transfer) {
++                if (transfer.target == 0xFFFFFFF0u && ctx.return_slot != root_return_slot) throw;
++                ctx.esp = transfer.esp;
++                target = transfer.target;
++                resuming = true;
++            }
++        }
++    } catch (...) { --ctx.transfer_depth; throw; }
++    --ctx.transfer_depth;
++#else
+     x86_icall(ctx, g_base, fn);
++#endif
+     uint32_t result = ctx.eax;
+     ctx.eax = saved.eax;
+     ctx.ecx = saved.ecx;
+--- a/runtime/cpu/x86_context.h
++++ b/runtime/cpu/x86_context.h
+@@ -24,6 +24,7 @@
+     uint32_t thread_handle;
+     uint32_t last_icall;
+     void* host;
++    uint32_t resume_pc, return_target, return_slot, transfer_depth;
+ };
+
+ using X86Func = void(X86Context& __restrict ctx, uint8_t* base);
+@@ -37,3 +38,5 @@
+ extern const X86FuncMapping X86FuncMappings[];
+ extern const uint32_t X86Continuations[];  // zero terminated
+ extern const uint32_t X86CodeBase, X86CodeEnd, X86ImageBase, X86ImageEnd, X86EntryPoint, X86KernelThunk;
++
++extern const X86FuncMapping X86ResumeMappings[];
+--- a/runtime/cpu/x86_ops.h
++++ b/runtime/cpu/x86_ops.h
+@@ -50,6 +50,9 @@
+ // runtime services, implemented in src/cpu/dispatch.cpp
+ void x86_icall(X86Context& ctx, uint8_t* base, uint32_t target);
+ // a jump to a C++ catch continuation unwinds the host stack to the frame that resumes there (esp as the CRT set it)
++struct X86Transfer {
++    uint32_t target, esp;
++};
+ struct X86Resume {
+     uint32_t target, esp;
+ };
+--- a/runtime/kernel/kernel.h
++++ b/runtime/kernel/kernel.h
+@@ -90,6 +90,10 @@
+ };
+ inline void Return(X86Context& ctx, uint32_t value, int stack_args) {
+     ctx.eax = value;
++#ifdef XBE_RESUMABLE_GUEST
++    ctx.return_slot = ctx.esp;
++    ctx.return_target = R32(ctx.esp);
++#endif
+     ctx.esp += 4 + 4 * uint32_t(stack_args);
+ }
+
+--- a/tools/recomp/analysis.h
++++ b/tools/recomp/analysis.h
+@@ -37,6 +37,7 @@
+     std::map<std::string, std::vector<std::string>> abi;  // where a symbol takes each argument, emitted as IMAGE_ABI
+     std::set<uint32_t> no_gap_fill;             // section starts to skip in gap fill
+     std::vector<std::pair<uint32_t, uint32_t>> data_ranges;  // data inside code sections
++    bool resumable = false; // emit guest continuation entries and checked dynamic returns
+     bool gap_fill = true;
+     bool pointer_seeds = true;
+     std::multimap<uint32_t, Hook> hooks;
+--- a/tools/recomp/codegen.cpp
++++ b/tools/recomp/codegen.cpp
+@@ -289,7 +289,11 @@
+         }
+         case ZYDIS_MNEMONIC_RET: {
+             uint32_t n = in.operand_count_visible && ops[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE ? uint32_t(ops[0].imm.value.u) : 0;
+-            Line(Fmt("\tctx.esp += %u; return;", 4 + n));
++            if (an_.cfg.resumable) {
++                Line(Fmt("\tctx.return_slot = ctx.esp; ctx.return_target = X86_MEM32(ctx.esp); ctx.esp += %u;", 4 + n));
++                Line("\tif (x86_resuming || ctx.return_target != x86_expected_return || ctx.return_slot != x86_expected_slot) { X86_SAVE_FLAGS(); if (!x86_resuming) throw X86Transfer{ctx.return_target, ctx.esp}; }");
++                Line("\treturn;");
++            } else Line(Fmt("\tctx.esp += %u; return;", 4 + n));
+             pending_.valid = false;
+             return;
+         }
+--- a/tools/recomp/codegen.h
++++ b/tools/recomp/codegen.h
+@@ -62,4 +62,5 @@
+     std::map<std::string, size_t> unimpl_;
+     size_t insn_count_ = 0;
+     int ret_bytes_ = -1;
++    std::map<uint32_t, uint32_t> resume_owners_;
+ };
+--- a/tools/recomp/codegen_emit.cpp
++++ b/tools/recomp/codegen_emit.cpp
+@@ -48,6 +48,20 @@
+             if (jt != an_.jump_tables.end()) targets.insert(jt->second.targets.begin(), jt->second.targets.end());
+         }
+     }
++    std::set<uint32_t> resume_points;
++    if (an_.cfg.resumable) {
++        for (uint32_t va : body) {
++            const Insn* in = an_.InsnAt(va);
++            if (in && (in->flow == Flow::Call || in->flow == Flow::CallIndirect)) {
++                uint32_t next = va + in->len;
++                if (body_set_.count(next) && !an_.functions.count(next)) {
++                    resume_points.insert(next);
++                    targets.insert(next);
++                    resume_owners_.try_emplace(next, entry);
++                }
++            }
++        }
++    }
+     for (size_t i = 0; i < body.size(); i++) {
+         const Insn* in = an_.InsnAt(body[i]);
+         if (!in) continue;
+@@ -108,6 +122,12 @@
+     out += F("X86_FUNC(__imp__%s) {\n", FuncName(entry).c_str());
+     if (seh) out += "\tconst uint32_t x86_frame = ctx.esp;\n\ttry {\n";
+     out += "\tX86_LOAD_FLAGS();\n\tuint32_t ca = 0, cb = 0;\n\t(void)ca; (void)cb;\n";
++    if (an_.cfg.resumable) {
++        out += "\tconst uint32_t x86_expected_slot = ctx.esp;\n\tconst bool x86_resuming = ctx.resume_pc != 0;\n\tconst uint32_t x86_expected_return = x86_resuming ? 0 : X86_MEM32(ctx.esp);\n";
++        out += "\tconst uint32_t x86_resume_pc = ctx.resume_pc; ctx.resume_pc = 0;\n\tswitch (x86_resume_pc) {\n\tcase 0: break;\n";
++        for (uint32_t point : resume_points) out += F("\tcase 0x%Xu: goto loc_%08X;\n", point, point);
++        out += F("\tdefault: x86_trap(ctx, x86_resume_pc, \"invalid continuation for function %08X\");\n\t}\n", entry);
++    }
+     // code below the entry (a shared tail reached by a jump) is emitted first, so enter by label
+     bool entry_first = !body.empty() && body.front() == entry;
+     if (!entry_first) out += F("\tgoto loc_%08X;\n", entry);
+@@ -198,6 +218,10 @@
+ }
+
+ bool CodeGen::Run() {
++    if (an_.cfg.resumable && !an_.cfg.hooks.empty()) {
++        std::fprintf(stderr, "resumable guest mode does not yet qualify instruction hooks\n");
++        return false;
++    }
+     std::vector<uint32_t> funcs(an_.functions.begin(), an_.functions.end());
+     std::sort(funcs.begin(), funcs.end());
+     if (!an_.cfg.hooks.empty() && !CheckHooks(funcs)) return false;
+@@ -224,12 +248,14 @@
+         }
+         syms += "\n";
+     }
++    syms += F("#define IMAGE_RESUMABLE_GUEST %d\n", an_.cfg.resumable ? 1 : 0);
+     WriteIfChanged(out_ / "image_symbols.h", syms);
+
+     // shared declarations
+     std::string shared = "#pragma once\n#include \"cpu/x86_ops.h\"\n\n";
+     for (uint32_t f : funcs) shared += F("X86_EXTERN_FUNC(%s);\n", FuncName(f).c_str());
+     for (uint32_t f : absent) shared += F("X86_EXTERN_FUNC(%s);\n", FuncName(f).c_str());
++    if (an_.cfg.resumable) for (uint32_t f : funcs) shared += F("X86_EXTERN_FUNC(__imp__%s);\n", FuncName(f).c_str());
+     std::map<std::string, bool> hooks;
+     for (auto& [va, h] : an_.cfg.hooks) hooks.emplace(h.call, h.Returns());
+     for (auto& [name, returns] : hooks) shared += F("%s %s(X86Context& ctx, uint8_t* base);\n", returns ? "bool" : "void", name.c_str());
+@@ -274,6 +300,13 @@
+     map += "const X86FuncMapping X86FuncMappings[] = {\n";
+     for (uint32_t f : funcs) map += F("\t{0x%Xu, %s},\n", f, FuncName(f).c_str());
+     map += "\t{0, nullptr},\n};\n";
++    if (an_.cfg.resumable) {
++        map += "\nconst X86FuncMapping X86ResumeMappings[] = {\n";
++        for (auto [point, owner] : resume_owners_)
++            map += F("\t{0x%Xu, __imp__%s},\n", point, FuncName(owner).c_str());
++        map += "\t{0, nullptr},\n};\n";
++    }
++
+     map += "\nconst uint32_t X86Continuations[] = {\n";
+     for (uint32_t c : an_.continuations) map += F("\t0x%Xu,\n", c);
+     map += "\t0,\n};\n";
+--- a/tools/recomp/main.cpp
++++ b/tools/recomp/main.cpp
+@@ -84,6 +84,7 @@
+         for (auto& i : *a) cfg.trace.insert(uint32_t(i.value_or(int64_t(0))));
+     if (auto v = t["xbe"]["out"].value<std::string>()) cfg.out_dir = *v;
+     if (auto v = t["xbe"]["partitions"].value<int64_t>()) cfg.partitions = uint32_t(*v);
++    if (auto v = t["xbe"]["resumable"].value<bool>()) cfg.resumable = *v;
+     if (auto v = t["xbe"]["gap_fill"].value<bool>()) cfg.gap_fill = *v;
+     if (auto v = t["xbe"]["pointer_seeds"].value<bool>()) cfg.pointer_seeds = *v;
+     if (auto a = t["xbe"]["code_sections"].as_array())

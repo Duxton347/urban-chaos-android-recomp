@@ -1,0 +1,36 @@
+name: Development tooling artifacts (no game data)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tooling:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 scripts/ci_bootstrap.py --component host
+      - run: scripts/build_host.sh
+      - run: python3 scripts/native_smoke.py
+      - run: python3 scripts/publication_check.py
+      - name: Stage exact public tool allowlist
+        run: |
+          mkdir -p build/public
+          cp build/host/xbe_recomp build/host/xbe_symbols build/host/host-tools.receipt.json build/public/
+          git archive --format=tar.gz --output=build/public/UrbanChaos-tooling-source.tar.gz HEAD
+          (cd build/public && sha256sum xbe_recomp xbe_symbols host-tools.receipt.json UrbanChaos-tooling-source.tar.gz > SHA256SUMS)
+          python3 scripts/publication_check.py --artifacts build/public
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: public-host-tools-not-game-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            build/public/xbe_recomp
+            build/public/xbe_symbols
+            build/public/host-tools.receipt.json
+            build/public/UrbanChaos-tooling-source.tar.gz
+            build/public/SHA256SUMS

@@ -1,0 +1,37 @@
+{
+  "commit": "1c62f02606907a3329dd7607fe05711b259972f8",
+  "gameplay_validated": false,
+  "workflow_runs": [
+    {
+      "name": "Audit and static checks",
+      "id": 45503644821,
+      "conclusion": "success",
+      "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45503644821"
+    },
+    {
+      "name": "Automated importer and compiler tests",
+      "id": 45503644993,
+      "conclusion": "success",
+      "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45503644993"
+    },
+    {
+      "name": "Native tools and recompilation smoke",
+      "id": 45503644853,
+      "conclusion": "success",
+      "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45503644853"
+    },
+    {
+      "name": "Android ARM64 portability (no game APK)",
+      "id": 45503644923,
+      "conclusion": "success",
+      "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45503644923"
+    },
+    {
+      "name": "PC original source reproduction attempt",
+      "id": 45503645075,
+      "conclusion": "failure",
+      "url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45503645075",
+      "reason": "FileNotFoundError: original build/xbe-full-integration-20261014/integration-status.json is absent; final job log inspected"
+    }
+  ]
+}

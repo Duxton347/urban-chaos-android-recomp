@@ -1,0 +1,241 @@
+{
+  "date": "2026-11-27",
+  "status": "PRIVATE_ARM64_LIBRARY_LINKED_MISSION_UNQUALIFIED",
+  "shader_cache": {
+    "cold": {
+      "hits": 16,
+      "compiled": 31,
+      "rejected": 0
+    },
+    "warm": {
+      "hits": 47,
+      "compiled": 0,
+      "rejected": 0
+    }
+  },
+  "renderer_fixture_passed": true,
+  "fences_fixture_passed": true,
+  "renderer_source_sha256": "b187c8bb71b006ec35e621d9d5ff6f69cc34fc382eb03a328bce876236afd07e",
+  "frame_cfg": {
+    "source_sha256": "7d2d3a2a6e7b800a855042b6856e71e4cd6b07604b2989daac0cc9815b0b169b",
+    "output_sha256": "0f22aaee9808232c68a7cca85eccfe297d266e9e7f4d69fdfacea8b54e0118fc",
+    "root": "0008FF30",
+    "end": "00090530",
+    "blocks": 36,
+    "edges": 61,
+    "external_mappings_unchanged": true,
+    "real_calls_preserved": true
+  },
+  "private_profile": {
+    "run": {
+      "instrumented": true,
+      "benchmark": false,
+      "tablet_performance_verified": false,
+      "elapsed_seconds": 300.141570571,
+      "exit_code": -15,
+      "commands_sent": [],
+      "host_sha256": "a3c32a8eaa0ad00bd67dce8f38c05043c076b2e00530c8ab90ba8e1b26f97e71"
+    },
+    "origin_00090147": 0,
+    "top_origins": [
+      [
+        "__imp__sub_002218C0",
+        53444
+      ],
+      [
+        "__imp__sub_002D3939",
+        45059
+      ],
+      [
+        "__imp__sub_002D7290",
+        39368
+      ],
+      [
+        "__imp__sub_00219420",
+        16520
+      ],
+      [
+        "__imp__sub_00219600",
+        13237
+      ],
+      [
+        "__imp__sub_00235200",
+        5691
+      ],
+      [
+        "__imp__sub_0022B400",
+        3983
+      ],
+      [
+        "__imp__sub_0031795F",
+        2834
+      ]
+    ],
+    "sampled_throw_total": 195123,
+    "present_max": 1920,
+    "same_state_fps_gain_qualified": false,
+    "variant": "before_final_flags_serialization_preservation"
+  },
+  "android": {
+    "status": "PRIVATE_ANDROID_LIBRARY_LINKED",
+    "library_sha256": "ad07a5f516f5af9e9ec87ae628eaa5103cf311cb71a2ec47f7966f3c8e7ddb34",
+    "library_bytes": 82155416,
+    "guest_archive_sha256": "c93166b1bb5aab55db6528dcdd4bbdcf5c81e64ee74ff08a40f5f0a6af31da56",
+    "renderer_source_sha256": "0e82bcf900a5ea283d08709d0f0a29244f5c471d7579bf141dfe51159c7411a3",
+    "gpu_worker": false,
+    "android_device_tested": false,
+    "apk_created": false
+  },
+  "java": {
+    "status": "PASS",
+    "sdk": 34,
+    "java_sources": 27,
+    "apk_built": false
+  },
+  "python_tests": 68,
+  "automatic_fire": {
+    "policy_contract_passed": true,
+    "real_enemy_shot_confirmed": false,
+    "allied_game_observations_seen": true,
+    "manual_priority": true,
+    "default_enabled": false,
+    "qualified_for_campaign": false,
+    "input_route": 2,
+    "original_rt_manual_shot_confirmed": true,
+    "original_manual_clip": [
+      15,
+      14
+    ],
+    "action_query_return_wrapper_rejected": true,
+    "pad_contract_passed": true,
+    "cross_thread_delivery_tested": true
+  },
+  "failed_attempts": [
+    {
+      "command": "scripts/build_launcher_base.sh",
+      "reason": "not executable; rerun with bash"
+    },
+    {
+      "command": "bash scripts/build_launcher_base.sh :app:compileDebugJavaWithJavac --offline",
+      "reason": "Gradle transform cache exhausted workspace capacity before task execution; SDK 34 javac independently compiled all 27 actual Java sources afterward"
+    }
+  ],
+  "new_apk_delivered": false,
+  "tablet_performance_gain_qualified": false,
+  "mission_playable_qualified": false,
+  "clean_linux": {
+    "status": "RESEARCH_HOST_COMPILED",
+    "guest_archive_sha256": "40d0b98abf44f65e11d3a021c17a26effa7321a41dd92ac336ccac3020c689dd",
+    "executable_sha256": "fe84cbf5486a4d26ace8af64c08b164172639a9242214ccd327481faf6b44be0",
+    "auto_input_route": 2,
+    "source_check_exit": 0,
+    "final_3d_scene_reached": true
+  },
+  "game_shader_cache": {
+    "shader_cache_hits": 71,
+    "shader_compilations": 4,
+    "shader_cache_rejected": 0
+  },
+  "pad_route_real_run": {
+    "run": {
+      "instrumented": false,
+      "benchmark": false,
+      "tablet_performance_verified": false,
+      "elapsed_seconds": 420.138436618,
+      "exit_code": -15,
+      "commands_sent": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "host_sha256": "fe84cbf5486a4d26ace8af64c08b164172639a9242214ccd327481faf6b44be0"
+    },
+    "last_frame": 2308,
+    "last_tick": 585,
+    "automatic_input": {
+      "input_route": 2,
+      "enabled": 1,
+      "traces": 406,
+      "requests": 0,
+      "manual": 20,
+      "blocked": 3879,
+      "queries": 3899,
+      "fresh": 1341,
+      "hostile": 0,
+      "friendly": 5,
+      "cone_blocked": 0,
+      "state_blocked": 33,
+      "life_blocked": 0,
+      "shield_blocked": 0,
+      "identity_blocked": 2558,
+      "controls_blocked": 0
+    },
+    "manual_clip_start": 15,
+    "manual_clip_end": 14,
+    "hostile_case_reached": false,
+    "automatic_enemy_shot_confirmed": false,
+    "gameplay_qualified": false
+  },
+  "ci": {
+    "commit": "245b176e4382542b549843c41a65fa4df6ed2dba",
+    "audit": "success",
+    "automated_tests": "success",
+    "native_tools": "success",
+    "android_arm64": "success",
+    "original_windows_reproduction": {
+      "conclusion": "failure",
+      "status": "MISSING_QUALIFIED_TITLE_INPUTS",
+      "missing": "build/xbe-full-integration-20261014/integration-status.json",
+      "run_url": "https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45922976914"
+    }
+  }
+}

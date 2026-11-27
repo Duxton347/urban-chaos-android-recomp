@@ -1,0 +1,23 @@
+--- a/vulkan.cpp
++++ b/vulkan.cpp
+@@ -542,4 +542,5 @@
+     uint64_t frame = 0;
+     uint64_t palette = 0;
++    uint64_t dirty_epoch = 0;
+ };
+ 
+@@ -2761,8 +2762,12 @@
+     if (!same && !CreateTexture(tx, d, fi, key)) return VK_NULL_HANDLE;
+     Tex& t = textures_[key];
+-    if (t.frame != presents_ + 1 || !same || t.palette != palette.hash) {
++    uint64_t epoch = DirtyEpoch(d.data);
++    if (t.frame != presents_ + 1 || !same || t.palette != palette.hash || t.dirty_epoch != epoch) {
++        if (same && t.frame == presents_ + 1 && t.dirty_epoch != epoch)
++            urban::progress::same_present_texture_updates.fetch_add(1, std::memory_order_relaxed);
++        t.dirty_epoch = epoch;
+         t.frame = presents_ + 1;
+         t.palette = palette.hash;
+-        uint64_t sig = MemSig(d.data, TotalSize(d)) ^ DirtyEpoch(d.data) ^ palette.hash;
++        uint64_t sig = MemSig(d.data, TotalSize(d)) ^ epoch ^ palette.hash;
+         if (sig != t.sig || !same) {
+             t.sig = sig;

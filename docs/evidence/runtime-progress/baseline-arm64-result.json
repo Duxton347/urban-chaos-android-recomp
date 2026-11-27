@@ -1,0 +1,14 @@
+{
+  "exit": 0,
+  "target": "Android arm64-v8a API 29",
+  "ndk": "28.2.13676358",
+  "cmake": "3.31.6",
+  "archive_objects": 129,
+  "machine_counts": {
+    "AArch64": 129
+  },
+  "archive_bytes": 132280070,
+  "archive_sha256": "e8d105f049d799eae6a9d64a004e0f9095c562cfe6bffb22a3e6fbbdc77a1a76",
+  "compiler": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)",
+  "scope": "Generated original guest units and mapping only; not a linked Android runtime or APK; no device execution"
+}

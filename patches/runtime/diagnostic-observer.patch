@@ -1,0 +1,258 @@
+--- a/runtime/core/log.h
++++ b/runtime/core/log.h
+@@ -1,37 +1,41 @@
+-#pragma once
+-#include <atomic>
+-#include <cstdarg>
+-#include <cstdint>
+-#include <string>
+-
+-namespace logx {
+-
+-// a release build writes Report and Error lines only
+-enum class Level { Debug, Info, Warn, Error, Report };
+-
+-// release: dir/prefix.log, carried on when append; debug: dir/prefix_NNN.log per run, newest 30 kept
+-void Init(const std::string& dir, const std::string& prefix, bool append = false);
+-void Write(Level lv, const char* fmt, ...) __attribute__((format(printf, 2, 3)));
+-void Flush();
+-const std::string& Path();
+-
+-#ifdef NDEBUG
+-inline constexpr bool kVerbose = false;
+-#else
+-inline constexpr bool kVerbose = true;
+-#endif
+-
+-}  // namespace logx
+-
+-#define LOGD(...) ::logx::Write(::logx::Level::Debug, __VA_ARGS__)
+-#define LOGI(...) ::logx::Write(::logx::Level::Info, __VA_ARGS__)
+-#define LOGW(...) ::logx::Write(::logx::Level::Warn, __VA_ARGS__)
+-#define LOGE(...) ::logx::Write(::logx::Level::Error, __VA_ARGS__)
+-#define LOGR(...) ::logx::Write(::logx::Level::Report, __VA_ARGS__)
+-
+-// logs only the first n times a call site is reached
+-#define LOG_FIRST(n, ...)                                  \
+-    do {                                                   \
+-        static std::atomic<int> _c{0};                     \
+-        if (_c.fetch_add(1, std::memory_order_relaxed) < (n)) LOGI(__VA_ARGS__); \
+-    } while (0)
++#pragma once
++#include <atomic>
++#include <cstdarg>
++#include <cstdint>
++#include <string>
++
++namespace logx {
++
++// a release build writes Report and Error lines only
++enum class Level { Debug, Info, Warn, Error, Report };
++
++// release: dir/prefix.log, carried on when append; debug: dir/prefix_NNN.log per run, newest 30 kept
++void Init(const std::string& dir, const std::string& prefix, bool append = false);
++void Write(Level lv, const char* fmt, ...) __attribute__((format(printf, 2, 3)));
++// Observer receives the static format template and transient formatted message.
++// It must not retain pointers, throw, or call the logger. Null detaches it.
++using Observer = void (*)(Level, const char*, const char*);
++void SetObserver(Observer observer);
++void Flush();
++const std::string& Path();
++
++#ifdef NDEBUG
++inline constexpr bool kVerbose = false;
++#else
++inline constexpr bool kVerbose = true;
++#endif
++
++}  // namespace logx
++
++#define LOGD(...) ::logx::Write(::logx::Level::Debug, __VA_ARGS__)
++#define LOGI(...) ::logx::Write(::logx::Level::Info, __VA_ARGS__)
++#define LOGW(...) ::logx::Write(::logx::Level::Warn, __VA_ARGS__)
++#define LOGE(...) ::logx::Write(::logx::Level::Error, __VA_ARGS__)
++#define LOGR(...) ::logx::Write(::logx::Level::Report, __VA_ARGS__)
++
++// logs only the first n times a call site is reached
++#define LOG_FIRST(n, ...)                                  \
++    do {                                                   \
++        static std::atomic<int> _c{0};                     \
++        if (_c.fetch_add(1, std::memory_order_relaxed) < (n)) LOGI(__VA_ARGS__); \
++    } while (0)
+--- a/runtime/core/log.cpp
++++ b/runtime/core/log.cpp
+@@ -1,81 +1,93 @@
+-#include "core/log.h"
+-
+-#include <algorithm>
+-#include <chrono>
+-#include <cstdio>
+-#include <cstdlib>
+-#include <ctime>
+-#include <filesystem>
+-#include <mutex>
+-#include <thread>
+-#include <vector>
+-
+-namespace fs = std::filesystem;
+-
+-namespace logx {
+-
+-static std::mutex g_mutex;
+-static FILE* g_file = nullptr;
+-static std::string g_path;
+-static auto g_start = std::chrono::steady_clock::now();
+-
+-constexpr int kKeep = 30;
+-
+-// the run number of prefix_NNN.log, 0 for another name
+-static int RunNumber(const fs::path& file, const std::string& prefix) {
+-    std::string name = file.filename().string();
+-    if (file.extension() != ".log" || name.size() <= prefix.size() + 1 || name.compare(0, prefix.size() + 1, prefix + "_"))
+-        return 0;
+-    return std::atoi(name.c_str() + prefix.size() + 1);
+-}
+-
+-void Init(const std::string& dir, const std::string& prefix, bool append) {
+-    std::lock_guard<std::mutex> lock(g_mutex);
+-    std::error_code ec;
+-    fs::create_directories(dir, ec);
+-    if (!kVerbose) {
+-        g_path = (fs::path(dir) / (prefix + ".log")).string();
+-        g_file = std::fopen(g_path.c_str(), append ? "a" : "w");
+-        return;
+-    }
+-    std::vector<std::pair<int, fs::path>> runs;
+-    for (const auto& e : fs::directory_iterator(dir, ec))
+-        if (int n = RunNumber(e.path(), prefix)) runs.emplace_back(n, e.path());
+-    std::sort(runs.begin(), runs.end());
+-    for (size_t i = 0; i + kKeep <= runs.size(); i++) fs::remove(runs[i].second, ec);
+-    char name[256];
+-    std::snprintf(name, sizeof(name), "%s_%03d.log", prefix.c_str(), runs.empty() ? 1 : runs.back().first + 1);
+-    g_path = (fs::path(dir) / name).string();
+-    g_file = std::fopen(g_path.c_str(), "w");
+-}
+-
+-const std::string& Path() { return g_path; }
+-
+-void Write(Level lv, const char* fmt, ...) {
+-    if (!kVerbose && lv < Level::Error) return;
+-    char msg[4096];
+-    va_list ap;
+-    va_start(ap, fmt);
+-    std::vsnprintf(msg, sizeof(msg), fmt, ap);
+-    va_end(ap);
+-    double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - g_start).count();
+-    static const char* names[] = {"debug", "info", "warn", "error", "info"};
+-    auto tid = std::hash<std::thread::id>()(std::this_thread::get_id()) & 0xFFFF;
+-    std::lock_guard<std::mutex> lock(g_mutex);
+-    char line[4300];
+-    int n = kVerbose ? std::snprintf(line, sizeof(line), "[%9.3f] [%s] [t%04zx] %s\n", t, names[int(lv)], size_t(tid), msg)
+-                     : std::snprintf(line, sizeof(line), "[%9.3f] %s%s\n", t, lv == Level::Error ? "error: " : "", msg);
+-    n = std::min(n, int(sizeof(line)) - 1);
+-    if (g_file) {
+-        std::fwrite(line, 1, size_t(n), g_file);
+-        if (lv >= Level::Warn) std::fflush(g_file);
+-    }
+-    std::fwrite(line, 1, size_t(n), stderr);
+-}
+-
+-void Flush() {
+-    std::lock_guard<std::mutex> lock(g_mutex);
+-    if (g_file) std::fflush(g_file);
+-}
+-
+-}  // namespace logx
++#include "core/log.h"
++
++#include <algorithm>
++#include <chrono>
++#include <cstdio>
++#include <cstdlib>
++#include <ctime>
++#include <filesystem>
++#include <mutex>
++#include <thread>
++#include <vector>
++
++namespace fs = std::filesystem;
++
++namespace logx {
++
++static std::mutex g_mutex;
++static std::atomic<Observer> g_observer{nullptr};
++void SetObserver(Observer observer) { g_observer.store(observer, std::memory_order_release); }
++static FILE* g_file = nullptr;
++static std::string g_path;
++static auto g_start = std::chrono::steady_clock::now();
++
++constexpr int kKeep = 30;
++
++// the run number of prefix_NNN.log, 0 for another name
++static int RunNumber(const fs::path& file, const std::string& prefix) {
++    std::string name = file.filename().string();
++    if (file.extension() != ".log" || name.size() <= prefix.size() + 1 || name.compare(0, prefix.size() + 1, prefix + "_"))
++        return 0;
++    return std::atoi(name.c_str() + prefix.size() + 1);
++}
++
++void Init(const std::string& dir, const std::string& prefix, bool append) {
++    std::lock_guard<std::mutex> lock(g_mutex);
++    std::error_code ec;
++    fs::create_directories(dir, ec);
++    if (!kVerbose) {
++        g_path = (fs::path(dir) / (prefix + ".log")).string();
++        g_file = std::fopen(g_path.c_str(), append ? "a" : "w");
++        return;
++    }
++    std::vector<std::pair<int, fs::path>> runs;
++    for (const auto& e : fs::directory_iterator(dir, ec))
++        if (int n = RunNumber(e.path(), prefix)) runs.emplace_back(n, e.path());
++    std::sort(runs.begin(), runs.end());
++    for (size_t i = 0; i + kKeep <= runs.size(); i++) fs::remove(runs[i].second, ec);
++    char name[256];
++    std::snprintf(name, sizeof(name), "%s_%03d.log", prefix.c_str(), runs.empty() ? 1 : runs.back().first + 1);
++    g_path = (fs::path(dir) / name).string();
++    g_file = std::fopen(g_path.c_str(), "w");
++}
++
++const std::string& Path() { return g_path; }
++
++void Write(Level lv, const char* fmt, ...) {
++    Observer observer = g_observer.load(std::memory_order_acquire);
++    if (!kVerbose && lv < Level::Error && !observer) return;
++    char msg[4096];
++    va_list ap;
++    va_start(ap, fmt);
++    std::vsnprintf(msg, sizeof(msg), fmt, ap);
++    va_end(ap);
++    if (observer) {
++        static thread_local bool observing = false;
++        if (!observing) {
++            observing = true;
++            try { observer(lv, fmt, msg); } catch (...) { /* Diagnostics cannot alter guest execution. */ }
++            observing = false;
++        }
++    }
++    if (!kVerbose && lv < Level::Error) return;
++    double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - g_start).count();
++    static const char* names[] = {"debug", "info", "warn", "error", "info"};
++    auto tid = std::hash<std::thread::id>()(std::this_thread::get_id()) & 0xFFFF;
++    std::lock_guard<std::mutex> lock(g_mutex);
++    char line[4300];
++    int n = kVerbose ? std::snprintf(line, sizeof(line), "[%9.3f] [%s] [t%04zx] %s\n", t, names[int(lv)], size_t(tid), msg)
++                     : std::snprintf(line, sizeof(line), "[%9.3f] %s%s\n", t, lv == Level::Error ? "error: " : "", msg);
++    n = std::min(n, int(sizeof(line)) - 1);
++    if (g_file) {
++        std::fwrite(line, 1, size_t(n), g_file);
++        if (lv >= Level::Warn) std::fflush(g_file);
++    }
++    std::fwrite(line, 1, size_t(n), stderr);
++}
++
++void Flush() {
++    std::lock_guard<std::mutex> lock(g_mutex);
++    if (g_file) std::fflush(g_file);
++}
++
++}  // namespace logx

@@ -1,0 +1,38 @@
+test_archive_traversal_rejected (test_pc_recovery.Recovery.test_archive_traversal_rejected) ... ok
+test_case_collisions_rejected (test_pc_recovery.Recovery.test_case_collisions_rejected) ... ok
+test_existing_unverified_directory_is_preserved (test_pc_recovery.Recovery.test_existing_unverified_directory_is_preserved) ... ok
+test_failed_build_is_not_misclassified_as_success (test_pc_recovery.Recovery.test_failed_build_is_not_misclassified_as_success) ... ok
+test_generated_unit_inventory_targets_real_units (test_pc_recovery.Recovery.test_generated_unit_inventory_targets_real_units) ... ok
+test_modified_staged_source_is_not_called_original (test_pc_recovery.Recovery.test_modified_staged_source_is_not_called_original) ... ok
+test_source_is_preserved_and_reuse_is_idempotent (test_pc_recovery.Recovery.test_source_is_preserved_and_reuse_is_idempotent) ... ok
+test_source_without_root_cmake_is_not_build_kit (test_pc_recovery.Recovery.test_source_without_root_cmake_is_not_build_kit) ... ok
+test_symlink_rejected (test_pc_recovery.Recovery.test_symlink_rejected) ... ok
+test_title_input_rejected_before_extracting (test_pc_recovery.Recovery.test_title_input_rejected_before_extracting) ... ok
+test_wrong_hash_leaves_destination_absent (test_pc_recovery.Recovery.test_wrong_hash_leaves_destination_absent) ... ok
+test_bad_hash (test_tools.Tools.test_bad_hash) ... ok
+test_bad_hash_leaves_no_installation (test_tools.Tools.test_bad_hash_leaves_no_installation) ... ok
+test_case_collision (test_tools.Tools.test_case_collision) ... ok
+test_certificate_version (test_tools.Tools.test_certificate_version) ... ok
+test_folder_import_and_existing_destination (test_tools.Tools.test_folder_import_and_existing_destination) ... ok
+test_folder_symlink (test_tools.Tools.test_folder_symlink) ... ok
+test_invalid_and_truncated (test_tools.Tools.test_invalid_and_truncated) ... ok
+test_metadata (test_tools.Tools.test_metadata) ... ok
+test_no_space_keeps_installation_inactive (test_tools.Tools.test_no_space_keeps_installation_inactive) ... ok
+test_ps2_specific (test_tools.Tools.test_ps2_specific) ... ok
+test_real_host_recomp_deterministic (test_tools.Tools.test_real_host_recomp_deterministic) ... ok
+test_recompiler_rejects_output_outside_ignored_build (test_tools.Tools.test_recompiler_rejects_output_outside_ignored_build) ... ok
+test_redump_xgd1_offset (test_tools.Tools.test_redump_xgd1_offset) ... ok
+test_safe_xiso_extraction (test_tools.Tools.test_safe_xiso_extraction) ... ok
+test_source_truncated_during_import_rolls_back (test_tools.Tools.test_source_truncated_during_import_rolls_back) ... ok
+test_unmapped_thunk (test_tools.Tools.test_unmapped_thunk) ... ok
+test_unresolved_abi_symbol_fails (test_tools.Tools.test_unresolved_abi_symbol_fails) ... ok
+test_unterminated_names (test_tools.Tools.test_unterminated_names) ... ok
+test_xiso_bad_descriptor (test_tools.Tools.test_xiso_bad_descriptor) ... ok
+test_xiso_path_escape (test_tools.Tools.test_xiso_path_escape) ... ok
+test_xiso_truncation (test_tools.Tools.test_xiso_truncation) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.038s
+
+OK
+Java XDVDFS/path/cancellation: 11 checks passed

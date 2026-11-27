@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "status": "EXPERIMENTAL_REQUIRES_VALIDATION",
+  "sdk_commit": "c1f7d60c8728c6151bcfbb1d05e397eaf0618dc7",
+  "xbe_sha256": "c6f0c99ad57eafa2fc9caedb5ab2a7b192ff5fdde7e5faddc5e62a1730f044d1",
+  "bindings": {
+    "IDirectSound_AddRef": {
+      "address": "00423B41",
+      "abi": [
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0036; original interface wrapper calls AddRef slot and pops one stack argument"
+    },
+    "D3D_FvfShader": {
+      "address": "003F68B8",
+      "evidence": "Original D3D initialization 0x003EA6EB stores this object into device+0x794; SetVertexShader uses same object at 0x003E6F27"
+    },
+    "D3DDevice_IsBusy": {
+      "address": "003E3A80",
+      "abi": [],
+      "evidence": "Original function compares GPU DMA get/put and engine status; no arguments; returns occupancy boolean"
+    },
+    "IDirectSoundBuffer_GetVoiceProperties": {
+      "address": "0042501D",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0055; original wrapper and 92-byte voice properties writes agree with observed caller"
+    },
+    "IDirectSoundBuffer_SetPitch": {
+      "address": "00424F31",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND export 0xB0076; wrapper calls pitch setter which stores signed pitch before APU rate update; ret 8"
+    },
+    "IDirectSoundBuffer_SetMode": {
+      "address": "0042601C",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND XTLID 0xB0073; original wrapper ret 12, internal call stores mode at voice-state+0x40 and tests deferred flag"
+    },
+    "IDirectSound_CreateSoundStream": {
+      "address": "00427181",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "DSOUND XTLID 0xB003B adjacent to CreateSoundBuffer B003A; wrapper ret 16 passes this, descriptor, output, aggregation to stream constructor; original constructor takes a device COM reference"
+    },
+    "CDirectSoundStream_SetOutputBuffer": {
+      "address": "00426156",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "XTLID B0098 tail-jumps to stream output attachment; this is a live SDK stream; forwarding observer confirmed first destination is null. Only default mix-bin route supported; nonzero bus destination returns E_NOTIMPL"
+    },
+    "CDirectSoundStream_SetPitch": {
+      "address": "0042503E",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "XTLID B0099; original caller 0x00251A50 passes identical pitch to buffer 0x00424F31 and stream 0x0042503E; stream body stores pitch then updates APU rate, ret 8"
+    },
+    "D3DDevice_RunPushBuffer": {
+      "address": "003EF870",
+      "abi": [
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original caller 0x000B4EB0 passes recorded buffer plus null fixup; Data+4 and Size+12. Observed Begin/Element16/Element32/End/NOP; indexed subset only, lossless backend range, unknown methods/fixups trap"
+    },
+    "D3DDevice_GetVisibilityTestResult": {
+      "address": "003E2C30",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original caller 0x000A24C0 polls HRESULT 0x88760828; result reader checks 16-byte report status+12, copies count+8 and optional timestamp+0/+4. Wrapper flushes actual report work and preserves original reader."
+    },
+    "D3D_PublicAddRef": {
+      "address": "003E5570",
+      "abi": [
+        "stack"
+      ],
+      "evidence": "Verified retail routine: first public surface reference retains its parent recursively; public count at Common low16, parent at +0x14; stdcall ret4. SHA256 of 55 original bytes fc04f80709305c363d8573abf7ed0d75db798bfb139abc8e23234f38282fd9b5."
+    },
+    "IDirectSoundBuffer_SetConeAngles": {
+      "address": "00425F5B",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetConeOrientation": {
+      "address": "00425F7F",
+      "abi": [
+        "stack",
+        "stack",
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetConeOutsideVolume": {
+      "address": "00425FB4",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Original consumer 0x00251A80 initializes cone full angles from unsigned words, signed outside volume, orientation (1,0,0), with deferred apply=1; retail interface forwards to voice3D state. Explicit mixer cone attenuation replaces access to Xbox-only object layout."
+    },
+    "IDirectSoundBuffer_SetDistanceFactor": {
+      "address": "004260A6",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
+    },
+    "IDirectSoundBuffer_SetRolloffFactor": {
+      "address": "004260CA",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
+    },
+    "IDirectSoundBuffer_SetDopplerFactor": {
+      "address": "004260EE",
+      "abi": [
+        "stack",
+        "stack",
+        "stack"
+      ],
+      "evidence": "Retail consumer 0x00251A80 and voice3D writes +0x44/+0x48/+0x4C, matching documented X_DS3DBUFFER extension. Deferred float factor, stdcall ret12; applied to diagnostic mixer math and voice properties."
+    }
+  },
+  "qualifies_g1": false,
+  "menu_verified": true,
+  "mission_verified": false,
+  "resumable_guest": true,
+  "menu_verification_scope": "Linux research host with CPU reference captures only"
+}

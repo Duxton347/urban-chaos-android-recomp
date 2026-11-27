@@ -34,6 +34,10 @@ class Tools(unittest.TestCase):
  def test_invalid_and_truncated(self):
     for data in (b'',b'XBEH',bytes(xbe())[:-1],b'PS2'):
      with self.subTest(size=len(data)),self.assertRaises(Invalid):inspect(self.file('bad.xbe',data))
+ def test_section_integrity_digest(self):
+    b=xbe();b[0x360+36:0x360+56]=hashlib.sha1(struct.pack('<I',0x10)+b[0x400:0x410]).digest()
+    path=self.file('integrity.xbe',b);self.assertTrue(inspect(path)['sections'][0]['digest_match'])
+    b[0x400]=0x90;path.write_bytes(b);self.assertFalse(inspect(path)['sections'][0]['digest_match'])
  def test_bad_hash(self):
     with self.assertRaisesRegex(Invalid,'SHA-256'):inspect(self.file('a.xbe',xbe()),'0'*64)
  def test_unmapped_thunk(self):
@@ -56,6 +60,13 @@ class Tools(unittest.TestCase):
     with self.assertRaisesRegex(Invalid,'PS2 detectada'):prepare(self.file('ps2.iso',b'PLAYSTATION SYSTEM.CNF'),self.p/'installed')
  def test_safe_xiso_extraction(self):
     prepare(self.file('xbox.iso',xiso()),self.p/'installed');self.assertEqual((self.p/'installed/Default.xbe').read_bytes(),xbe())
+ def test_redump_xgd1_offset(self):
+    image=self.p/'redump.iso';base=0x18300000
+    with image.open('wb') as f:f.seek(base);f.write(xiso())
+    prepare(image,self.p/'installed');self.assertEqual((self.p/'installed/Default.xbe').read_bytes(),xbe())
+ def test_certificate_version(self):
+    b=xbe();struct.pack_into('<II',b,0x180+0xa8,2,7)
+    r=inspect(self.file('version.xbe',b));self.assertEqual(r['certificate']['disc_number'],2);self.assertEqual(r['certificate']['version'],7)
  def test_xiso_path_escape(self):
     with self.assertRaisesRegex(Invalid,'Caminho inseguro'):image_entries(self.file('bad.iso',xiso(b'../bad')))
  def test_xiso_truncation(self):
@@ -82,11 +93,18 @@ class Tools(unittest.TestCase):
     with self.assertRaisesRegex(Invalid,'build/'):generate(self.p/'fake',self.p/'config',self.p/'output')
  @unittest.skipUnless((R/'build/host/xbe_recomp').exists(),'Build host first')
  def test_real_host_recomp_deterministic(self):
-    image=self.file('fixture.xbe',xbe());cfg=self.p/'config.toml';cfg.write_text('[xbe]\npartitions=1\ngap_fill=false\n[functions]\n"0x11000"="start"\n')
+    image=self.file('fixture.xbe',xbe());cfg=self.p/'config.toml';cfg.write_text('[xbe]\ncode_sections=[".text"]\npartitions=1\ngap_fill=false\n[functions]\n"0x11000"="start"\n')
     for n in (1,2):
      r=subprocess.run([str(R/'build/host/xbe_recomp'),str(cfg),str(image),str(self.p/f'out{n}')],capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stderr)
     def inventory(d):return {str(f.relative_to(d)):hashlib.sha256(f.read_bytes()).hexdigest() for f in d.rglob('*') if f.is_file()}
-    self.assertEqual(inventory(self.p/'out1'),inventory(self.p/'out2'));self.assertTrue(inventory(self.p/'out1'))
+    self.assertEqual(inventory(self.p/'out1'),inventory(self.p/'out2'));self.assertTrue(inventory(self.p/'out1'));self.assertIn('X86_FUNC(__imp__sub_00011000)',(self.p/'out1/x86_recomp.0.cpp').read_text())
+ @unittest.skipUnless((R/'build/host/xbe_recomp').exists(),'Build host first')
+ def test_explicit_research_variant_never_qualifies_game(self):
+    (R/'build').mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=R/'build') as temp:
+     root=pathlib.Path(temp);image=root/'fixture.xbe';image.write_bytes(xbe());cfg=root/'config.toml';cfg.write_text('[xbe]\ncode_sections=[".text"]\npartitions=1\ngap_fill=false\n[functions]\n"0x11000"="start"\n')
+     report=generate(image,cfg,root/'output',hashlib.sha256(image.read_bytes()).hexdigest())
+     self.assertFalse(report['g1_qualified']);self.assertFalse(report['reference_candidate_match']);self.assertEqual(report['source_profile'],'EXPLICIT_RESEARCH_VARIANT');self.assertTrue(report['deterministic'])
  @unittest.skipUnless((R/'build/host/xbe_recomp').exists(),'Build host first')
  def test_unresolved_abi_symbol_fails(self):
     image=self.file('fixture.xbe',xbe());cfg=self.p/'config.toml';cfg.write_text('[xbe]\npartitions=1\n[abi]\nmissing=["esi"]\n')
