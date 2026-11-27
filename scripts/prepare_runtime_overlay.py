@@ -27,6 +27,8 @@ def prepare(destination, context=False, tools_only=False, android=False):
     if subprocess.check_output(['git', '-C', str(sdk), 'status', '--porcelain'], text=True).strip():
         raise ValueError('Pinned runtime checkout must remain clean')
     paths = [] if tools_only else list(PATHS)
+    if not tools_only and not android:
+        paths += ['harness/pad_script.cpp']
     if context:
         paths += ['runtime/cpu/x86_context.h', 'runtime/cpu/x86_ops.h', 'runtime/cpu/dispatch.cpp', 'runtime/kernel/kernel.h']
         paths += [str(path.relative_to(sdk)) for path in (sdk/'tools/recomp').glob('*') if path.suffix in ('.cpp', '.h')]
@@ -41,6 +43,8 @@ def prepare(destination, context=False, tools_only=False, android=False):
             raise ValueError('Android host patches do not apply to host recompilation tools')
         selected += ('android-host-portability.patch','android-input-sampling.patch')
     if not tools_only:
+        if not android:
+            selected += ('research-right-stick.patch',)
         selected += ('progress-metadata.patch','native-text-overrides.patch','async-visibility-contract.patch','command-stream-synchronization.patch','native-vertex-fallback.patch','render-target-texel-centres.patch','conditional-alpha-test.patch')
         if context:
             selected += ('guest-transfer-metrics.patch',)
