@@ -136,3 +136,19 @@ comerciais, código gerado e capturas não são publicados.
 A renderização e o desempenho da missão ainda exigem validação comparável.
 Esta investigação não declara eliminados os defeitos visuais relatados pelo
 proprietário nem promete FPS. O worker continua experimental e desligado.
+
+O ensaio final da rota Pad durou 420 segundos e alcançou a apresentação 2308,
+com o jogador controlável e a variante final da função de desenho. Registrou
+20 leituras de RT manual e consumo de uma bala (15→14), cinco observações de
+alvo aliado e nenhum pedido automático. **Nenhum alvo hostil foi alcançado pelo
+raio nessa sequência**: o disparo automático em combate continua sem confirmação.
+Os contratos autorais que exercitam o caso hostil não substituem essa cobertura.
+O cache terminou esse ensaio com 71 acertos e quatro compilações para módulos
+novos; o resultado 31→0 acima pertence às rodadas fria/quente controladas.
+
+No GitHub, auditoria, testes automatizados, ferramentas nativas e contratos
+Android ARM64 passaram no commit `245b176`. A tentativa separada de reproduzir
+a fonte original Windows falhou com `MISSING_QUALIFIED_TITLE_INPUTS`: falta
+`integration-status.json` na integração pública da Burner. A falha está preservada
+no [run original](https://github.com/Duxton347/urban-chaos-android-recomp/actions/runs/45922976914).
+Não foi fabricado um status de qualificação para tornar esse job verde.
